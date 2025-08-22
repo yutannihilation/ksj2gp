@@ -1,6 +1,10 @@
 use wasm_bindgen::prelude::*;
 use web_sys::{FileReaderSync, js_sys::Uint8Array};
 
+use crate::io::ReadOnlyFile;
+
+mod io;
+
 thread_local! {
     static FILE_READER_SYNC: FileReaderSync = FileReaderSync::new().unwrap();
 }
@@ -18,6 +22,23 @@ pub fn read_bytes(file: web_sys::File, start: i32, end: i32) -> Result<(), JsVal
 
     let msg = format!("(start: {start}, end: {end}) -> {bytes:?}");
     web_sys::console::log_1(&msg.into()); // Note: into() works only on `&str`, not on `String`, so & is necessary
+
+    Ok(())
+}
+
+#[wasm_bindgen]
+pub fn list_files(zip_file: web_sys::File) -> Result<(), JsValue> {
+    let reader = ReadOnlyFile::new(zip_file);
+    let mut zip = match zip::ZipArchive::new(reader) {
+        Ok(zip) => zip,
+        Err(e) => return Err(format!("Failed to read ZIP file!: {e:?}").into()),
+    };
+
+    for i in 0..zip.len() {
+        let file = zip.by_index(i).unwrap();
+        let msg = format!("Filename: {}", file.name());
+        web_sys::console::log_1(&msg.into()); // Note: into() works only on `&str`, not on `String`, so & is necessary
+    }
 
     Ok(())
 }
