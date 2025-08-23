@@ -335,7 +335,7 @@ dependencies = [
 [[package]]
 name = "dbase"
 version = "0.6.0"
-source = "git+https://github.com/tmontaigu/dbase-rs?rev=be4372bd28c9de97531b00099872dcb86e16c1ce#be4372bd28c9de97531b00099872dcb86e16c1ce"
+source = "git+https://github.com/tmontaigu/dbase-rs#be4372bd28c9de97531b00099872dcb86e16c1ce"
 dependencies = [
  "byteorder",
  "codepage",
@@ -614,7 +614,10 @@ dependencies = [
 name = "ksj2gp"
 version = "0.1.0"
 dependencies = [
+ "dbase",
+ "encoding_rs",
  "geo-traits",
+ "geo-types",
  "geoparquet",
  "shapefile",
  "wasm-bindgen",

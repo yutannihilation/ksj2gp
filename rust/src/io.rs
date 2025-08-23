@@ -90,10 +90,6 @@ impl OpfsFile {
             offset: FileSystemReadWriteOptions::new(),
         }
     }
-
-    pub fn size(&self) -> usize {
-        self.file.get_size().unwrap() as usize
-    }
 }
 
 impl std::io::Write for OpfsFile {

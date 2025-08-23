@@ -8,6 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 geo-traits = "0.3.0"
+geo-types = "0.7.17"
 geoparquet = "0.5.0"
 
 # for compatibility with geo-traits 0.3
@@ -28,6 +29,9 @@ web-sys = { version = "0.3", features = [
     "console",
 ] }
 
+# since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
+dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
+encoding_rs = "0.8.35"
+
 [patch.crates-io]
-# WASM build is broken: https://github.com/tmontaigu/dbase-rs/issues/100
-dbase = { git = "https://github.com/tmontaigu/dbase-rs", rev = "be4372bd28c9de97531b00099872dcb86e16c1ce" }
+dbase = { git = "https://github.com/tmontaigu/dbase-rs" }

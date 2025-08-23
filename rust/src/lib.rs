@@ -1,6 +1,5 @@
-use std::io::{Seek, Write};
-
-use geozero::geo_types::{GeoFeatureWriter, GeoWriter};
+use dbase::encoding::EncodingRs;
+use shapefile::{Reader, ShapeReader};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
@@ -46,32 +45,33 @@ pub fn list_files(
     let mut shp_file_opfs = OpfsFile::new(intermediate_files.shp);
     zip.copy_shp_to(&mut shp_file_opfs)?;
 
-    let mut shp = geozero::shp::ShpReader::new(shp_file_opfs)
-        .map_err(|e| -> JsValue { format!("Got an error on opening .shp file: {e:?}").into() })?;
-
     let mut shx_file_opfs = OpfsFile::new(intermediate_files.shx);
     zip.copy_shx_to(&mut shx_file_opfs)?;
-
-    shp.add_index_source(shx_file_opfs)
-        .map_err(|e| -> JsValue { format!("Got an error on add_index_source(): {e:?}").into() })?;
 
     let mut dbf_file_opfs = OpfsFile::new(intermediate_files.dbf);
     zip.copy_dbf_to(&mut dbf_file_opfs)?;
 
-    shp.add_dbf_source(dbf_file_opfs)
-        .map_err(|e| -> JsValue { format!("Got an error on add_dbf_source(): {e:?}").into() })?;
+    let shape_reader =
+        ShapeReader::with_shx(shp_file_opfs, shx_file_opfs).map_err(|e| -> JsValue {
+            format!("Got an error on Reading .shp and .shx files: {e:?}").into()
+        })?;
 
-    let fields = shp
-        .dbf_fields()
-        .map_err(|e| -> JsValue { format!("Got an error on dbf_fields(): {e:?}").into() })?;
+    let dbase_reader = shapefile::dbase::Reader::new_with_encoding(
+        dbf_file_opfs,
+        EncodingRs::from(encoding_rs::SHIFT_JIS), // TODO: read UTF-8
+    )
+    .map_err(|e| -> JsValue { format!("Got an error on Reading a .dbf file: {e:?}").into() })?;
 
-    let msg = format!("{:?}", fields);
-    web_sys::console::log_1(&msg.into()); // Note: into() works only on `&str`, not on `String`, so & is necessary
+    let mut reader = Reader::new(shape_reader, dbase_reader);
 
-    // let geo = sh
+    for result in reader.iter_shapes_and_records().take(10) {
+        let (shape, record) = result.unwrap();
+        let geometry = geo_types::Geometry::<f64>::try_from(shape);
 
-    for f in &shp.dbf_fields().unwrap() {
-        // f.
+        web_sys::console::log_1(&format!("Shape: {geometry:?}, records: ").into());
+        for (name, value) in record {
+            web_sys::console::log_1(&format!("\t{}: {:?}, ", name, value).into());
+        }
     }
 
     Ok(())
