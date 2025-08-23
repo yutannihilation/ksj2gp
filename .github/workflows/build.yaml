@@ -51,7 +51,9 @@ jobs:
           workspaces: "./rust -> ./rust/target"
 
       - name: Install wasm-bindgen Compile
-        run: cargo install -f wasm-bindgen-cli
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo bininstall wasm-bindgen-cli
 
       - name: Compile Rust crate into WebAssembly
         run: |
