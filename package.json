@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "ksj2gp": "file:../npm/",
+    "ksj2gp": "file:./npm/",
     "typescript": "~5.8.3",
     "vite": "^7.1.2",
     "vite-plugin-wasm": "^3.5.0"
