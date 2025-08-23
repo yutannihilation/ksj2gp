@@ -69,14 +69,10 @@ jobs:
           mv tmp.wasm ./npm/ksj2gp_bg.wasm
 
       - name: Install dependencies
-        run: |
-          cd www
-          pnpm install
+        run: pnpm install
 
       - name: Build
-        run: |
-          cd www
-          pnpm run build
+        run: pnpm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -85,7 +81,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
-          path: "./www/dist"
+          path: "./dist"
 
       - name: Deploy to GitHub Pages
         id: deployment
