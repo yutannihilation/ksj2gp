@@ -6,45 +6,44 @@ use web_sys::FileReaderSync;
 use crate::io::{OpfsFile, UserLocalFile};
 
 mod io;
+mod zip;
 
 thread_local! {
     static FILE_READER_SYNC: FileReaderSync = FileReaderSync::new().unwrap();
 }
 
+// ShpReader requires Read and Seek, but files in a Zip archive cannot be Seek (only Read).
+// So, these files are necessary for temporarily extracting the file.
+#[wasm_bindgen]
+pub struct IntermediateFiles {
+    shp: web_sys::FileSystemSyncAccessHandle,
+    dbf: web_sys::FileSystemSyncAccessHandle,
+    shx: web_sys::FileSystemSyncAccessHandle,
+    // prj: web_sys::FileSystemSyncAccessHandle, // TODO
+}
+
+#[wasm_bindgen]
+impl IntermediateFiles {
+    #[wasm_bindgen(constructor)]
+    pub fn new(
+        shp: web_sys::FileSystemSyncAccessHandle,
+        dbf: web_sys::FileSystemSyncAccessHandle,
+        shx: web_sys::FileSystemSyncAccessHandle,
+    ) -> Self {
+        Self { shp, dbf, shx }
+    }
+}
+
 #[wasm_bindgen]
 pub fn list_files(
     zip_file: web_sys::File,
-    tmp_shp_file: web_sys::FileSystemSyncAccessHandle,
+    intermediate_files: IntermediateFiles,
 ) -> Result<(), JsValue> {
     let reader = UserLocalFile::new(zip_file);
     let mut zip = reader.new_zip_reader()?;
 
-    let shp_filenames: Vec<&str> = zip.file_names().filter(|x| x.ends_with(".shp")).collect();
-    if shp_filenames.is_empty() {
-        return Err("The ZIP file doesn't contain any .shp file".into());
-    }
-
-    let (base_filename, _) = shp_filenames[0].rsplit_once(".").unwrap();
-    let shp_filename = format!("{base_filename}.shp");
-    let dbf_filename = format!("{base_filename}.dbf");
-    let shx_filename = format!("{base_filename}.shx");
-    let prj_filename = format!("{base_filename}.prj"); // TODO
-    drop(shp_filenames);
-
-    let mut shp_file_reader = zip.by_name(&shp_filename).unwrap();
-    let mut shp_file_opfs = OpfsFile::new(tmp_shp_file);
-
-    std::io::copy(&mut shp_file_reader, &mut shp_file_opfs).unwrap();
-
-    shp_file_opfs
-        .rewind()
-        .map_err(|e| -> JsValue { format!("Got an error on rewinding .shp file: {e:?}").into() })?;
-
-    let mut zip_dbf = reader.new_zip_reader()?;
-    let dbf_file = zip_dbf.by_name(&dbf_filename).unwrap();
-
-    let mut zip_shx = reader.new_zip_reader()?;
-    let shx_file = zip_shx.by_name(&shx_filename).unwrap();
+    let mut shp_file_opfs = OpfsFile::new(intermediate_files.shp);
+    zip.copy_shp_to(&mut shp_file_opfs)?;
 
     let mut shp = geozero::shp::ShpReader::new(shp_file_opfs)
         .map_err(|e| -> JsValue { format!("Got an error on opening .shp file: {e:?}").into() })?;
