@@ -458,7 +458,7 @@ dependencies = [
  "geo-traits",
  "serde",
  "serde_json",
- "thiserror 1.0.69",
+ "thiserror",
 ]
 
 [[package]]
@@ -482,19 +482,6 @@ dependencies = [
  "serde_json",
  "serde_with",
  "wkt",
-]
-
-[[package]]
-name = "geozero"
-version = "0.14.0"
-source = "git+https://github.com/georust/geozero.git#3db91b6308b67010c53f5d932fba071553fb26d0"
-dependencies = [
- "byteorder",
- "dbase",
- "geo-types",
- "log",
- "serde_json",
- "thiserror 2.0.16",
 ]
 
 [[package]]
@@ -629,7 +616,6 @@ version = "0.1.0"
 dependencies = [
  "geo-traits",
  "geoparquet",
- "geozero",
  "shapefile",
  "wasm-bindgen",
  "web-sys",
@@ -1124,16 +1110,7 @@ version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6aaf5339b578ea85b50e080feb250a3e8ae8cfcdff9a461c9ec2904bc923f52"
 dependencies = [
- "thiserror-impl 1.0.69",
-]
-
-[[package]]
-name = "thiserror"
-version = "2.0.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3467d614147380f2e4e374161426ff399c91084acd2363eaf549172b3d5e60c0"
-dependencies = [
- "thiserror-impl 2.0.16",
+ "thiserror-impl",
 ]
 
 [[package]]
@@ -1141,17 +1118,6 @@ name = "thiserror-impl"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "thiserror-impl"
-version = "2.0.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c5e1be1c48b9172ee610da68fd9cd2770e7a4056cb3fc98710ee6906f0c7960"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1413,7 +1379,7 @@ dependencies = [
  "byteorder",
  "geo-traits",
  "num_enum",
- "thiserror 1.0.69",
+ "thiserror",
 ]
 
 [[package]]
@@ -1426,7 +1392,7 @@ dependencies = [
  "geo-types",
  "log",
  "num-traits",
- "thiserror 1.0.69",
+ "thiserror",
 ]
 
 [[package]]
