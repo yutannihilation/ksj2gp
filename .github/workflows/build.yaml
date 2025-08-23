@@ -47,6 +47,8 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./rust -> ./rust/target"
 
       - name: Install wasm-bindgen Compile
         run: cargo install -f wasm-bindgen-cli
