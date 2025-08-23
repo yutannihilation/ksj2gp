@@ -7,6 +7,19 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
+geozero = { version = "0.14.0", git = "https://github.com/georust/geozero.git", default-features = false, features = [
+    "with-shp",
+] }
 wasm-bindgen = "0.2"
-web-sys = { version = "0.3", features = ["File", "FileReaderSync", "console"] }
-zip = { version = "4.5.0", default-features = false, features = ["deflate"]}
+web-sys = { version = "0.3", features = [
+    "File",
+    "FileReaderSync",
+    "FileSystemSyncAccessHandle",
+    "FileSystemReadWriteOptions",
+    "console",
+] }
+zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
+
+[patch.crates-io]
+# WASM build is broken: https://github.com/tmontaigu/dbase-rs/issues/100
+dbase = { git = "https://github.com/tmontaigu/dbase-rs", rev = "be4372bd28c9de97531b00099872dcb86e16c1ce" }

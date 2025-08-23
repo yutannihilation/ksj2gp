@@ -1,7 +1,9 @@
-use wasm_bindgen::prelude::*;
-use web_sys::{FileReaderSync, js_sys::Uint8Array};
+use std::io::{Seek, Write};
 
-use crate::io::ReadOnlyFile;
+use wasm_bindgen::prelude::*;
+use web_sys::FileReaderSync;
+
+use crate::io::{OpfsFile, UserLocalFile};
 
 mod io;
 
@@ -10,35 +12,54 @@ thread_local! {
 }
 
 #[wasm_bindgen]
-pub fn read_bytes(file: web_sys::File, start: i32, end: i32) -> Result<(), JsValue> {
-    let blob = file.slice_with_i32_and_i32(start, end)?;
+pub fn list_files(
+    zip_file: web_sys::File,
+    tmp_shp_file: web_sys::FileSystemSyncAccessHandle,
+) -> Result<(), JsValue> {
+    let reader = UserLocalFile::new(zip_file);
+    let mut zip = reader.new_zip_reader()?;
 
-    let array_buffer = FILE_READER_SYNC.with(|reader| reader.read_as_array_buffer(&blob).unwrap());
-    let u8_array = Uint8Array::new(&array_buffer);
-
-    let len = u8_array.length() as usize;
-    let mut bytes = vec![0u8; len];
-    u8_array.copy_to(&mut bytes);
-
-    let msg = format!("(start: {start}, end: {end}) -> {bytes:?}");
-    web_sys::console::log_1(&msg.into()); // Note: into() works only on `&str`, not on `String`, so & is necessary
-
-    Ok(())
-}
-
-#[wasm_bindgen]
-pub fn list_files(zip_file: web_sys::File) -> Result<(), JsValue> {
-    let reader = ReadOnlyFile::new(zip_file);
-    let mut zip = match zip::ZipArchive::new(reader) {
-        Ok(zip) => zip,
-        Err(e) => return Err(format!("Failed to read ZIP file!: {e:?}").into()),
-    };
-
-    for i in 0..zip.len() {
-        let file = zip.by_index(i).unwrap();
-        let msg = format!("Filename: {}", file.name());
-        web_sys::console::log_1(&msg.into()); // Note: into() works only on `&str`, not on `String`, so & is necessary
+    let shp_filenames: Vec<&str> = zip.file_names().filter(|x| x.ends_with(".shp")).collect();
+    if shp_filenames.is_empty() {
+        return Err("The ZIP file doesn't contain any .shp file".into());
     }
+
+    let (base_filename, _) = shp_filenames[0].rsplit_once(".").unwrap();
+    let shp_filename = format!("{base_filename}.shp");
+    let dbf_filename = format!("{base_filename}.dbf");
+    let shx_filename = format!("{base_filename}.shx");
+    let prj_filename = format!("{base_filename}.prj"); // TODO
+    drop(shp_filenames);
+
+    let mut shp_file_reader = zip.by_name(&shp_filename).unwrap();
+    let mut shp_file_opfs = OpfsFile::new(tmp_shp_file);
+
+    std::io::copy(&mut shp_file_reader, &mut shp_file_opfs).unwrap();
+
+    shp_file_opfs
+        .rewind()
+        .map_err(|e| -> JsValue { format!("Got an error on rewinding .shp file: {e:?}").into() })?;
+
+    let mut zip_dbf = reader.new_zip_reader()?;
+    let dbf_file = zip_dbf.by_name(&dbf_filename).unwrap();
+
+    let mut zip_shx = reader.new_zip_reader()?;
+    let shx_file = zip_shx.by_name(&shx_filename).unwrap();
+
+    let mut shp = geozero::shp::ShpReader::new(shp_file_opfs)
+        .map_err(|e| -> JsValue { format!("Got an error on opening .shp file: {e:?}").into() })?;
+
+    // shp.add_dbf_source(dbf_file)
+    //     .map_err(|e| -> JsValue { format!("Got an error on add_dbf_source(): {e:?}").into() })?;
+    // shp.add_index_source(shx_file)
+    //     .map_err(|e| -> JsValue { format!("Got an error on add_index_source(): {e:?}").into() })?;
+
+    // let fields = shp
+    //     .dbf_fields()
+    //     .map_err(|e| -> JsValue { format!("Got an error on dbf_fields(): {e:?}").into() })?;
+
+    // let msg = format!("{:?}", fields);
+    // web_sys::console::log_1(&msg.into()); // Note: into() works only on `&str`, not on `String`, so & is necessary
 
     Ok(())
 }

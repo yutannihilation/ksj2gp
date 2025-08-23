@@ -4,5 +4,11 @@ console.log("Worker is loaded");
 
 onmessage = async (event) => {
   const { file } = event.data;
-  list_files(file);
+
+  const opfsRoot = await navigator.storage.getDirectory();
+  const fileHandle = await opfsRoot.getFileHandle("tmp.shp", { create: true });
+
+  const tmp_shp_file = await fileHandle.createSyncAccessHandle();
+
+  list_files(file, tmp_shp_file);
 };
