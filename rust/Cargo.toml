@@ -7,9 +7,22 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
+geo-traits = "0.3.0"
+geoparquet = "0.5.0"
 geozero = { version = "0.14.0", git = "https://github.com/georust/geozero.git", default-features = false, features = [
     "with-shp",
+    "with-geo",
 ] }
+
+# for compatibility with geo-traits 0.3
+shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.0", features = [
+    "encoding_rs",
+    "geo-traits",
+    "geo-types",
+] }
+
+zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
+
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
     "File",
@@ -18,7 +31,6 @@ web-sys = { version = "0.3", features = [
     "FileSystemReadWriteOptions",
     "console",
 ] }
-zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
 
 [patch.crates-io]
 # WASM build is broken: https://github.com/tmontaigu/dbase-rs/issues/100
