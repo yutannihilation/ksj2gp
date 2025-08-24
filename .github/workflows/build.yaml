@@ -48,10 +48,9 @@ jobs:
         with:
           workspaces: "./rust -> ./rust/target"
 
-      - name: Install Rust toolchain
-        run: |
-          cd rust
-          rustup show
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
 
       - name: Install wasm-bindgen CLI
         run: |
