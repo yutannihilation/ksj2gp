@@ -42,13 +42,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
+      - uses: rui314/setup-mold@v1
 
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "./rust -> ./rust/target"
+
+      - name: Install Rust toolchain
+        run: rustup show
 
       - name: Install wasm-bindgen CLI
         run: |
