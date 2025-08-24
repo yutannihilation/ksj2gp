@@ -27,7 +27,7 @@ onmessage = async (event) => {
   dbf.close();
   shx.close();
 
-  postMessage({ file: outputFileHandle });
+  postMessage(outputFileHandle);
 };
 
 const newSyncAccessHandle = async (

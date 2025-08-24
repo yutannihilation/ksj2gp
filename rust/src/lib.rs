@@ -1,5 +1,9 @@
 use dbase::{FieldInfo, FieldType, encoding::EncodingRs};
-use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptions};
+use geoarrow_schema::{
+    Dimension, GeoArrowType, MultiLineStringType, MultiPointType, MultiPolygonType, PointType,
+    PolygonType,
+};
+use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use parquet::arrow::ArrowWriter;
 use shapefile::{Reader, ShapeReader};
 use std::sync::Arc;
@@ -69,15 +73,29 @@ pub fn list_files(
     .map_err(|e| -> JsValue { format!("Got an error on Reading a .dbf file: {e:?}").into() })?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
-    let schema = infer_schema(&dbf_fields);
     let geometry_type = shapefile_reader.header().shape_type;
+    let schema = infer_schema(&dbf_fields, geometry_type);
+
+    for f in schema.fields() {
+        web_sys::console::log_1(&format!("field: {f:?}").into());
+    }
 
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
-    let options = GeoParquetWriterOptions::default();
-    let mut gpq_encoder = GeoParquetRecordBatchEncoder::try_new(&schema, &options).unwrap();
+    let options = GeoParquetWriterOptionsBuilder::default()
+        // .set_crs_transform(Box::new(todo!())) // TODO
+        .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::GeoArrow)
+        .set_generate_covering(true)
+        .build();
+    let mut gpq_encoder =
+        GeoParquetRecordBatchEncoder::try_new(&schema, &options).map_err(|e| -> JsValue {
+            format!("Got an error on creating GeoParquetRecordBatchEncoder: {e:?}").into()
+        })?;
+
     let mut parquet_writer =
-        ArrowWriter::try_new(output_file_opfs, gpq_encoder.target_schema(), None).unwrap();
+        ArrowWriter::try_new(output_file_opfs, gpq_encoder.target_schema(), None).map_err(
+            |e| -> JsValue { format!("Got an error on creating ArrowWriter {e:?}").into() },
+        )?;
 
     for result in reader.iter_shapes_and_records().take(10) {
         let (shape, record) = result.unwrap();
@@ -95,7 +113,9 @@ pub fn list_files(
 
     let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
     parquet_writer.append_key_value_metadata(kv_metadata);
-    parquet_writer.finish().unwrap();
+    parquet_writer
+        .finish()
+        .map_err(|e| -> JsValue { format!("Failed to finish parquet_writer: {e:?}").into() })?;
 
     Ok(())
 }
@@ -103,7 +123,10 @@ pub fn list_files(
 // This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
 //
 // https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
-fn infer_schema(fields: &[FieldInfo]) -> arrow_schema::SchemaRef {
+fn infer_schema(
+    fields: &[FieldInfo],
+    geometry_type: shapefile::ShapeType,
+) -> arrow_schema::SchemaRef {
     let mut out_fields = Vec::with_capacity(fields.len());
 
     for field in fields {
@@ -135,6 +158,48 @@ fn infer_schema(fields: &[FieldInfo]) -> arrow_schema::SchemaRef {
         };
         out_fields.push(Arc::new(field));
     }
+
+    let geometry_field = match geometry_type {
+        shapefile::ShapeType::NullShape => unimplemented!(),
+
+        shapefile::ShapeType::Point => {
+            GeoArrowType::Point(PointType::new(Dimension::XY, Default::default()))
+        }
+        shapefile::ShapeType::PointZ => {
+            GeoArrowType::Point(PointType::new(Dimension::XYZ, Default::default()))
+        }
+
+        shapefile::ShapeType::Polyline => GeoArrowType::MultiLineString(MultiLineStringType::new(
+            Dimension::XY,
+            Default::default(),
+        )),
+        shapefile::ShapeType::PolylineZ => GeoArrowType::MultiLineString(MultiLineStringType::new(
+            Dimension::XYZ,
+            Default::default(),
+        )),
+
+        shapefile::ShapeType::Polygon => {
+            GeoArrowType::MultiPolygon(MultiPolygonType::new(Dimension::XY, Default::default()))
+        }
+        shapefile::ShapeType::PolygonZ => {
+            GeoArrowType::MultiPolygon(MultiPolygonType::new(Dimension::XYZ, Default::default()))
+        }
+
+        shapefile::ShapeType::Multipoint => {
+            GeoArrowType::MultiPoint(MultiPointType::new(Dimension::XY, Default::default()))
+        }
+        shapefile::ShapeType::MultipointZ => {
+            GeoArrowType::MultiPoint(MultiPointType::new(Dimension::XY, Default::default()))
+        }
+
+        shapefile::ShapeType::PointM => unimplemented!(),
+        shapefile::ShapeType::PolylineM => unimplemented!(),
+        shapefile::ShapeType::PolygonM => unimplemented!(),
+        shapefile::ShapeType::MultipointM => unimplemented!(),
+        shapefile::ShapeType::Multipatch => unimplemented!(),
+    };
+
+    out_fields.push(Arc::new(geometry_field.to_field("geometry", true)));
 
     Arc::new(arrow_schema::Schema::new(out_fields))
 }
