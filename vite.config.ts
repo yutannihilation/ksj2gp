@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [wasm()],
   worker: {
     format: "es",
-    plugins: [wasm()],
+    plugins: () => [wasm()],
   },
   base: "/ksj2gp",
 });
