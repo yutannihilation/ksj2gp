@@ -7,6 +7,11 @@ onmessage = async (event) => {
 
   const opfsRoot = await navigator.storage.getDirectory();
 
+  const outputFileHandle = await opfsRoot.getFileHandle("tmp.geoparquet", {
+    create: true,
+  });
+  const outputFile = await outputFileHandle.createSyncAccessHandle();
+
   // TODO: use random file names
   const shp = await newSyncAccessHandle(opfsRoot, "tmp.shp");
   const dbf = await newSyncAccessHandle(opfsRoot, "tmp.dbf");
@@ -14,12 +19,15 @@ onmessage = async (event) => {
 
   const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
-  list_files(file, intermediate_files);
+  list_files(file, intermediate_files, outputFile);
 
   // TODO: can this be done automatically?
+  outputFile.close();
   shp.close();
   dbf.close();
   shx.close();
+
+  postMessage({ file: outputFileHandle });
 };
 
 const newSyncAccessHandle = async (

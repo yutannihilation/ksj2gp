@@ -614,11 +614,13 @@ dependencies = [
 name = "ksj2gp"
 version = "0.1.0"
 dependencies = [
+ "arrow-schema",
  "dbase",
  "encoding_rs",
  "geo-traits",
  "geo-types",
  "geoparquet",
+ "parquet",
  "shapefile",
  "wasm-bindgen",
  "web-sys",

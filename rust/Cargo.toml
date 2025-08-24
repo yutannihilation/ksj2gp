@@ -32,6 +32,8 @@ web-sys = { version = "0.3", features = [
 # since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
 dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
 encoding_rs = "0.8.35"
+arrow-schema = "56.0.0"
+parquet = { version = "56.0.0", default-features = false }
 
 [patch.crates-io]
 dbase = { git = "https://github.com/tmontaigu/dbase-rs" }

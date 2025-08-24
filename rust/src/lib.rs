@@ -1,5 +1,8 @@
-use dbase::encoding::EncodingRs;
+use dbase::{FieldInfo, FieldType, encoding::EncodingRs};
+use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptions};
+use parquet::arrow::ArrowWriter;
 use shapefile::{Reader, ShapeReader};
+use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
@@ -38,6 +41,7 @@ impl IntermediateFiles {
 pub fn list_files(
     zip_file: web_sys::File,
     intermediate_files: IntermediateFiles,
+    output_file: web_sys::FileSystemSyncAccessHandle,
 ) -> Result<(), JsValue> {
     let reader = UserLocalFile::new(zip_file);
     let mut zip = reader.new_zip_reader()?;
@@ -51,7 +55,9 @@ pub fn list_files(
     let mut dbf_file_opfs = OpfsFile::new(intermediate_files.dbf);
     zip.copy_dbf_to(&mut dbf_file_opfs)?;
 
-    let shape_reader =
+    let output_file_opfs = OpfsFile::new(output_file);
+
+    let shapefile_reader =
         ShapeReader::with_shx(shp_file_opfs, shx_file_opfs).map_err(|e| -> JsValue {
             format!("Got an error on Reading .shp and .shx files: {e:?}").into()
         })?;
@@ -62,7 +68,16 @@ pub fn list_files(
     )
     .map_err(|e| -> JsValue { format!("Got an error on Reading a .dbf file: {e:?}").into() })?;
 
-    let mut reader = Reader::new(shape_reader, dbase_reader);
+    let dbf_fields = dbase_reader.fields().to_vec();
+    let schema = infer_schema(&dbf_fields);
+    let geometry_type = shapefile_reader.header().shape_type;
+
+    let mut reader = Reader::new(shapefile_reader, dbase_reader);
+
+    let options = GeoParquetWriterOptions::default();
+    let mut gpq_encoder = GeoParquetRecordBatchEncoder::try_new(&schema, &options).unwrap();
+    let mut parquet_writer =
+        ArrowWriter::try_new(output_file_opfs, gpq_encoder.target_schema(), None).unwrap();
 
     for result in reader.iter_shapes_and_records().take(10) {
         let (shape, record) = result.unwrap();
@@ -72,7 +87,54 @@ pub fn list_files(
         for (name, value) in record {
             web_sys::console::log_1(&format!("\t{}: {:?}, ", name, value).into());
         }
+
+        // TODO
+        // let encoded_batch = gpq_encoder.encode_record_batch(&batch).unwrap();
+        // parquet_writer.write(&encoded_batch).unwrap();
     }
 
+    let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
+    parquet_writer.append_key_value_metadata(kv_metadata);
+    parquet_writer.finish().unwrap();
+
     Ok(())
+}
+
+// This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
+//
+// https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
+fn infer_schema(fields: &[FieldInfo]) -> arrow_schema::SchemaRef {
+    let mut out_fields = Vec::with_capacity(fields.len());
+
+    for field in fields {
+        let name = field.name().to_string();
+        let field = match field.field_type() {
+            FieldType::Numeric | FieldType::Double | FieldType::Currency => {
+                arrow_schema::Field::new(name, arrow_schema::DataType::Float64, true)
+            }
+            FieldType::Character | FieldType::Memo => {
+                arrow_schema::Field::new(name, arrow_schema::DataType::Utf8, true)
+            }
+            FieldType::Float => {
+                arrow_schema::Field::new(name, arrow_schema::DataType::Float32, true)
+            }
+            FieldType::Integer => {
+                arrow_schema::Field::new(name, arrow_schema::DataType::Int32, true)
+            }
+            FieldType::Logical => {
+                arrow_schema::Field::new(name, arrow_schema::DataType::Boolean, true)
+            }
+            FieldType::Date => arrow_schema::Field::new(name, arrow_schema::DataType::Date32, true),
+            FieldType::DateTime => arrow_schema::Field::new(
+                name,
+                // The dbase DateTime only stores data at second precision, but we currently build
+                // millisecond arrays, because that's our existing code path
+                arrow_schema::DataType::Timestamp(arrow_schema::TimeUnit::Millisecond, None),
+                true,
+            ),
+        };
+        out_fields.push(Arc::new(field));
+    }
+
+    Arc::new(arrow_schema::Schema::new(out_fields))
 }

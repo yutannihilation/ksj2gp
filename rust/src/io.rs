@@ -83,6 +83,11 @@ pub struct OpfsFile {
     offset: FileSystemReadWriteOptions,
 }
 
+// Note: FileSystemSyncAccessHandle is not Send in a strict sense, but this is
+// required for ArrowWriter. Probably marking as Send won't be a problem as
+// long as the program is executed on a single thread, but I'm not fully sure...
+unsafe impl std::marker::Send for OpfsFile {}
+
 impl OpfsFile {
     pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Self {
         Self {
