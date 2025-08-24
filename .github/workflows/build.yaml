@@ -49,7 +49,9 @@ jobs:
           workspaces: "./rust -> ./rust/target"
 
       - name: Install Rust toolchain
-        run: rustup show
+        run: |
+          cd rust
+          rustup show
 
       - name: Install wasm-bindgen CLI
         run: |
