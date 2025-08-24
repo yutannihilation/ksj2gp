@@ -53,9 +53,7 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Install wasm-bindgen CLI
-        run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-          cargo binstall wasm-bindgen-cli
+        run: cargo install wasm-bindgen-cli
 
       - name: Compile Rust crate into WebAssembly
         run: |
@@ -63,8 +61,7 @@ jobs:
           cargo build --release
           cd ..
 
-          # For some reason, this is not on PATH when re-installed...?
-          ~/.cargo/bin/wasm-bindgen \
+          wasm-bindgen \
             --out-dir ./npm \
             --typescript \
             --target bundler \
