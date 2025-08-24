@@ -63,7 +63,8 @@ jobs:
           cargo build --release
           cd ..
 
-          wasm-bindgen \
+          # For some reason, this is not on PATH when re-installed...?
+          ~/.cargo/bin/wasm-bindgen \
             --out-dir ./npm \
             --typescript \
             --target bundler \
