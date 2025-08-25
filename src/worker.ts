@@ -7,7 +7,7 @@ onmessage = async (event) => {
 
   const opfsRoot = await navigator.storage.getDirectory();
 
-  const outputFileHandle = await opfsRoot.getFileHandle("tmp.geoparquet", {
+  const outputFileHandle = await opfsRoot.getFileHandle("tmp.parquet", {
     create: true,
   });
   const outputFile = await outputFileHandle.createSyncAccessHandle();
