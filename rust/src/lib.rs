@@ -74,12 +74,13 @@ pub fn list_files(
 
     let dbf_fields = dbase_reader.fields().to_vec();
     let geometry_type = shapefile_reader.header().shape_type;
-    let schema = infer_schema(&dbf_fields, geometry_type);
+    let fields_info = infer_schema(&dbf_fields, geometry_type);
+    let schema_ref = fields_info.schema_ref.clone();
 
-    for f in &schema.non_geo_fields {
+    for f in &fields_info.non_geo_fields {
         web_sys::console::log_1(&format!("field: {f:?}").into());
     }
-    web_sys::console::log_1(&format!("geometry: {:?}", &schema.geo_arrow_type).into());
+    web_sys::console::log_1(&format!("geometry: {:?}", &fields_info.geo_arrow_type).into());
 
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
@@ -88,8 +89,8 @@ pub fn list_files(
         .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::GeoArrow)
         .set_generate_covering(true)
         .build();
-    let mut gpq_encoder = GeoParquetRecordBatchEncoder::try_new(&schema.schema_ref, &options)
-        .map_err(|e| -> JsValue {
+    let mut gpq_encoder =
+        GeoParquetRecordBatchEncoder::try_new(&schema_ref, &options).map_err(|e| -> JsValue {
             format!("Got an error on creating GeoParquetRecordBatchEncoder: {e:?}").into()
         })?;
 
@@ -99,14 +100,26 @@ pub fn list_files(
         )?;
 
     const CHUNK_SIZE: usize = 10;
-    let mut builders = schema.create_builders(CHUNK_SIZE);
+    let mut builders = fields_info.create_builders(CHUNK_SIZE);
 
     web_sys::console::log_1(&"pushing records".into());
 
-    for result in reader.iter_shapes_and_records().take(CHUNK_SIZE) {
-        let (shape, record) = result.unwrap();
+    // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
+    // the order. So, this column names vector is needed to ensure the consistent
+    // order with the schema.
+    let (_last, fields_except_geometry) = schema_ref.fields().split_last().unwrap();
+    let field_names: Vec<String> = fields_except_geometry
+        .iter()
+        .map(|f| f.name().to_string())
+        .collect();
 
-        for (i, (_name, value)) in record.into_iter().enumerate() {
+    for result in reader.iter_shapes_and_records().take(CHUNK_SIZE) {
+        let (shape, mut record) = result.unwrap();
+
+        for (i, field_name) in field_names.iter().enumerate() {
+            let value = record
+                .remove(field_name)
+                .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
             builders.builders[i].push(value);
         }
 
@@ -118,7 +131,6 @@ pub fn list_files(
 
     web_sys::console::log_1(&"pushed records".into());
 
-    let schema_ref = schema.schema_ref.clone();
     let batch = arrow_array::RecordBatch::try_new(schema_ref, builders.finish()).map_err(
         |e| -> JsValue { format!("Got an error on creating a RecordBatch: {e:?}").into() },
     )?;
@@ -165,7 +177,7 @@ enum NonGeoArrayBuilder {
 
 impl NonGeoArrayBuilder {
     fn push(&mut self, value: FieldValue) {
-        web_sys::console::log_1(&format!("pushing field: {value:?} to {self:?}").into());
+        // web_sys::console::log_1(&format!("pushing field: {value:?} to {self:?}").into());
 
         match (self, value) {
             (NonGeoArrayBuilder::Float64(primitive_builder), FieldValue::Numeric(v)) => {
