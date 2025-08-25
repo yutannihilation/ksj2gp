@@ -1,7 +1,7 @@
+use arrow_array::builder::ArrayBuilder;
 use dbase::{FieldInfo, FieldType, encoding::EncodingRs};
 use geoarrow_schema::{
     Dimension, GeoArrowType, MultiLineStringType, MultiPointType, MultiPolygonType, PointType,
-    PolygonType,
 };
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use parquet::arrow::ArrowWriter;
@@ -76,9 +76,10 @@ pub fn list_files(
     let geometry_type = shapefile_reader.header().shape_type;
     let schema = infer_schema(&dbf_fields, geometry_type);
 
-    for f in schema.fields() {
+    for f in schema.non_geo_fields {
         web_sys::console::log_1(&format!("field: {f:?}").into());
     }
+    web_sys::console::log_1(&format!("geometry: {:?}", &schema.geo_arrow_type).into());
 
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
@@ -87,8 +88,8 @@ pub fn list_files(
         .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::GeoArrow)
         .set_generate_covering(true)
         .build();
-    let mut gpq_encoder =
-        GeoParquetRecordBatchEncoder::try_new(&schema, &options).map_err(|e| -> JsValue {
+    let mut gpq_encoder = GeoParquetRecordBatchEncoder::try_new(&schema.schema_ref, &options)
+        .map_err(|e| -> JsValue {
             format!("Got an error on creating GeoParquetRecordBatchEncoder: {e:?}").into()
         })?;
 
@@ -120,14 +121,96 @@ pub fn list_files(
     Ok(())
 }
 
+struct FieldsWithGeo {
+    schema_ref: arrow_schema::SchemaRef,
+    non_geo_fields: Vec<Arc<arrow_schema::Field>>,
+    geo_arrow_type: geoarrow_schema::GeoArrowType,
+}
+
+enum NonGeoArrayBuilder {
+    // PrimitiveArray
+    Float64(arrow_array::builder::Float64Builder),
+    Float32(arrow_array::builder::Float32Builder),
+    Int32(arrow_array::builder::Int32Builder),
+    Boolean(arrow_array::builder::BooleanBuilder),
+    // Non-primitives
+    Utf8(arrow_array::builder::StringBuilder),
+    Date32(arrow_array::builder::Date32Builder),
+    // TODO
+    // Timestamp(arrow_array::builder::TimestampMillisecondBuilder)
+}
+
+enum GeoArrayBuilder {
+    Point(geoarrow_array::builder::PointBuilder),
+    MultiPoint(geoarrow_array::builder::MultiPointBuilder),
+    MultiLineString(geoarrow_array::builder::MultiLineStringBuilder),
+    MultiPolygon(geoarrow_array::builder::MultiPolygonBuilder),
+}
+
+struct ArrayBuilderWithGeo {
+    builders: Vec<NonGeoArrayBuilder>,
+    geo_builder: GeoArrayBuilder,
+}
+
+impl FieldsWithGeo {
+    fn create_builders(&self, capacity: usize) -> ArrayBuilderWithGeo {
+        let builders: Vec<NonGeoArrayBuilder> = self
+            .non_geo_fields
+            .iter()
+            .map(|f| match f.data_type() {
+                arrow_schema::DataType::Float64 => NonGeoArrayBuilder::Float64(
+                    arrow_array::builder::Float64Builder::with_capacity(capacity),
+                ),
+                arrow_schema::DataType::Float32 => NonGeoArrayBuilder::Float32(
+                    arrow_array::builder::Float32Builder::with_capacity(capacity),
+                ),
+                arrow_schema::DataType::Int32 => NonGeoArrayBuilder::Int32(
+                    arrow_array::builder::Int32Builder::with_capacity(capacity),
+                ),
+
+                arrow_schema::DataType::Boolean => NonGeoArrayBuilder::Boolean(
+                    arrow_array::builder::BooleanBuilder::with_capacity(capacity),
+                ),
+                arrow_schema::DataType::Utf8 => NonGeoArrayBuilder::Utf8(
+                    // TODO: not sure what's the best value to multiply for data_capacity
+                    arrow_array::builder::StringBuilder::with_capacity(capacity, capacity * 8),
+                ),
+                arrow_schema::DataType::Date32 => NonGeoArrayBuilder::Date32(
+                    arrow_array::builder::Date32Builder::with_capacity(capacity),
+                ),
+                // arrow_schema::DataType::Timestamp(time_unit, _) => todo!(),
+                _ => unreachable!(),
+            })
+            .collect();
+
+        let geo_builder = match &self.geo_arrow_type {
+            GeoArrowType::Point(geom_type) => GeoArrayBuilder::Point(
+                geoarrow_array::builder::PointBuilder::with_capacity(geom_type.clone(), capacity),
+            ),
+            GeoArrowType::MultiPoint(geom_type) => GeoArrayBuilder::MultiPoint(
+                geoarrow_array::builder::MultiPointBuilder::new(geom_type.clone()),
+            ),
+            GeoArrowType::MultiLineString(geom_type) => GeoArrayBuilder::MultiLineString(
+                geoarrow_array::builder::MultiLineStringBuilder::new(geom_type.clone()),
+            ),
+            GeoArrowType::MultiPolygon(geom_type) => GeoArrayBuilder::MultiPolygon(
+                geoarrow_array::builder::MultiPolygonBuilder::new(geom_type.clone()),
+            ),
+            _ => unreachable!(),
+        };
+
+        ArrayBuilderWithGeo {
+            builders,
+            geo_builder,
+        }
+    }
+}
+
 // This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
 //
 // https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
-fn infer_schema(
-    fields: &[FieldInfo],
-    geometry_type: shapefile::ShapeType,
-) -> arrow_schema::SchemaRef {
-    let mut out_fields = Vec::with_capacity(fields.len());
+fn infer_schema(fields: &[FieldInfo], geometry_type: shapefile::ShapeType) -> FieldsWithGeo {
+    let mut non_geo_fields = Vec::with_capacity(fields.len());
 
     for field in fields {
         let name = field.name().to_string();
@@ -148,18 +231,20 @@ fn infer_schema(
                 arrow_schema::Field::new(name, arrow_schema::DataType::Boolean, true)
             }
             FieldType::Date => arrow_schema::Field::new(name, arrow_schema::DataType::Date32, true),
-            FieldType::DateTime => arrow_schema::Field::new(
-                name,
-                // The dbase DateTime only stores data at second precision, but we currently build
-                // millisecond arrays, because that's our existing code path
-                arrow_schema::DataType::Timestamp(arrow_schema::TimeUnit::Millisecond, None),
-                true,
-            ),
+            // TODO
+            FieldType::DateTime => unimplemented!(),
+            // FieldType::DateTime => arrow_schema::Field::new(
+            //     name,
+            //     // The dbase DateTime only stores data at second precision, but we currently build
+            //     // millisecond arrays, because that's our existing code path
+            //     arrow_schema::DataType::Timestamp(arrow_schema::TimeUnit::Millisecond, None),
+            //     true,
+            // ),
         };
-        out_fields.push(Arc::new(field));
+        non_geo_fields.push(Arc::new(field));
     }
 
-    let geometry_field = match geometry_type {
+    let geo_arrow_type = match geometry_type {
         shapefile::ShapeType::NullShape => unimplemented!(),
 
         shapefile::ShapeType::Point => {
@@ -199,7 +284,13 @@ fn infer_schema(
         shapefile::ShapeType::Multipatch => unimplemented!(),
     };
 
-    out_fields.push(Arc::new(geometry_field.to_field("geometry", true)));
+    let mut fields = non_geo_fields.clone();
+    fields.push(Arc::new(geo_arrow_type.to_field("geometry", true)));
+    let schema_ref = Arc::new(arrow_schema::Schema::new(fields));
 
-    Arc::new(arrow_schema::Schema::new(out_fields))
+    FieldsWithGeo {
+        schema_ref,
+        non_geo_fields,
+        geo_arrow_type,
+    }
 }
