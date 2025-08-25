@@ -1,5 +1,5 @@
-use arrow_array::builder::ArrayBuilder;
-use dbase::{FieldInfo, FieldType, encoding::EncodingRs};
+use dbase::{FieldInfo, FieldType, FieldValue, encoding::EncodingRs};
+use geoarrow_array::GeoArrowArray;
 use geoarrow_schema::{
     Dimension, GeoArrowType, MultiLineStringType, MultiPointType, MultiPolygonType, PointType,
 };
@@ -76,7 +76,7 @@ pub fn list_files(
     let geometry_type = shapefile_reader.header().shape_type;
     let schema = infer_schema(&dbf_fields, geometry_type);
 
-    for f in schema.non_geo_fields {
+    for f in &schema.non_geo_fields {
         web_sys::console::log_1(&format!("field: {f:?}").into());
     }
     web_sys::console::log_1(&format!("geometry: {:?}", &schema.geo_arrow_type).into());
@@ -98,19 +98,41 @@ pub fn list_files(
             |e| -> JsValue { format!("Got an error on creating ArrowWriter {e:?}").into() },
         )?;
 
-    for result in reader.iter_shapes_and_records().take(10) {
-        let (shape, record) = result.unwrap();
-        let geometry = geo_types::Geometry::<f64>::try_from(shape);
+    const CHUNK_SIZE: usize = 10;
+    let mut builders = schema.create_builders(CHUNK_SIZE);
 
-        web_sys::console::log_1(&format!("Shape: {geometry:?}, records: ").into());
-        for (name, value) in record {
-            web_sys::console::log_1(&format!("\t{}: {:?}, ", name, value).into());
+    web_sys::console::log_1(&"pushing records".into());
+
+    for result in reader.iter_shapes_and_records().take(CHUNK_SIZE) {
+        let (shape, record) = result.unwrap();
+
+        for (i, (_name, value)) in record.into_iter().enumerate() {
+            builders.builders[i].push(value);
         }
 
-        // TODO
-        // let encoded_batch = gpq_encoder.encode_record_batch(&batch).unwrap();
-        // parquet_writer.write(&encoded_batch).unwrap();
+        let geometry = geo_types::Geometry::<f64>::try_from(shape).map_err(|e| -> JsValue {
+            format!("Got an error on converting shape to geometry: {e:?}").into()
+        })?;
+        builders.geo_builder.push(geometry)?;
     }
+
+    web_sys::console::log_1(&"pushed records".into());
+
+    let schema_ref = schema.schema_ref.clone();
+    let batch = arrow_array::RecordBatch::try_new(schema_ref, builders.finish()).map_err(
+        |e| -> JsValue { format!("Got an error on creating a RecordBatch: {e:?}").into() },
+    )?;
+    let encoded_batch = gpq_encoder
+        .encode_record_batch(&batch)
+        .map_err(|e| -> JsValue { format!("Failed to encode_record_batch(): {e:?}").into() })?;
+
+    web_sys::console::log_1(&"writing geoparquet".into());
+
+    parquet_writer
+        .write(&encoded_batch)
+        .map_err(|e| -> JsValue { format!("Failed to write() on parquet writer: {e:?}").into() })?;
+
+    web_sys::console::log_1(&"writing geoparquet metadat".into());
 
     let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
     parquet_writer.append_key_value_metadata(kv_metadata);
@@ -127,6 +149,7 @@ struct FieldsWithGeo {
     geo_arrow_type: geoarrow_schema::GeoArrowType,
 }
 
+#[derive(Debug)]
 enum NonGeoArrayBuilder {
     // PrimitiveArray
     Float64(arrow_array::builder::Float64Builder),
@@ -140,11 +163,129 @@ enum NonGeoArrayBuilder {
     // Timestamp(arrow_array::builder::TimestampMillisecondBuilder)
 }
 
+impl NonGeoArrayBuilder {
+    fn push(&mut self, value: FieldValue) {
+        web_sys::console::log_1(&format!("pushing field: {value:?} to {self:?}").into());
+
+        match (self, value) {
+            (NonGeoArrayBuilder::Float64(primitive_builder), FieldValue::Numeric(v)) => {
+                if let Some(v) = v {
+                    primitive_builder.append_value(v);
+                } else {
+                    primitive_builder.append_null();
+                }
+            }
+            (
+                NonGeoArrayBuilder::Float64(primitive_builder),
+                FieldValue::Double(v) | FieldValue::Currency(v),
+            ) => {
+                primitive_builder.append_value(v);
+            }
+
+            (NonGeoArrayBuilder::Float32(primitive_builder), FieldValue::Float(v)) => {
+                if let Some(v) = v {
+                    primitive_builder.append_value(v);
+                } else {
+                    primitive_builder.append_null();
+                }
+            }
+            (NonGeoArrayBuilder::Int32(primitive_builder), FieldValue::Integer(v)) => {
+                primitive_builder.append_value(v);
+            }
+            (NonGeoArrayBuilder::Boolean(boolean_builder), FieldValue::Logical(v)) => {
+                if let Some(v) = v {
+                    boolean_builder.append_value(v);
+                } else {
+                    boolean_builder.append_null();
+                }
+            }
+            (NonGeoArrayBuilder::Utf8(generic_byte_builder), FieldValue::Character(v)) => {
+                if let Some(v) = v {
+                    generic_byte_builder.append_value(v);
+                } else {
+                    generic_byte_builder.append_null();
+                }
+            }
+            (NonGeoArrayBuilder::Utf8(generic_byte_builder), FieldValue::Memo(v)) => {
+                generic_byte_builder.append_value(v);
+            }
+            (NonGeoArrayBuilder::Date32(primitive_builder), FieldValue::Date(v)) => {
+                if let Some(v) = v {
+                    primitive_builder.append_value(v.to_unix_days());
+                } else {
+                    primitive_builder.append_null();
+                }
+            }
+            // type mismatch means something is wrong...
+            (_, _) => unreachable!(),
+        }
+    }
+
+    fn finish(&mut self) -> arrow_array::ArrayRef {
+        // Note: primitive_builder implements its own finish() that returns
+        // PrimitiveArray. So, in order to make it return ArrayRef, it needs
+        // to be the qualified form...
+        match self {
+            NonGeoArrayBuilder::Float64(primitive_builder) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
+            NonGeoArrayBuilder::Float32(primitive_builder) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
+            NonGeoArrayBuilder::Int32(primitive_builder) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
+            NonGeoArrayBuilder::Boolean(primitive_builder) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
+            NonGeoArrayBuilder::Utf8(primitive_builder) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
+            NonGeoArrayBuilder::Date32(primitive_builder) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
+        }
+    }
+}
+
 enum GeoArrayBuilder {
     Point(geoarrow_array::builder::PointBuilder),
     MultiPoint(geoarrow_array::builder::MultiPointBuilder),
     MultiLineString(geoarrow_array::builder::MultiLineStringBuilder),
     MultiPolygon(geoarrow_array::builder::MultiPolygonBuilder),
+}
+
+impl GeoArrayBuilder {
+    fn push(&mut self, geometry: geo_types::Geometry<f64>) -> Result<(), JsValue> {
+        let result = match self {
+            GeoArrayBuilder::Point(geom_builder) => geom_builder.push_geometry(Some(&geometry)),
+            GeoArrayBuilder::MultiPoint(geom_builder) => {
+                geom_builder.push_geometry(Some(&geometry))
+            }
+            GeoArrayBuilder::MultiLineString(geom_builder) => {
+                geom_builder.push_geometry(Some(&geometry))
+            }
+            GeoArrayBuilder::MultiPolygon(geom_builder) => {
+                geom_builder.push_geometry(Some(&geometry))
+            }
+        };
+        match result {
+            Ok(t) => Ok(t),
+            Err(e) => Err(format!("Got an error on pushing geometry: {e:?}").into()),
+        }
+    }
+
+    // TODO: why geoarrow's finish() consumes self??
+    fn finish(self) -> arrow_array::ArrayRef {
+        match self {
+            GeoArrayBuilder::Point(geom_builder) => geom_builder.finish().into_array_ref(),
+            GeoArrayBuilder::MultiPoint(geom_builder) => geom_builder.finish().into_array_ref(),
+            GeoArrayBuilder::MultiLineString(geom_builder) => {
+                geom_builder.finish().into_array_ref()
+            }
+            GeoArrayBuilder::MultiPolygon(geom_builder) => geom_builder.finish().into_array_ref(),
+        }
+    }
 }
 
 struct ArrayBuilderWithGeo {
@@ -154,6 +295,8 @@ struct ArrayBuilderWithGeo {
 
 impl FieldsWithGeo {
     fn create_builders(&self, capacity: usize) -> ArrayBuilderWithGeo {
+        web_sys::console::log_1(&"creating builders".into());
+
         let builders: Vec<NonGeoArrayBuilder> = self
             .non_geo_fields
             .iter()
@@ -183,6 +326,8 @@ impl FieldsWithGeo {
             })
             .collect();
 
+        web_sys::console::log_1(&"created builders".into());
+
         let geo_builder = match &self.geo_arrow_type {
             GeoArrowType::Point(geom_type) => GeoArrayBuilder::Point(
                 geoarrow_array::builder::PointBuilder::with_capacity(geom_type.clone(), capacity),
@@ -199,10 +344,20 @@ impl FieldsWithGeo {
             _ => unreachable!(),
         };
 
+        web_sys::console::log_1(&"created geo_builders".into());
+
         ArrayBuilderWithGeo {
             builders,
             geo_builder,
         }
+    }
+}
+
+impl ArrayBuilderWithGeo {
+    fn finish(mut self) -> Vec<arrow_array::ArrayRef> {
+        let mut result: Vec<_> = self.builders.iter_mut().map(|b| b.finish()).collect();
+        result.push(self.geo_builder.finish());
+        result
     }
 }
 
