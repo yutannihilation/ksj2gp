@@ -2,6 +2,7 @@ use dbase::{FieldInfo, FieldType, FieldValue, encoding::EncodingRs};
 use geoarrow_array::{GeoArrowArray, builder::WkbBuilder};
 use geoarrow_schema::{GeoArrowType, WkbType};
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
+use itertools::Itertools;
 use parquet::arrow::ArrowWriter;
 use shapefile::{Reader, ShapeReader};
 use std::sync::Arc;
@@ -100,9 +101,6 @@ pub fn list_files(
             |e| -> JsValue { format!("Got an error on creating ArrowWriter {e:?}").into() },
         )?;
 
-    const CHUNK_SIZE: usize = 10;
-    let mut builders = fields_info.create_builders(CHUNK_SIZE);
-
     web_sys::console::log_1(&"pushing records".into());
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
@@ -114,42 +112,54 @@ pub fn list_files(
         .map(|f| f.name().to_string())
         .collect();
 
-    for result in reader.iter_shapes_and_records().take(CHUNK_SIZE) {
-        let (shape, mut record) = result.unwrap();
+    const CHUNK_SIZE: usize = 2048;
+    for chunk in &reader.iter_shapes_and_records().chunks(CHUNK_SIZE) {
+        let mut builders = fields_info.create_builders(CHUNK_SIZE);
 
-        for (i, field_name) in field_names.iter().enumerate() {
-            let value = record
-                .remove(field_name)
-                .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
-            builders.builders[i].push(value);
+        for result in chunk {
+            let (shape, mut record) = result.unwrap();
+
+            for (i, field_name) in field_names.iter().enumerate() {
+                let value = record
+                    .remove(field_name)
+                    .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
+                builders.builders[i].push(value);
+            }
+
+            let geometry = geo_types::Geometry::<f64>::try_from(shape).map_err(|e| -> JsValue {
+                format!("Got an error on converting shape to geometry: {e:?}").into()
+            })?;
+            builders
+                .geo_builder
+                .push_geometry(Some(&geometry))
+                .map_err(|e| -> JsValue {
+                    format!("Got an error on pushing a geometry {geometry:?} to WkbBuilder: {e:?}")
+                        .into()
+                })?;
         }
 
-        let geometry = geo_types::Geometry::<f64>::try_from(shape).map_err(|e| -> JsValue {
-            format!("Got an error on converting shape to geometry: {e:?}").into()
-        })?;
-        builders
-            .geo_builder
-            .push_geometry(Some(&geometry))
+        web_sys::console::log_1(&"pushed records".into());
+
+        let batch = arrow_array::RecordBatch::try_new(schema_ref.clone(), builders.finish())
             .map_err(|e| -> JsValue {
-                format!("Got an error on pushing a geometry {geometry:?} to WkbBuilder: {e:?}")
-                    .into()
+                format!("Got an error on creating a RecordBatch: {e:?}").into()
             })?;
+        let encoded_batch = gpq_encoder
+            .encode_record_batch(&batch)
+            .map_err(|e| -> JsValue { format!("Failed to encode_record_batch(): {e:?}").into() })?;
+
+        web_sys::console::log_1(&"writing geoparquet".into());
+
+        parquet_writer
+            .write(&encoded_batch)
+            .map_err(|e| -> JsValue {
+                format!("Failed to write() on parquet writer: {e:?}").into()
+            })?;
+
+        parquet_writer.flush().map_err(|e| -> JsValue {
+            format!("Failed to flush() on parquet writer: {e:?}").into()
+        })?;
     }
-
-    web_sys::console::log_1(&"pushed records".into());
-
-    let batch = arrow_array::RecordBatch::try_new(schema_ref, builders.finish()).map_err(
-        |e| -> JsValue { format!("Got an error on creating a RecordBatch: {e:?}").into() },
-    )?;
-    let encoded_batch = gpq_encoder
-        .encode_record_batch(&batch)
-        .map_err(|e| -> JsValue { format!("Failed to encode_record_batch(): {e:?}").into() })?;
-
-    web_sys::console::log_1(&"writing geoparquet".into());
-
-    parquet_writer
-        .write(&encoded_batch)
-        .map_err(|e| -> JsValue { format!("Failed to write() on parquet writer: {e:?}").into() })?;
 
     web_sys::console::log_1(&"writing geoparquet metadata".into());
 

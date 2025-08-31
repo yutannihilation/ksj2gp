@@ -9,17 +9,29 @@ crate-type = ["cdylib"]
 [dependencies]
 geo-traits = "0.3.0"
 geo-types = "0.7.17"
+
+# GeoParquet
+parquet = { version = "56.0.0", default-features = false }
 geoparquet = "0.5.0"
 
-# for compatibility with geo-traits 0.3
+# GeoArrow-related
+arrow-array = "56.1.0"
+arrow-schema = "56.0.0"
+geoarrow-schema = "0.5.0"
+geoarrow-array = "0.5.0"
+
+# Shapefile
+# Note: for compatibility with geo-traits 0.3, the Git version is required at the moment
 shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.0", features = [
     "encoding_rs",
     "geo-traits",
     "geo-types",
 ] }
+# since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
+dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
+encoding_rs = "0.8.35"
 
-zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
-
+# WASM
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
     "File",
@@ -29,14 +41,11 @@ web-sys = { version = "0.3", features = [
     "console",
 ] }
 
-# since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
-dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
-encoding_rs = "0.8.35"
-arrow-schema = "56.0.0"
-parquet = { version = "56.0.0", default-features = false }
-geoarrow-schema = "0.5.0"
-geoarrow-array = "0.5.0"
-arrow-array = "56.1.0"
+# Read Zip file
+zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
+
+# for .chunk()
+itertools = "0.14.0"
 
 [patch.crates-io]
 dbase = { git = "https://github.com/tmontaigu/dbase-rs" }
