@@ -89,11 +89,14 @@ pub struct OpfsFile {
 unsafe impl std::marker::Send for OpfsFile {}
 
 impl OpfsFile {
-    pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Self {
-        Self {
+    pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Result<Self, JsValue> {
+        // currently, the same name of file is repeatedly used, so it needs to be truncated first.
+        file.truncate_with_u32(0)?;
+
+        Ok(Self {
             file,
             offset: FileSystemReadWriteOptions::new(),
-        }
+        })
     }
 }
 

@@ -1,8 +1,6 @@
 use dbase::{FieldInfo, FieldType, FieldValue, encoding::EncodingRs};
-use geoarrow_array::GeoArrowArray;
-use geoarrow_schema::{
-    Dimension, GeoArrowType, MultiLineStringType, MultiPointType, MultiPolygonType, PointType,
-};
+use geoarrow_array::{GeoArrowArray, builder::WkbBuilder};
+use geoarrow_schema::{GeoArrowType, WkbType};
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use parquet::arrow::ArrowWriter;
 use shapefile::{Reader, ShapeReader};
@@ -50,16 +48,16 @@ pub fn list_files(
     let reader = UserLocalFile::new(zip_file);
     let mut zip = reader.new_zip_reader()?;
 
-    let mut shp_file_opfs = OpfsFile::new(intermediate_files.shp);
+    let mut shp_file_opfs = OpfsFile::new(intermediate_files.shp)?;
     zip.copy_shp_to(&mut shp_file_opfs)?;
 
-    let mut shx_file_opfs = OpfsFile::new(intermediate_files.shx);
+    let mut shx_file_opfs = OpfsFile::new(intermediate_files.shx)?;
     zip.copy_shx_to(&mut shx_file_opfs)?;
 
-    let mut dbf_file_opfs = OpfsFile::new(intermediate_files.dbf);
+    let mut dbf_file_opfs = OpfsFile::new(intermediate_files.dbf)?;
     zip.copy_dbf_to(&mut dbf_file_opfs)?;
 
-    let output_file_opfs = OpfsFile::new(output_file);
+    let output_file_opfs = OpfsFile::new(output_file)?;
 
     let shapefile_reader =
         ShapeReader::with_shx(shp_file_opfs, shx_file_opfs).map_err(|e| -> JsValue {
@@ -73,8 +71,7 @@ pub fn list_files(
     .map_err(|e| -> JsValue { format!("Got an error on Reading a .dbf file: {e:?}").into() })?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
-    let geometry_type = shapefile_reader.header().shape_type;
-    let fields_info = infer_schema(&dbf_fields, geometry_type);
+    let fields_info = infer_schema(&dbf_fields);
     let schema_ref = fields_info.schema_ref.clone();
 
     for f in &fields_info.non_geo_fields {
@@ -86,7 +83,7 @@ pub fn list_files(
 
     let options = GeoParquetWriterOptionsBuilder::default()
         // .set_crs_transform(Box::new(todo!())) // TODO
-        .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::GeoArrow)
+        .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::WKB)
         // .set_column_encoding(
         //     "geometry".to_string(),
         //     geoparquet::writer::GeoParquetWriterEncoding::GeoArrow,
@@ -130,7 +127,13 @@ pub fn list_files(
         let geometry = geo_types::Geometry::<f64>::try_from(shape).map_err(|e| -> JsValue {
             format!("Got an error on converting shape to geometry: {e:?}").into()
         })?;
-        builders.geo_builder.push(geometry)?;
+        builders
+            .geo_builder
+            .push_geometry(Some(&geometry))
+            .map_err(|e| -> JsValue {
+                format!("Got an error on pushing a geometry {geometry:?} to WkbBuilder: {e:?}")
+                    .into()
+            })?;
     }
 
     web_sys::console::log_1(&"pushed records".into());
@@ -148,7 +151,7 @@ pub fn list_files(
         .write(&encoded_batch)
         .map_err(|e| -> JsValue { format!("Failed to write() on parquet writer: {e:?}").into() })?;
 
-    web_sys::console::log_1(&"writing geoparquet metadat".into());
+    web_sys::console::log_1(&"writing geoparquet metadata".into());
 
     let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
     parquet_writer.append_key_value_metadata(kv_metadata);
@@ -264,48 +267,9 @@ impl NonGeoArrayBuilder {
     }
 }
 
-enum GeoArrayBuilder {
-    Point(geoarrow_array::builder::PointBuilder),
-    MultiPoint(geoarrow_array::builder::MultiPointBuilder),
-    MultiLineString(geoarrow_array::builder::MultiLineStringBuilder),
-    MultiPolygon(geoarrow_array::builder::MultiPolygonBuilder),
-}
-
-impl GeoArrayBuilder {
-    fn push(&mut self, geometry: geo_types::Geometry<f64>) -> Result<(), JsValue> {
-        let result = match self {
-            GeoArrayBuilder::Point(geom_builder) => geom_builder.push_geometry(Some(&geometry)),
-            GeoArrayBuilder::MultiPoint(geom_builder) => {
-                geom_builder.push_geometry(Some(&geometry))
-            }
-            GeoArrayBuilder::MultiLineString(geom_builder) => {
-                geom_builder.push_geometry(Some(&geometry))
-            }
-            GeoArrayBuilder::MultiPolygon(geom_builder) => {
-                geom_builder.push_geometry(Some(&geometry))
-            }
-        };
-        match result {
-            Ok(t) => Ok(t),
-            Err(e) => Err(format!("Got an error on pushing geometry: {e:?}").into()),
-        }
-    }
-
-    fn finish(self) -> arrow_array::ArrayRef {
-        match self {
-            GeoArrayBuilder::Point(geom_builder) => geom_builder.finish().into_array_ref(),
-            GeoArrayBuilder::MultiPoint(geom_builder) => geom_builder.finish().into_array_ref(),
-            GeoArrayBuilder::MultiLineString(geom_builder) => {
-                geom_builder.finish().into_array_ref()
-            }
-            GeoArrayBuilder::MultiPolygon(geom_builder) => geom_builder.finish().into_array_ref(),
-        }
-    }
-}
-
 struct ArrayBuilderWithGeo {
     builders: Vec<NonGeoArrayBuilder>,
-    geo_builder: GeoArrayBuilder,
+    geo_builder: WkbBuilder<i32>,
 }
 
 impl FieldsWithGeo {
@@ -343,21 +307,7 @@ impl FieldsWithGeo {
 
         web_sys::console::log_1(&"created builders".into());
 
-        let geo_builder = match &self.geo_arrow_type {
-            GeoArrowType::Point(geom_type) => GeoArrayBuilder::Point(
-                geoarrow_array::builder::PointBuilder::with_capacity(geom_type.clone(), capacity),
-            ),
-            GeoArrowType::MultiPoint(geom_type) => GeoArrayBuilder::MultiPoint(
-                geoarrow_array::builder::MultiPointBuilder::new(geom_type.clone()),
-            ),
-            GeoArrowType::MultiLineString(geom_type) => GeoArrayBuilder::MultiLineString(
-                geoarrow_array::builder::MultiLineStringBuilder::new(geom_type.clone()),
-            ),
-            GeoArrowType::MultiPolygon(geom_type) => GeoArrayBuilder::MultiPolygon(
-                geoarrow_array::builder::MultiPolygonBuilder::new(geom_type.clone()),
-            ),
-            _ => unreachable!(),
-        };
+        let geo_builder = WkbBuilder::new(WkbType::new(Default::default()));
 
         web_sys::console::log_1(&"created geo_builders".into());
 
@@ -371,7 +321,7 @@ impl FieldsWithGeo {
 impl ArrayBuilderWithGeo {
     fn finish(mut self) -> Vec<arrow_array::ArrayRef> {
         let mut result: Vec<_> = self.builders.iter_mut().map(|b| b.finish()).collect();
-        result.push(self.geo_builder.finish());
+        result.push(self.geo_builder.finish().into_array_ref());
         result
     }
 }
@@ -379,7 +329,7 @@ impl ArrayBuilderWithGeo {
 // This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
 //
 // https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
-fn infer_schema(fields: &[FieldInfo], geometry_type: shapefile::ShapeType) -> FieldsWithGeo {
+fn infer_schema(fields: &[FieldInfo]) -> FieldsWithGeo {
     let mut non_geo_fields = Vec::with_capacity(fields.len());
 
     for field in fields {
@@ -414,45 +364,7 @@ fn infer_schema(fields: &[FieldInfo], geometry_type: shapefile::ShapeType) -> Fi
         non_geo_fields.push(Arc::new(field));
     }
 
-    let geo_arrow_type = match geometry_type {
-        shapefile::ShapeType::NullShape => unimplemented!(),
-
-        shapefile::ShapeType::Point => {
-            GeoArrowType::Point(PointType::new(Dimension::XY, Default::default()))
-        }
-        shapefile::ShapeType::PointZ => {
-            GeoArrowType::Point(PointType::new(Dimension::XYZ, Default::default()))
-        }
-
-        shapefile::ShapeType::Polyline => GeoArrowType::MultiLineString(MultiLineStringType::new(
-            Dimension::XY,
-            Default::default(),
-        )),
-        shapefile::ShapeType::PolylineZ => GeoArrowType::MultiLineString(MultiLineStringType::new(
-            Dimension::XYZ,
-            Default::default(),
-        )),
-
-        shapefile::ShapeType::Polygon => {
-            GeoArrowType::MultiPolygon(MultiPolygonType::new(Dimension::XY, Default::default()))
-        }
-        shapefile::ShapeType::PolygonZ => {
-            GeoArrowType::MultiPolygon(MultiPolygonType::new(Dimension::XYZ, Default::default()))
-        }
-
-        shapefile::ShapeType::Multipoint => {
-            GeoArrowType::MultiPoint(MultiPointType::new(Dimension::XY, Default::default()))
-        }
-        shapefile::ShapeType::MultipointZ => {
-            GeoArrowType::MultiPoint(MultiPointType::new(Dimension::XY, Default::default()))
-        }
-
-        shapefile::ShapeType::PointM => unimplemented!(),
-        shapefile::ShapeType::PolylineM => unimplemented!(),
-        shapefile::ShapeType::PolygonM => unimplemented!(),
-        shapefile::ShapeType::MultipointM => unimplemented!(),
-        shapefile::ShapeType::Multipatch => unimplemented!(),
-    };
+    let geo_arrow_type = GeoArrowType::Wkb(WkbType::new(Default::default()));
 
     let mut fields = non_geo_fields.clone();
     fields.push(Arc::new(geo_arrow_type.to_field("geometry", true)));
