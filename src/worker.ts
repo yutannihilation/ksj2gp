@@ -3,13 +3,11 @@ import { list_files, IntermediateFiles } from "ksj2gp";
 console.log("Worker is loaded");
 
 onmessage = async (event) => {
-  const { file } = event.data;
+  const { file } = event.data as { file: File };
 
   const opfsRoot = await navigator.storage.getDirectory();
 
-  const outputFileHandle = await opfsRoot.getFileHandle("tmp.parquet", {
-    create: true,
-  });
+  const outputFileHandle = await opfsRoot.getFileHandle("tmp.parquet", { create: true });
   const outputFile = await outputFileHandle.createSyncAccessHandle();
 
   // TODO: use random file names
@@ -19,15 +17,20 @@ onmessage = async (event) => {
 
   const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
-  list_files(file, intermediate_files, outputFile);
-
-  // TODO: can this be done automatically?
-  outputFile.close();
-  shp.close();
-  dbf.close();
-  shx.close();
-
-  postMessage(outputFileHandle);
+  try {
+    list_files(file, intermediate_files, outputFile);
+    // Success: send handle in a stable envelope
+    postMessage({ ok: true, handle: outputFileHandle });
+  } catch (e: any) {
+    const msg = typeof e === "string" ? e : e?.message ?? "unknown error";
+    postMessage({ ok: false, error: msg });
+  } finally {
+    // Ensure handles are closed even on failure
+    try { outputFile.close(); } catch {}
+    try { shp.close(); } catch {}
+    try { dbf.close(); } catch {}
+    try { shx.close(); } catch {}
+  }
 };
 
 const newSyncAccessHandle = async (

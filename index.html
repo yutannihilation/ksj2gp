@@ -3,16 +3,102 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>KSJ → GeoParquet</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121933;
+        --panel-2: #0f172a;
+        --text: #e5e7eb;
+        --muted: #9aa3b2;
+        --brand: #60a5fa;
+        --brand-2: #3b82f6;
+        --border: #243354;
+        --accent: #1f2a44;
+        --ok: #34d399;
+        --warn: #f59e0b;
+        --err: #f87171;
+      }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: linear-gradient(180deg, var(--bg), #0a0f1d 40%, #0a1226 100%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
+      .container {
+        max-width: 760px;
+        margin: 6vh auto;
+        padding: 24px;
+      }
+      header h1 { font-size: 28px; margin: 0 0 8px; }
+      header p { margin: 0 0 20px; color: var(--muted); }
+
+      .card {
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      }
+
+      .dropzone {
+        border: 2px dashed #32446e;
+        border-radius: 14px;
+        padding: 28px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(31,41,67,0.35), rgba(18,25,51,0.35));
+        cursor: pointer;
+        transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+      }
+      .dropzone:hover { transform: translateY(-1px); }
+      .dropzone.dragover {
+        border-color: var(--brand);
+        background: linear-gradient(180deg, rgba(37, 99, 235, 0.12), rgba(18,25,51,0.35));
+      }
+      .dz-icon { font-size: 38px; margin-bottom: 8px; }
+      .dz-text { color: var(--muted); margin-bottom: 12px; }
+
+      .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+      .btn {
+        background: linear-gradient(180deg, var(--brand), var(--brand-2));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(37,99,235,0.35);
+      }
+      .btn[disabled] { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+
+      .status { margin-top: 14px; color: var(--muted); font-size: 14px; }
+      .status.ok { color: var(--ok); }
+      .status.warn { color: var(--warn); }
+      .status.err { color: var(--err); }
+      .file-info { margin-top: 6px; font-size: 13px; color: #c9d2df; }
+    </style>
   </head>
   <body>
-    <div id="wrapper">
-      <p>
-        <label for="file_picker">
-          国土数値情報からダウンロードした ZIP ファイルを指定してください
-        </label>
-        <input type="file" id="file_picker" name="file_picker" />
-      </p>
+    <div class="container">
+      <header>
+        <h1>KSJ → GeoParquet</h1>
+        <p>国土数値情報の ZIP をドラッグ＆ドロップ、または選択してください。</p>
+      </header>
+
+      <div class="card">
+        <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-label="ファイルのドラッグ＆ドロップ領域">
+          <div class="dz-icon">📦</div>
+          <div class="dz-text"><strong>ここに ZIP をドロップ</strong>、または下のボタンをクリック</div>
+          <div class="row">
+            <button id="browse_btn" type="button" class="btn">ZIPを選択</button>
+            <input type="file" id="file_picker" name="file_picker" accept=".zip" hidden />
+          </div>
+        </div>
+
+        
+      </div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>
