@@ -87,6 +87,10 @@ pub fn list_files(
     let options = GeoParquetWriterOptionsBuilder::default()
         // .set_crs_transform(Box::new(todo!())) // TODO
         .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::GeoArrow)
+        // .set_column_encoding(
+        //     "geometry".to_string(),
+        //     geoparquet::writer::GeoParquetWriterEncoding::GeoArrow,
+        // )
         .set_generate_covering(true)
         .build();
     let mut gpq_encoder =
@@ -287,7 +291,6 @@ impl GeoArrayBuilder {
         }
     }
 
-    // TODO: why geoarrow's finish() consumes self??
     fn finish(self) -> arrow_array::ArrayRef {
         match self {
             GeoArrayBuilder::Point(geom_builder) => geom_builder.finish().into_array_ref(),
