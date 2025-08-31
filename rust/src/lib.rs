@@ -101,7 +101,7 @@ pub fn list_files(
             |e| -> JsValue { format!("Got an error on creating ArrowWriter {e:?}").into() },
         )?;
 
-    web_sys::console::log_1(&"pushing records".into());
+    web_sys::console::log_1(&"writing geoparquet".into());
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
     // the order. So, this column names vector is needed to ensure the consistent
@@ -138,8 +138,6 @@ pub fn list_files(
                 })?;
         }
 
-        web_sys::console::log_1(&"pushed records".into());
-
         let batch = arrow_array::RecordBatch::try_new(schema_ref.clone(), builders.finish())
             .map_err(|e| -> JsValue {
                 format!("Got an error on creating a RecordBatch: {e:?}").into()
@@ -147,8 +145,6 @@ pub fn list_files(
         let encoded_batch = gpq_encoder
             .encode_record_batch(&batch)
             .map_err(|e| -> JsValue { format!("Failed to encode_record_batch(): {e:?}").into() })?;
-
-        web_sys::console::log_1(&"writing geoparquet".into());
 
         parquet_writer
             .write(&encoded_batch)
