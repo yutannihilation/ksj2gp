@@ -7,7 +7,9 @@ onmessage = async (event) => {
 
   const opfsRoot = await navigator.storage.getDirectory();
 
-  const outputFileHandle = await opfsRoot.getFileHandle("tmp.parquet", { create: true });
+  const outputFileHandle = await opfsRoot.getFileHandle("tmp.parquet", {
+    create: true,
+  });
   const outputFile = await outputFileHandle.createSyncAccessHandle();
 
   // TODO: use random file names
@@ -26,10 +28,10 @@ onmessage = async (event) => {
     postMessage({ ok: false, error: msg });
   } finally {
     // Ensure handles are closed even on failure
-    try { outputFile.close(); } catch {}
-    try { shp.close(); } catch {}
-    try { dbf.close(); } catch {}
-    try { shx.close(); } catch {}
+    outputFile.close();
+    shp.close();
+    dbf.close();
+    shx.close();
   }
 };
 
