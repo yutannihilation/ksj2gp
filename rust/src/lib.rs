@@ -316,7 +316,11 @@ impl FieldsWithGeo {
 
         web_sys::console::log_1(&"created builders".into());
 
-        let geo_builder = WkbBuilder::new(WkbType::new(Default::default()));
+        // Use the same GeoArrow type (with CRS metadata) as in the schema
+        let geo_builder = match &self.geoarrow_type {
+            GeoArrowType::Wkb(wkb_type) => WkbBuilder::new(wkb_type.clone()),
+            _ => unreachable!(),
+        };
 
         web_sys::console::log_1(&"created geo_builders".into());
 
