@@ -3,13 +3,13 @@
 > [!WARNING]
 > めっちゃ開発中です。
 
-◆◆◆◆◆◆◆◆◆  
-◆ 　[ウェブサイト](https://yutannihilation.github.io/ksj2gp/)　 ◆  
-◆◆◆◆◆◆◆◆◆
+＞＞＞ [ウェブサイト](https://yutannihilation.github.io/ksj2gp/) ＜＜＜
 
 ## これは何？
 
 ブラウザに国土数値情報の ZIP ファイルを投げつけると、いい感じに GeoParquet に変換するやつです。
+
+実用性はあまりないですが（ふつうに DuckDB Wasm を使った方がいい）、pure Rust & WebAssembly でどこまでやれるかの実験のためです。
 
 ## やりたいこと
 
