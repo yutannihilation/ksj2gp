@@ -78,7 +78,7 @@ pub fn list_files(
     for f in &fields_info.non_geo_fields {
         web_sys::console::log_1(&format!("field: {f:?}").into());
     }
-    web_sys::console::log_1(&format!("geometry: {:?}", &fields_info.geo_arrow_type).into());
+    web_sys::console::log_1(&format!("geometry: {:?}", &fields_info.geoarrow_type).into());
 
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
@@ -171,7 +171,7 @@ pub fn list_files(
 struct FieldsWithGeo {
     schema_ref: arrow_schema::SchemaRef,
     non_geo_fields: Vec<Arc<arrow_schema::Field>>,
-    geo_arrow_type: geoarrow_schema::GeoArrowType,
+    geoarrow_type: geoarrow_schema::GeoArrowType,
 }
 
 #[derive(Debug)]
@@ -374,15 +374,15 @@ fn infer_schema(fields: &[FieldInfo]) -> FieldsWithGeo {
         non_geo_fields.push(Arc::new(field));
     }
 
-    let geo_arrow_type = GeoArrowType::Wkb(WkbType::new(Default::default()));
+    let geoarrow_type = GeoArrowType::Wkb(WkbType::new(Default::default()));
 
     let mut fields = non_geo_fields.clone();
-    fields.push(Arc::new(geo_arrow_type.to_field("geometry", true)));
+    fields.push(Arc::new(geoarrow_type.to_field("geometry", true)));
     let schema_ref = Arc::new(arrow_schema::Schema::new(fields));
 
     FieldsWithGeo {
         schema_ref,
         non_geo_fields,
-        geo_arrow_type,
+        geoarrow_type,
     }
 }
