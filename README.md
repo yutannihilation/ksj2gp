@@ -20,6 +20,7 @@
 - [ ] Shift_JIS 以外の文字コード
 - [ ] 複数の `.shp` ファイルを含む場合に選べるようにする
 - [ ] メタデータをいい感じに紐づける（[過去のデータ](https://github.com/yutannihilation/kokudosuuchi-metadata)）
+- [ ] GeoParquet v1.1 を選べるようにする
 - [ ] GeoPackage ファイルの出力（turso 待ち？）
 
 ## ビルド
