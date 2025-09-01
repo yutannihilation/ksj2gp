@@ -31,6 +31,10 @@ shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.
 dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
 encoding_rs = "0.8.35"
 
+# TODO: CRS conversion
+# proj4rs = { version = "0.1.8", default-features = false }
+# proj4wkt = { version = "0.1.0", default-features = false }
+
 # WASM
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
@@ -46,6 +50,7 @@ zip = { version = "4.5.0", default-features = false, features = ["deflate"] }
 
 # for .chunk()
 itertools = "0.14.0"
+serde_json = "1.0.143"
 
 [patch.crates-io]
 dbase = { git = "https://github.com/tmontaigu/dbase-rs" }

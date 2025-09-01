@@ -1,4 +1,4 @@
-use std::io::Seek as _;
+use std::io::{Read, Seek as _};
 
 use wasm_bindgen::JsValue;
 use zip::ZipArchive;
@@ -10,7 +10,7 @@ pub struct ZipReader {
     shp_filename: String,
     dbf_filename: String,
     shx_filename: String,
-    // prj: String // TODO
+    prj_filename: String,
 }
 
 impl ZipReader {
@@ -20,6 +20,7 @@ impl ZipReader {
         let shp_filename = find_specific_ext(&filenames, ".shp")?;
         let dbf_filename = find_specific_ext(&filenames, ".dbf")?;
         let shx_filename = find_specific_ext(&filenames, ".shx")?;
+        let prj_filename = find_specific_ext(&filenames, ".prj")?;
 
         drop(filenames);
 
@@ -28,6 +29,7 @@ impl ZipReader {
             shp_filename,
             dbf_filename,
             shx_filename,
+            prj_filename,
         })
     }
 
@@ -54,6 +56,16 @@ impl ZipReader {
 
     pub fn copy_shx_to(&mut self, dst: &mut OpfsFile) -> Result<(), JsValue> {
         self.copy_to(dst, &self.shx_filename.clone())
+    }
+
+    pub fn read_prj(&mut self) -> Result<String, JsValue> {
+        let mut reader = self.zip.by_name(&self.prj_filename).unwrap();
+        let mut wkt = String::new();
+        reader.read_to_string(&mut wkt).map_err(|e| -> JsValue {
+            format!("Got an error while reading .prj file: {e:?}").into()
+        })?;
+
+        Ok(wkt)
     }
 }
 

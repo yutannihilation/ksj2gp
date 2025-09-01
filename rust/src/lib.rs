@@ -9,8 +9,12 @@ use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
-use crate::io::{OpfsFile, UserLocalFile};
+use crate::{
+    crs::wild_guess_from_esri_wkt_to_projjson,
+    io::{OpfsFile, UserLocalFile},
+};
 
+mod crs;
 mod io;
 mod zip;
 
@@ -25,7 +29,6 @@ pub struct IntermediateFiles {
     shp: web_sys::FileSystemSyncAccessHandle,
     dbf: web_sys::FileSystemSyncAccessHandle,
     shx: web_sys::FileSystemSyncAccessHandle,
-    // prj: web_sys::FileSystemSyncAccessHandle, // TODO
 }
 
 #[wasm_bindgen]
@@ -62,8 +65,18 @@ pub fn list_files(
 
     let shapefile_reader =
         ShapeReader::with_shx(shp_file_opfs, shx_file_opfs).map_err(|e| -> JsValue {
-            format!("Got an error on Reading .shp and .shx files: {e:?}").into()
+            format!("Got an error on reading .shp and .shx files: {e:?}").into()
         })?;
+
+    // Note: .prj file is writtien in WKT1, not WKT2. But, it seems it's mostly
+    // backward-compatible. I'm not fully sure, but this should work...
+    //
+    // cf. https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems#Backward_compatibility
+    let wkt = zip.read_prj()?;
+    let projjson = wild_guess_from_esri_wkt_to_projjson(&wkt)?;
+    let crs = geoarrow_schema::Crs::from_projjson(projjson);
+
+    web_sys::console::log_1(&format!("CRS: {crs:?}").into());
 
     let dbase_reader = shapefile::dbase::Reader::new_with_encoding(
         dbf_file_opfs,
@@ -72,7 +85,7 @@ pub fn list_files(
     .map_err(|e| -> JsValue { format!("Got an error on Reading a .dbf file: {e:?}").into() })?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
-    let fields_info = infer_schema(&dbf_fields);
+    let fields_info = construct_schema(&dbf_fields, crs);
     let schema_ref = fields_info.schema_ref.clone();
 
     for f in &fields_info.non_geo_fields {
@@ -83,12 +96,7 @@ pub fn list_files(
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
     let options = GeoParquetWriterOptionsBuilder::default()
-        // .set_crs_transform(Box::new(todo!())) // TODO
         .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::WKB)
-        // .set_column_encoding(
-        //     "geometry".to_string(),
-        //     geoparquet::writer::GeoParquetWriterEncoding::GeoArrow,
-        // )
         .set_generate_covering(true)
         .build();
     let mut gpq_encoder =
@@ -339,7 +347,7 @@ impl ArrayBuilderWithGeo {
 // This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
 //
 // https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
-fn infer_schema(fields: &[FieldInfo]) -> FieldsWithGeo {
+fn construct_schema(fields: &[FieldInfo], crs: geoarrow_schema::Crs) -> FieldsWithGeo {
     let mut non_geo_fields = Vec::with_capacity(fields.len());
 
     for field in fields {
@@ -374,10 +382,12 @@ fn infer_schema(fields: &[FieldInfo]) -> FieldsWithGeo {
         non_geo_fields.push(Arc::new(field));
     }
 
-    let geoarrow_type = GeoArrowType::Wkb(WkbType::new(Default::default()));
+    let geoarrow_metadata = geoarrow_schema::Metadata::new(crs, None);
+    let geoarrow_type = GeoArrowType::Wkb(WkbType::new(geoarrow_metadata.into()));
+    let geo_field = geoarrow_type.to_field("geometry", true);
 
     let mut fields = non_geo_fields.clone();
-    fields.push(Arc::new(geoarrow_type.to_field("geometry", true)));
+    fields.push(Arc::new(geo_field));
     let schema_ref = Arc::new(arrow_schema::Schema::new(fields));
 
     FieldsWithGeo {
