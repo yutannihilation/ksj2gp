@@ -18,6 +18,9 @@ mod crs;
 mod io;
 mod zip;
 
+// Number of rows to process at once
+const CHUNK_SIZE: usize = 2048;
+
 thread_local! {
     static FILE_READER_SYNC: FileReaderSync = FileReaderSync::new().unwrap();
 }
@@ -68,10 +71,6 @@ pub fn convert_shp_to_geoparquet(
             format!("Got an error on reading .shp and .shx files: {e:?}").into()
         })?;
 
-    // Note: .prj file is writtien in WKT1, not WKT2. But, it seems it's mostly
-    // backward-compatible. I'm not fully sure, but this should work...
-    //
-    // cf. https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems#Backward_compatibility
     let wkt = zip.read_prj()?;
     let projjson = wild_guess_from_esri_wkt_to_projjson(&wkt)?;
     let crs = geoarrow_schema::Crs::from_projjson(projjson);
@@ -120,7 +119,6 @@ pub fn convert_shp_to_geoparquet(
         .map(|f| f.name().to_string())
         .collect();
 
-    const CHUNK_SIZE: usize = 2048;
     for chunk in &reader.iter_shapes_and_records().chunks(CHUNK_SIZE) {
         let mut builders = fields_info.create_builders(CHUNK_SIZE);
 
