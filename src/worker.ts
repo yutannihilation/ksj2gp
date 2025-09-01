@@ -1,4 +1,4 @@
-import { list_files, IntermediateFiles } from "ksj2gp";
+import { convert_shp_to_geoparquet, IntermediateFiles } from "ksj2gp";
 
 console.log("Worker is loaded");
 
@@ -20,7 +20,7 @@ onmessage = async (event) => {
   const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
   try {
-    list_files(file, intermediate_files, outputFile);
+    convert_shp_to_geoparquet(file, intermediate_files, outputFile);
     // Success: send handle in a stable envelope
     postMessage({ ok: true, handle: outputFileHandle });
   } catch (e: any) {

@@ -1,22 +1,24 @@
-use dbase::{FieldInfo, FieldType, FieldValue, encoding::EncodingRs};
-use geoarrow_array::{GeoArrowArray, builder::WkbBuilder};
-use geoarrow_schema::{GeoArrowType, WkbType};
+use dbase::encoding::EncodingRs;
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
 use parquet::arrow::ArrowWriter;
 use shapefile::{Reader, ShapeReader};
-use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
 use crate::{
+    builder::construct_schema,
     crs::wild_guess_from_esri_wkt_to_projjson,
     io::{OpfsFile, UserLocalFile},
 };
 
+mod builder;
 mod crs;
 mod io;
 mod zip;
+
+// Number of rows to process at once
+const CHUNK_SIZE: usize = 2048;
 
 thread_local! {
     static FILE_READER_SYNC: FileReaderSync = FileReaderSync::new().unwrap();
@@ -44,7 +46,7 @@ impl IntermediateFiles {
 }
 
 #[wasm_bindgen]
-pub fn list_files(
+pub fn convert_shp_to_geoparquet(
     zip_file: web_sys::File,
     intermediate_files: IntermediateFiles,
     output_file: web_sys::FileSystemSyncAccessHandle,
@@ -68,10 +70,6 @@ pub fn list_files(
             format!("Got an error on reading .shp and .shx files: {e:?}").into()
         })?;
 
-    // Note: .prj file is writtien in WKT1, not WKT2. But, it seems it's mostly
-    // backward-compatible. I'm not fully sure, but this should work...
-    //
-    // cf. https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems#Backward_compatibility
     let wkt = zip.read_prj()?;
     let projjson = wild_guess_from_esri_wkt_to_projjson(&wkt)?;
     let crs = geoarrow_schema::Crs::from_projjson(projjson);
@@ -120,7 +118,6 @@ pub fn list_files(
         .map(|f| f.name().to_string())
         .collect();
 
-    const CHUNK_SIZE: usize = 2048;
     for chunk in &reader.iter_shapes_and_records().chunks(CHUNK_SIZE) {
         let mut builders = fields_info.create_builders(CHUNK_SIZE);
 
@@ -174,225 +171,4 @@ pub fn list_files(
         .map_err(|e| -> JsValue { format!("Failed to finish parquet_writer: {e:?}").into() })?;
 
     Ok(())
-}
-
-struct FieldsWithGeo {
-    schema_ref: arrow_schema::SchemaRef,
-    non_geo_fields: Vec<Arc<arrow_schema::Field>>,
-    geoarrow_type: geoarrow_schema::GeoArrowType,
-}
-
-#[derive(Debug)]
-enum NonGeoArrayBuilder {
-    // PrimitiveArray
-    Float64(arrow_array::builder::Float64Builder),
-    Float32(arrow_array::builder::Float32Builder),
-    Int32(arrow_array::builder::Int32Builder),
-    Boolean(arrow_array::builder::BooleanBuilder),
-    // Non-primitives
-    Utf8(arrow_array::builder::StringBuilder),
-    Date32(arrow_array::builder::Date32Builder),
-    // TODO
-    // Timestamp(arrow_array::builder::TimestampMillisecondBuilder)
-}
-
-impl NonGeoArrayBuilder {
-    fn push(&mut self, value: FieldValue) {
-        // web_sys::console::log_1(&format!("pushing field: {value:?} to {self:?}").into());
-
-        match (self, value) {
-            (NonGeoArrayBuilder::Float64(primitive_builder), FieldValue::Numeric(v)) => {
-                if let Some(v) = v {
-                    primitive_builder.append_value(v);
-                } else {
-                    primitive_builder.append_null();
-                }
-            }
-            (
-                NonGeoArrayBuilder::Float64(primitive_builder),
-                FieldValue::Double(v) | FieldValue::Currency(v),
-            ) => {
-                primitive_builder.append_value(v);
-            }
-
-            (NonGeoArrayBuilder::Float32(primitive_builder), FieldValue::Float(v)) => {
-                if let Some(v) = v {
-                    primitive_builder.append_value(v);
-                } else {
-                    primitive_builder.append_null();
-                }
-            }
-            (NonGeoArrayBuilder::Int32(primitive_builder), FieldValue::Integer(v)) => {
-                primitive_builder.append_value(v);
-            }
-            (NonGeoArrayBuilder::Boolean(boolean_builder), FieldValue::Logical(v)) => {
-                if let Some(v) = v {
-                    boolean_builder.append_value(v);
-                } else {
-                    boolean_builder.append_null();
-                }
-            }
-            (NonGeoArrayBuilder::Utf8(generic_byte_builder), FieldValue::Character(v)) => {
-                if let Some(v) = v {
-                    generic_byte_builder.append_value(v);
-                } else {
-                    generic_byte_builder.append_null();
-                }
-            }
-            (NonGeoArrayBuilder::Utf8(generic_byte_builder), FieldValue::Memo(v)) => {
-                generic_byte_builder.append_value(v);
-            }
-            (NonGeoArrayBuilder::Date32(primitive_builder), FieldValue::Date(v)) => {
-                if let Some(v) = v {
-                    primitive_builder.append_value(v.to_unix_days());
-                } else {
-                    primitive_builder.append_null();
-                }
-            }
-            // type mismatch means something is wrong...
-            (_, _) => unreachable!(),
-        }
-    }
-
-    fn finish(&mut self) -> arrow_array::ArrayRef {
-        // Note: primitive_builder implements its own finish() that returns
-        // PrimitiveArray. So, in order to make it return ArrayRef, it needs
-        // to be the qualified form...
-        match self {
-            NonGeoArrayBuilder::Float64(primitive_builder) => {
-                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
-            }
-            NonGeoArrayBuilder::Float32(primitive_builder) => {
-                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
-            }
-            NonGeoArrayBuilder::Int32(primitive_builder) => {
-                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
-            }
-            NonGeoArrayBuilder::Boolean(primitive_builder) => {
-                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
-            }
-            NonGeoArrayBuilder::Utf8(primitive_builder) => {
-                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
-            }
-            NonGeoArrayBuilder::Date32(primitive_builder) => {
-                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
-            }
-        }
-    }
-}
-
-struct ArrayBuilderWithGeo {
-    builders: Vec<NonGeoArrayBuilder>,
-    geo_builder: WkbBuilder<i32>,
-}
-
-impl FieldsWithGeo {
-    fn create_builders(&self, capacity: usize) -> ArrayBuilderWithGeo {
-        web_sys::console::log_1(&"creating builders".into());
-
-        let builders: Vec<NonGeoArrayBuilder> = self
-            .non_geo_fields
-            .iter()
-            .map(|f| match f.data_type() {
-                arrow_schema::DataType::Float64 => NonGeoArrayBuilder::Float64(
-                    arrow_array::builder::Float64Builder::with_capacity(capacity),
-                ),
-                arrow_schema::DataType::Float32 => NonGeoArrayBuilder::Float32(
-                    arrow_array::builder::Float32Builder::with_capacity(capacity),
-                ),
-                arrow_schema::DataType::Int32 => NonGeoArrayBuilder::Int32(
-                    arrow_array::builder::Int32Builder::with_capacity(capacity),
-                ),
-
-                arrow_schema::DataType::Boolean => NonGeoArrayBuilder::Boolean(
-                    arrow_array::builder::BooleanBuilder::with_capacity(capacity),
-                ),
-                arrow_schema::DataType::Utf8 => NonGeoArrayBuilder::Utf8(
-                    // TODO: not sure what's the best value to multiply for data_capacity
-                    arrow_array::builder::StringBuilder::with_capacity(capacity, capacity * 8),
-                ),
-                arrow_schema::DataType::Date32 => NonGeoArrayBuilder::Date32(
-                    arrow_array::builder::Date32Builder::with_capacity(capacity),
-                ),
-                // arrow_schema::DataType::Timestamp(time_unit, _) => todo!(),
-                _ => unreachable!(),
-            })
-            .collect();
-
-        web_sys::console::log_1(&"created builders".into());
-
-        // Use the same GeoArrow type (with CRS metadata) as in the schema
-        let geo_builder = match &self.geoarrow_type {
-            GeoArrowType::Wkb(wkb_type) => WkbBuilder::new(wkb_type.clone()),
-            _ => unreachable!(),
-        };
-
-        web_sys::console::log_1(&"created geo_builders".into());
-
-        ArrayBuilderWithGeo {
-            builders,
-            geo_builder,
-        }
-    }
-}
-
-impl ArrayBuilderWithGeo {
-    fn finish(mut self) -> Vec<arrow_array::ArrayRef> {
-        let mut result: Vec<_> = self.builders.iter_mut().map(|b| b.finish()).collect();
-        result.push(self.geo_builder.finish().into_array_ref());
-        result
-    }
-}
-
-// This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
-//
-// https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
-fn construct_schema(fields: &[FieldInfo], crs: geoarrow_schema::Crs) -> FieldsWithGeo {
-    let mut non_geo_fields = Vec::with_capacity(fields.len());
-
-    for field in fields {
-        let name = field.name().to_string();
-        let field = match field.field_type() {
-            FieldType::Numeric | FieldType::Double | FieldType::Currency => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Float64, true)
-            }
-            FieldType::Character | FieldType::Memo => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Utf8, true)
-            }
-            FieldType::Float => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Float32, true)
-            }
-            FieldType::Integer => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Int32, true)
-            }
-            FieldType::Logical => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Boolean, true)
-            }
-            FieldType::Date => arrow_schema::Field::new(name, arrow_schema::DataType::Date32, true),
-            // TODO
-            FieldType::DateTime => unimplemented!(),
-            // FieldType::DateTime => arrow_schema::Field::new(
-            //     name,
-            //     // The dbase DateTime only stores data at second precision, but we currently build
-            //     // millisecond arrays, because that's our existing code path
-            //     arrow_schema::DataType::Timestamp(arrow_schema::TimeUnit::Millisecond, None),
-            //     true,
-            // ),
-        };
-        non_geo_fields.push(Arc::new(field));
-    }
-
-    let geoarrow_metadata = geoarrow_schema::Metadata::new(crs, None);
-    let geoarrow_type = GeoArrowType::Wkb(WkbType::new(geoarrow_metadata.into()));
-    let geo_field = geoarrow_type.to_field("geometry", true);
-
-    let mut fields = non_geo_fields.clone();
-    fields.push(Arc::new(geo_field));
-    let schema_ref = Arc::new(arrow_schema::Schema::new(fields));
-
-    FieldsWithGeo {
-        schema_ref,
-        non_geo_fields,
-        geoarrow_type,
-    }
 }
