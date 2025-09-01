@@ -44,7 +44,7 @@ impl IntermediateFiles {
 }
 
 #[wasm_bindgen]
-pub fn list_files(
+pub fn convert_shp_to_geoparquet(
     zip_file: web_sys::File,
     intermediate_files: IntermediateFiles,
     output_file: web_sys::FileSystemSyncAccessHandle,
