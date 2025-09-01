@@ -641,6 +641,7 @@ dependencies = [
  "geoparquet",
  "itertools",
  "parquet",
+ "serde_json",
  "shapefile",
  "wasm-bindgen",
  "web-sys",

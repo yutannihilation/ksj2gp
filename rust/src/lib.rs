@@ -9,8 +9,12 @@ use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
-use crate::io::{OpfsFile, UserLocalFile};
+use crate::{
+    crs::wild_guess_from_esri_wkt_to_projjson,
+    io::{OpfsFile, UserLocalFile},
+};
 
+mod crs;
 mod io;
 mod zip;
 
@@ -69,7 +73,8 @@ pub fn list_files(
     //
     // cf. https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems#Backward_compatibility
     let wkt = zip.read_prj()?;
-    let crs = geoarrow_schema::Crs::from_wkt2_2019(wkt);
+    let projjson = wild_guess_from_esri_wkt_to_projjson(&wkt)?;
+    let crs = geoarrow_schema::Crs::from_projjson(projjson);
 
     web_sys::console::log_1(&format!("CRS: {crs:?}").into());
 
