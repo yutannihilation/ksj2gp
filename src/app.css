@@ -1,19 +1,22 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Lightweight custom utilities for this app */
 @layer utilities {
-  /* Hero background used on the main page */
-  .bg-hero {
-    background:
-      radial-gradient(1200px 400px at 20% -10%, #1b2550 0%, transparent 60%),
-      radial-gradient(900px 360px at 80% -20%, #0f7ec9 0%, transparent 60%),
-      #0b1020;
-  }
+	/* Hero background used on the main page */
+	.bg-hero {
+		background:
+			radial-gradient(1200px 400px at 20% -10%, #1b2550 0%, transparent 60%),
+			radial-gradient(900px 360px at 80% -20%, #0f7ec9 0%, transparent 60%), #0b1020;
+	}
 
-  /* Subtle glass effect for primary panel */
-  .glass-panel {
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    backdrop-filter: blur(6px);
-  }
+	/* Subtle glass effect for primary panel */
+	.glass-panel {
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+		backdrop-filter: blur(6px);
+	}
+
+	/* Aspect ratio helpers (keep Tailwind-first approach) */
+	.aspect-square {
+		aspect-ratio: 1 / 1;
+	}
 }
-
