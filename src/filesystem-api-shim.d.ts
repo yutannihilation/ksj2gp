@@ -5,19 +5,13 @@
 // cf. https://developer.mozilla.org/en-US/docs/Web/API/FileSystemSyncAccessHandle
 
 interface FileSystemSyncAccessHandle {
-  read(
-    buffer: ArrayBuffer | ArrayBufferView,
-    options?: { at?: number }
-  ): number;
-  write(
-    buffer: ArrayBuffer | ArrayBufferView,
-    options?: { at?: number }
-  ): number;
-  flush(): void;
-  close(): void;
-  getSize(): number;
+	read(buffer: ArrayBuffer | ArrayBufferView, options?: { at?: number }): number;
+	write(buffer: ArrayBuffer | ArrayBufferView, options?: { at?: number }): number;
+	flush(): void;
+	close(): void;
+	getSize(): number;
 }
 
 interface FileSystemFileHandle {
-  createSyncAccessHandle(): Promise<FileSystemSyncAccessHandle>;
+	createSyncAccessHandle(): Promise<FileSystemSyncAccessHandle>;
 }
