@@ -3,6 +3,7 @@
 	// Use Bits UI for a nicer error dialog
 	// Note: ensure `bits-ui` is installed locally
 	import { Dialog } from 'bits-ui';
+	import type { WorkerResponse } from '$lib/types';
 
 	let inputEl: HTMLInputElement;
 	let dragover = false;
@@ -18,32 +19,30 @@
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker.ts', import.meta.url), { type: 'module' });
 
-		worker.onmessage = async (event: MessageEvent) => {
-			const data: any = event.data;
+		worker.onmessage = async (event: MessageEvent<WorkerResponse>) => {
+			const data = event.data;
 
 			const finish = () => {
 				busy = false;
 			};
 
-			if (data && typeof data === 'object' && 'ready' in data && data.ready) {
+			if (data.ready) {
 				ready = true;
 				return;
 			}
 
-			if (data && typeof data === 'object' && 'error' in data) {
-				showError(String(data.error ?? '変換に失敗しました'));
+			if (data.error) {
+				showError(data.error);
 				finish();
 				return;
 			}
 
-			const fileHandle: any = data?.handle ?? data;
-			if (!fileHandle || typeof fileHandle.getFile !== 'function') {
-				showError('予期しない応答を受け取りました');
-				finish();
+			if (!data.handle) {
+				// TODO
 				return;
 			}
 
-			const file = await fileHandle.getFile();
+			const file = await data.handle.getFile();
 			const url = URL.createObjectURL(file);
 
 			const a = document.createElement('a');
@@ -143,13 +142,17 @@
 			on:dragover={onDragOver}
 			on:dragleave={onDragLeave}
 			on:drop={onDrop}
-			on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && pick()}
+			on:keydown={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					pick();
+				}
+			}}
 		>
 			{#if bigLoading}
 				<div
 					class="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 border-4 border-white/25 border-t-sky-400 rounded-full animate-spin"
 					aria-label="読み込み中"
-				/>
+				></div>
 			{:else}
 				<div class="text-8xl lg:text-9xl" aria-hidden="true">📦</div>
 			{/if}
