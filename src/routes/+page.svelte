@@ -101,16 +101,23 @@
   }
 </script>
 
-<div class="page">
-  <header class="header">
-    <h1>KSJ → GeoParquet</h1>
-    <p>国土数値情報の ZIP をドラッグ＆ドロップすると、GeoParquet に変換します。</p>
+<div class="min-h-dvh bg-hero text-indigo-50 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center">
+  <header class="text-center max-w-4xl mx-auto">
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">KSJ → GeoParquet</h1>
+    <p class="text-indigo-200/80 text-base sm:text-lg">国土数値情報の ZIP をドラッグ＆ドロップすると、GeoParquet に変換します。</p>
   </header>
 
-  <section class="panel">
+  <section class="max-w-5xl mx-auto glass-panel border border-slate-700/60 rounded-2xl p-10 sm:p-12 lg:p-14 shadow-[0_10px_30px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.06)]">
     <div
       id="dropzone"
-      class="dropzone {dragover ? 'dragover' : ''}"
+      class={
+        `relative grid place-items-center gap-5 w-full ` +
+        `min-h-[24rem] sm:min-h-[30rem] lg:min-h-[45vh] ` +
+        `p-14 sm:p-16 lg:p-20 ` +
+        `border-2 border-dashed border-blue-800/70 rounded-xl ` +
+        `bg-slate-900/60 outline-none transition ` +
+        `${dragover ? 'ring-4 ring-sky-400/35 border-sky-400/80 -translate-y-0.5' : ''}`
+      }
       role="button"
       tabindex="0"
       aria-label="ファイルのドラッグ＆ドロップ領域"
@@ -119,19 +126,26 @@
       on:drop={onDrop}
       on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && pick()}
     >
-      <div class="dz-icon" aria-hidden="true">📦</div>
-      <div class="dz-text"><strong>ここに ZIP をドロップ</strong><br />または下のボタンから選択</div>
+      <div class="text-8xl lg:text-9xl" aria-hidden="true">📦</div>
+      <div class="text-indigo-200/80 text-center leading-relaxed text-xl sm:text-2xl lg:text-3xl">
+        <strong>ここに ZIP をドロップ</strong><br />または下のボタンから選択
+      </div>
 
-      <div class="actions">
-        <button type="button" class="btn" on:click|stopPropagation={pick} disabled={busy}>
+      <div class="flex gap-2.5">
+        <button
+          type="button"
+          class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-6 py-3.5 text-lg sm:text-xl font-semibold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)] transition active:brightness-95 hover:brightness-105 disabled:opacity-60 disabled:cursor-not-allowed"
+          on:click|stopPropagation={pick}
+          disabled={busy}
+        >
           {busy ? '変換中…' : 'ZIP を選択'}
         </button>
         <input bind:this={inputEl} type="file" accept=".zip" hidden on:change={onInputChange} />
       </div>
 
       {#if busy}
-        <div class="busy">
-          <span class="spinner" aria-hidden="true"></span>
+        <div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
+          <span class="w-[18px] h-[18px] border-2 border-white/25 border-t-teal-400 rounded-full animate-spin" aria-hidden="true"></span>
           <span class="sr-only">処理中</span>
         </div>
       {/if}
@@ -140,150 +154,17 @@
 
   <!-- Bits UI: Error dialog -->
   <Dialog.Root bind:open={errorOpen}>
-    <Dialog.Content class="dialog">
-      <Dialog.Title class="dialog-title">エラーが発生しました</Dialog.Title>
-      <div class="dialog-body">{errorMessage}</div>
-      <div class="dialog-actions">
-        <Dialog.Close asChild>
-          <button class="btn">閉じる</button>
-        </Dialog.Close>
+    <Dialog.Content class="fixed inset-0 grid place-items-center p-4">
+      <div class="bg-slate-900 text-indigo-50 border border-slate-700 rounded-xl p-4 w-full max-w-lg shadow-2xl">
+        <Dialog.Title class="font-bold mb-1">エラーが発生しました</Dialog.Title>
+        <div class="text-indigo-200/80 mb-3">{errorMessage}</div>
+        <div class="flex justify-end">
+          <Dialog.Close asChild>
+            <button class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-semibold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]">閉じる</button>
+          </Dialog.Close>
+        </div>
       </div>
     </Dialog.Content>
-    <Dialog.Overlay class="overlay" />
+    <Dialog.Overlay class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
   </Dialog.Root>
 </div>
-
-<style>
-  :root {
-    --bg: #0b1020;
-    --panel: #121932;
-    --panel-border: #233055;
-    --text: #e7ecff;
-    --muted: #a9b5d6;
-    --accent: #6ea8ff;
-    --accent-900: #2a5bd4;
-    --success: #2dd4bf;
-    --ring: rgba(110, 168, 255, 0.35);
-  }
-
-  .page {
-    min-height: 100dvh;
-    background: radial-gradient(1200px 400px at 20% -10%, #1b2550 0%, transparent 60%),
-      radial-gradient(900px 360px at 80% -20%, #0f7ec9 0%, transparent 60%),
-      var(--bg);
-    color: var(--text);
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 24px;
-    padding: 32px 20px 48px;
-  }
-
-  .header {
-    text-align: center;
-    max-width: 860px;
-    margin: 0 auto;
-  }
-  .header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    margin: 0 0 6px;
-  }
-  .header p {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .panel {
-    max-width: 860px;
-    margin: 0 auto;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    border: 1px solid var(--panel-border);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.06);
-    backdrop-filter: blur(6px);
-  }
-
-  .dropzone {
-    position: relative;
-    display: grid;
-    place-items: center;
-    gap: 14px;
-    padding: 36px 18px;
-    border: 2px dashed #38508a;
-    border-radius: 14px;
-    background-color: rgba(10, 18, 40, 0.6);
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-  }
-  .dropzone.dragover {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 6px var(--ring);
-    transform: translateY(-1px);
-  }
-  .dz-icon { font-size: 42px; }
-  .dz-text { color: var(--muted); text-align: center; line-height: 1.5; }
-
-  .actions { display: flex; gap: 10px; }
-
-  .btn {
-    appearance: none;
-    border: 0;
-    border-radius: 10px;
-    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-900) 100%);
-    color: white;
-    padding: 10px 16px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(64, 149, 255, 0.35), inset 0 1px 0 rgba(255,255,255,0.35);
-    transition: transform 0.1s ease, filter 0.1s ease, opacity 0.1s ease;
-  }
-  .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); filter: brightness(0.98); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-  .busy {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.25);
-    border-top-color: var(--success);
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
-    white-space: nowrap; border: 0;
-  }
-
-  /* Bits UI dialog styling */
-  .overlay {
-    position: fixed; inset: 0; background: rgba(5,10,20,0.5);
-    backdrop-filter: blur(2px);
-  }
-  .dialog {
-    position: fixed; inset: 0; display: grid; place-items: center;
-  }
-  .dialog > * {
-    background: #10172a; color: var(--text); border: 1px solid var(--panel-border);
-    border-radius: 12px; padding: 18px; width: min(520px, calc(100% - 32px));
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  }
-  .dialog-title { font-weight: 700; margin-bottom: 6px; }
-  .dialog-body { color: var(--muted); margin-bottom: 12px; }
-  .dialog-actions { display: flex; justify-content: flex-end; }
-</style>
