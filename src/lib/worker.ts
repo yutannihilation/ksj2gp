@@ -57,5 +57,3 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 		shx.close();
 	}
 };
-
-// (moved above) newSyncAccessHandle

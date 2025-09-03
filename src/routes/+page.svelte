@@ -152,7 +152,7 @@
 				<div
 					class="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 border-4 border-white/25 border-t-sky-400 rounded-full animate-spin"
 					aria-label="読み込み中"
-				/>
+				></div>
 			{:else}
 				<div class="text-8xl lg:text-9xl" aria-hidden="true">📦</div>
 			{/if}
