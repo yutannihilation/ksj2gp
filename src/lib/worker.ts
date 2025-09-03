@@ -1,6 +1,9 @@
 import { convert_shp_to_geoparquet, IntermediateFiles } from 'ksj2gp';
 
 console.log('Worker is loaded');
+// Notify main thread that the worker bundle is ready to accept messages
+// This allows the UI to enable inputs only after initialization
+postMessage({ ready: true });
 
 onmessage = async (event) => {
 	const { file } = event.data as { file: File };
