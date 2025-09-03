@@ -1,9 +1,9 @@
 <script lang="ts">
-    import favicon from '$lib/assets/favicon.ico';
-    // Global styles (Tailwind entry and a couple custom utilities)
-    import '../app.css';
+	import favicon from '$lib/assets/favicon.ico';
+	// Global styles (Tailwind entry and a couple custom utilities)
+	import '../app.css';
 
-    let { children } = $props();
+	let { children } = $props();
 </script>
 
 <svelte:head>
