@@ -3,8 +3,6 @@ import { convert_shp_to_geoparquet, IntermediateFiles } from 'ksj2gp';
 console.log('Worker is loaded');
 
 onmessage = async (event) => {
-	console.log(event);
-
 	const { file } = event.data as { file: File };
 
 	const opfsRoot = await navigator.storage.getDirectory();
