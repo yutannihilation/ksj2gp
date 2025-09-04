@@ -5,6 +5,7 @@ use parquet::arrow::ArrowWriter;
 use shapefile::{Reader, ShapeReader};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
+use zip::ZipArchive;
 
 use crate::{
     builder::construct_schema,
@@ -15,7 +16,7 @@ use crate::{
 mod builder;
 mod crs;
 mod io;
-mod zip;
+mod zip_reader;
 
 // Number of rows to process at once
 const CHUNK_SIZE: usize = 2048;
@@ -43,6 +44,21 @@ impl IntermediateFiles {
     ) -> Self {
         Self { shp, dbf, shx }
     }
+}
+
+#[wasm_bindgen]
+pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, JsValue> {
+    let reader = UserLocalFile::new(zip_file);
+    let zip = ZipArchive::new(reader)
+        .map_err(|e| -> JsValue { format!("Failed to inspect the ZIP file: {e:?}").into() })?;
+
+    let shp_files: Vec<String> = zip
+        .file_names()
+        .filter(|path| path.ends_with(".shp"))
+        .map(|path| path.to_string())
+        .collect();
+
+    Ok(shp_files)
 }
 
 #[wasm_bindgen]

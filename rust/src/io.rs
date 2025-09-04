@@ -1,7 +1,7 @@
 use wasm_bindgen::JsValue;
 use web_sys::{FileReaderSync, FileSystemReadWriteOptions, js_sys::Uint8Array};
 
-use crate::zip::ZipReader;
+use crate::zip_reader::ZipReader;
 
 // Note: OnceLock cannot be used here.
 thread_local! {

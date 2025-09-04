@@ -1,4 +1,4 @@
-import { convert_shp_to_geoparquet, IntermediateFiles } from 'ksj2gp';
+import { convert_shp_to_geoparquet, IntermediateFiles, list_shp_files } from 'ksj2gp';
 import type { WorkerRequest, WorkerResponse } from './types';
 
 function postTypedMessage(message: WorkerResponse) {
@@ -20,8 +20,24 @@ async function newSyncAccessHandle(
 	return await fileHandle.createSyncAccessHandle();
 }
 
+console.log('Worker loaded');
+
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
-	const { file } = event.data;
+	const file = event.data.file;
+	let target_shp = event.data.target_shp;
+
+	if (!target_shp) {
+		const shp_files = list_shp_files(file);
+
+		if (shp_files.length == 0) {
+			// TODO: return error
+		} else if (shp_files.length == 1) {
+			target_shp = shp_files[0];
+		} else {
+			// TODO: return shp_files to the main thread and show popup to
+			// user, then postMessage to this web worker again with target_shp
+		}
+	}
 
 	const opfsRoot = await navigator.storage.getDirectory();
 
