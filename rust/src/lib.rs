@@ -64,11 +64,12 @@ pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, JsValue> {
 #[wasm_bindgen]
 pub fn convert_shp_to_geoparquet(
     zip_file: web_sys::File,
+    target_shp: &str,
     intermediate_files: IntermediateFiles,
     output_file: web_sys::FileSystemSyncAccessHandle,
 ) -> Result<(), JsValue> {
     let reader = UserLocalFile::new(zip_file);
-    let mut zip = reader.new_zip_reader()?;
+    let mut zip = reader.new_zip_reader(target_shp)?;
 
     let mut shp_file_opfs = OpfsFile::new(intermediate_files.shp)?;
     zip.copy_shp_to(&mut shp_file_opfs)?;

@@ -18,13 +18,13 @@ impl UserLocalFile {
         Self { file, offset: 0 }
     }
 
-    pub fn new_zip_reader(&self) -> Result<ZippedShapefileReader, JsValue> {
+    pub fn new_zip_reader(&self, target_shp: &str) -> Result<ZippedShapefileReader, JsValue> {
         let reader = Self {
             file: self.file.clone(),
             offset: 0,
         };
         match zip::ZipArchive::new(reader) {
-            Ok(zip) => ZippedShapefileReader::new(zip),
+            Ok(zip) => ZippedShapefileReader::new(zip, target_shp),
             Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),
         }
     }

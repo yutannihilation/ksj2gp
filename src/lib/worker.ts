@@ -30,12 +30,14 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 		const shp_files = list_shp_files(file);
 
 		if (shp_files.length == 0) {
-			// TODO: return error
+			postTypedMessage({ error: 'No .shp files found in the archive' });
+			return;
 		} else if (shp_files.length == 1) {
 			target_shp = shp_files[0];
 		} else {
-			// TODO: return shp_files to the main thread and show popup to
-			// user, then postMessage to this web worker again with target_shp
+			// Return available .shp files to the main thread so UI can prompt user
+			postTypedMessage({ shp_files });
+			return; // Wait for a follow-up message with target_shp
 		}
 	}
 
@@ -54,7 +56,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
 	try {
-		convert_shp_to_geoparquet(file, intermediate_files, outputFile);
+		convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
 		// Success: send handle in a stable envelope
 		postTypedMessage({ handle: outputFileHandle });
 	} catch (e: unknown) {
