@@ -1,7 +1,7 @@
 use wasm_bindgen::JsValue;
 use web_sys::{FileReaderSync, FileSystemReadWriteOptions, js_sys::Uint8Array};
 
-use crate::zip_reader::ZipReader;
+use crate::zip_reader::ZippedShapefileReader;
 
 // Note: OnceLock cannot be used here.
 thread_local! {
@@ -18,13 +18,13 @@ impl UserLocalFile {
         Self { file, offset: 0 }
     }
 
-    pub fn new_zip_reader(&self) -> Result<ZipReader, JsValue> {
+    pub fn new_zip_reader(&self) -> Result<ZippedShapefileReader, JsValue> {
         let reader = Self {
             file: self.file.clone(),
             offset: 0,
         };
         match zip::ZipArchive::new(reader) {
-            Ok(zip) => ZipReader::new(zip),
+            Ok(zip) => ZippedShapefileReader::new(zip),
             Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),
         }
     }

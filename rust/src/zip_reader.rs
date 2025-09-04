@@ -5,7 +5,7 @@ use zip::ZipArchive;
 
 use crate::io::{OpfsFile, UserLocalFile};
 
-pub struct ZipReader {
+pub struct ZippedShapefileReader {
     zip: ZipArchive<UserLocalFile>,
     shp_filename: String,
     dbf_filename: String,
@@ -13,7 +13,7 @@ pub struct ZipReader {
     prj_filename: String,
 }
 
-impl ZipReader {
+impl ZippedShapefileReader {
     pub fn new(zip: ZipArchive<UserLocalFile>) -> Result<Self, JsValue> {
         let filenames: Vec<&str> = zip.file_names().collect();
 
