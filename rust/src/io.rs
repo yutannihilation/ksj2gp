@@ -1,7 +1,7 @@
 use wasm_bindgen::JsValue;
 use web_sys::{FileReaderSync, FileSystemReadWriteOptions, js_sys::Uint8Array};
 
-use crate::zip_reader::ZippedShapefileReader;
+use crate::{error::Ksj2GpError, zip_reader::ZippedShapefileReader};
 
 // Note: OnceLock cannot be used here.
 thread_local! {
@@ -18,7 +18,7 @@ impl UserLocalFile {
         Self { file, offset: 0 }
     }
 
-    pub fn new_zip_reader(&self, target_shp: &str) -> Result<ZippedShapefileReader, JsValue> {
+    pub fn new_zip_reader(&self, target_shp: &str) -> Result<ZippedShapefileReader, Ksj2GpError> {
         let reader = Self {
             file: self.file.clone(),
             offset: 0,
@@ -89,7 +89,7 @@ pub struct OpfsFile {
 unsafe impl std::marker::Send for OpfsFile {}
 
 impl OpfsFile {
-    pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Result<Self, JsValue> {
+    pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Result<Self, Ksj2GpError> {
         // currently, the same name of file is repeatedly used, so it needs to be truncated first.
         file.truncate_with_u32(0)?;
 
