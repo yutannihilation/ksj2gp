@@ -336,7 +336,7 @@ dependencies = [
 [[package]]
 name = "dbase"
 version = "0.6.0"
-source = "git+https://github.com/tmontaigu/dbase-rs#be4372bd28c9de97531b00099872dcb86e16c1ce"
+source = "git+https://github.com/tmontaigu/dbase-rs#f3c9ba11f2e2f2b4664e587653d508e215169545"
 dependencies = [
  "byteorder",
  "codepage",
@@ -633,7 +633,6 @@ dependencies = [
  "arrow-array",
  "arrow-schema",
  "dbase",
- "encoding_rs",
  "geo-traits",
  "geo-types",
  "geoarrow-array",
