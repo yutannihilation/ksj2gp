@@ -29,7 +29,6 @@ shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.
 ] }
 # since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
 dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
-encoding_rs = "0.8.35"
 
 # TODO: CRS conversion
 # proj4rs = { version = "0.1.8", default-features = false }
