@@ -1,9 +1,11 @@
 use std::io::{Read, Seek as _};
 
-use wasm_bindgen::JsValue;
 use zip::ZipArchive;
 
-use crate::io::{OpfsFile, UserLocalFile};
+use crate::{
+    error::Ksj2GpError,
+    io::{OpfsFile, UserLocalFile},
+};
 
 pub struct ZippedShapefileReader {
     zip: ZipArchive<UserLocalFile>,
@@ -14,7 +16,7 @@ pub struct ZippedShapefileReader {
 }
 
 impl ZippedShapefileReader {
-    pub fn new(zip: ZipArchive<UserLocalFile>, target_shp: &str) -> Result<Self, JsValue> {
+    pub fn new(zip: ZipArchive<UserLocalFile>, target_shp: &str) -> Result<Self, Ksj2GpError> {
         // Sanity checks
         if !target_shp.ends_with(".shp") {
             return Err(format!("Not a Shapefile: {target_shp}").into());
@@ -53,16 +55,13 @@ impl ZippedShapefileReader {
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
         filename: &str,
-    ) -> Result<OpfsFile, JsValue> {
+    ) -> Result<OpfsFile, Ksj2GpError> {
         let mut opfs = OpfsFile::new(dst)?;
         let mut reader = self.zip.by_name(filename).unwrap();
 
-        std::io::copy(&mut reader, &mut opfs).map_err(|e| -> JsValue {
-            format!("Got an error while extracting {filename} to a OPFS file: {e:?}").into()
-        })?;
+        std::io::copy(&mut reader, &mut opfs)?;
 
-        opfs.rewind()
-            .map_err(|e| -> JsValue { format!("Got an error on rewinding file: {e:?}").into() })?;
+        opfs.rewind()?;
 
         Ok(opfs)
     }
@@ -70,30 +69,28 @@ impl ZippedShapefileReader {
     pub fn copy_shp_to_opfs(
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<OpfsFile, JsValue> {
+    ) -> Result<OpfsFile, Ksj2GpError> {
         self.copy_to_opfs(dst, &self.shp_filename.clone())
     }
 
     pub fn copy_dbf_to_opfs(
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<OpfsFile, JsValue> {
+    ) -> Result<OpfsFile, Ksj2GpError> {
         self.copy_to_opfs(dst, &self.dbf_filename.clone())
     }
 
     pub fn copy_shx_to_opfs(
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<OpfsFile, JsValue> {
+    ) -> Result<OpfsFile, Ksj2GpError> {
         self.copy_to_opfs(dst, &self.shx_filename.clone())
     }
 
-    pub fn read_prj(&mut self) -> Result<String, JsValue> {
+    pub fn read_prj(&mut self) -> Result<String, Ksj2GpError> {
         let mut reader = self.zip.by_name(&self.prj_filename).unwrap();
         let mut wkt = String::new();
-        reader.read_to_string(&mut wkt).map_err(|e| -> JsValue {
-            format!("Got an error while reading .prj file: {e:?}").into()
-        })?;
+        reader.read_to_string(&mut wkt)?;
 
         Ok(wkt)
     }

@@ -10,12 +10,14 @@ use crate::{
     builder::construct_schema,
     crs::wild_guess_from_esri_wkt_to_projjson,
     encoding::guess_encoding,
+    error::Ksj2GpError,
     io::{OpfsFile, UserLocalFile},
 };
 
 mod builder;
 mod crs;
 mod encoding;
+mod error;
 mod io;
 mod zip_reader;
 
@@ -48,10 +50,9 @@ impl IntermediateFiles {
 }
 
 #[wasm_bindgen]
-pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, JsValue> {
+pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, Ksj2GpError> {
     let reader = UserLocalFile::new(zip_file);
-    let zip = ZipArchive::new(reader)
-        .map_err(|e| -> JsValue { format!("Failed to inspect the ZIP file: {e:?}").into() })?;
+    let zip = ZipArchive::new(reader)?;
 
     let shp_files: Vec<String> = zip
         .file_names()
@@ -68,7 +69,7 @@ pub fn convert_shp_to_geoparquet(
     target_shp: &str,
     intermediate_files: IntermediateFiles,
     output_file: web_sys::FileSystemSyncAccessHandle,
-) -> Result<(), JsValue> {
+) -> Result<(), Ksj2GpError> {
     let reader = UserLocalFile::new(zip_file);
     let mut zip = reader.new_zip_reader(target_shp)?;
 
@@ -78,10 +79,7 @@ pub fn convert_shp_to_geoparquet(
 
     let output_file_opfs = OpfsFile::new(output_file)?;
 
-    let shapefile_reader =
-        ShapeReader::with_shx(shp_file_opfs, shx_file_opfs).map_err(|e| -> JsValue {
-            format!("Got an error on reading .shp and .shx files: {e:?}").into()
-        })?;
+    let shapefile_reader = ShapeReader::with_shx(shp_file_opfs, shx_file_opfs)?;
 
     let wkt = zip.read_prj()?;
     let projjson = wild_guess_from_esri_wkt_to_projjson(&wkt)?;
@@ -90,10 +88,7 @@ pub fn convert_shp_to_geoparquet(
     web_sys::console::log_1(&format!("CRS: {crs:?}").into());
 
     let dbase_reader =
-        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, guess_encoding(target_shp))
-            .map_err(|e| -> JsValue {
-                format!("Got an error on Reading a .dbf file: {e:?}").into()
-            })?;
+        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, guess_encoding(target_shp))?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
     let fields_info = construct_schema(&dbf_fields, crs);
@@ -110,15 +105,10 @@ pub fn convert_shp_to_geoparquet(
         .set_encoding(geoparquet::writer::GeoParquetWriterEncoding::WKB)
         .set_generate_covering(true)
         .build();
-    let mut gpq_encoder =
-        GeoParquetRecordBatchEncoder::try_new(&schema_ref, &options).map_err(|e| -> JsValue {
-            format!("Got an error on creating GeoParquetRecordBatchEncoder: {e:?}").into()
-        })?;
+    let mut gpq_encoder = GeoParquetRecordBatchEncoder::try_new(&schema_ref, &options)?;
 
     let mut parquet_writer =
-        ArrowWriter::try_new(output_file_opfs, gpq_encoder.target_schema(), None).map_err(
-            |e| -> JsValue { format!("Got an error on creating ArrowWriter {e:?}").into() },
-        )?;
+        ArrowWriter::try_new(output_file_opfs, gpq_encoder.target_schema(), None)?;
 
     web_sys::console::log_1(&"writing geoparquet".into());
 
@@ -144,44 +134,22 @@ pub fn convert_shp_to_geoparquet(
                 builders.builders[i].push(value);
             }
 
-            let geometry = geo_types::Geometry::<f64>::try_from(shape).map_err(|e| -> JsValue {
-                format!("Got an error on converting shape to geometry: {e:?}").into()
-            })?;
-            builders
-                .geo_builder
-                .push_geometry(Some(&geometry))
-                .map_err(|e| -> JsValue {
-                    format!("Got an error on pushing a geometry {geometry:?} to WkbBuilder: {e:?}")
-                        .into()
-                })?;
+            let geometry = geo_types::Geometry::<f64>::try_from(shape)?;
+            builders.geo_builder.push_geometry(Some(&geometry))?;
         }
 
-        let batch = arrow_array::RecordBatch::try_new(schema_ref.clone(), builders.finish())
-            .map_err(|e| -> JsValue {
-                format!("Got an error on creating a RecordBatch: {e:?}").into()
-            })?;
-        let encoded_batch = gpq_encoder
-            .encode_record_batch(&batch)
-            .map_err(|e| -> JsValue { format!("Failed to encode_record_batch(): {e:?}").into() })?;
+        let batch = arrow_array::RecordBatch::try_new(schema_ref.clone(), builders.finish())?;
+        let encoded_batch = gpq_encoder.encode_record_batch(&batch)?;
 
-        parquet_writer
-            .write(&encoded_batch)
-            .map_err(|e| -> JsValue {
-                format!("Failed to write() on parquet writer: {e:?}").into()
-            })?;
-
-        parquet_writer.flush().map_err(|e| -> JsValue {
-            format!("Failed to flush() on parquet writer: {e:?}").into()
-        })?;
+        parquet_writer.write(&encoded_batch)?;
+        parquet_writer.flush()?;
     }
 
     web_sys::console::log_1(&"writing geoparquet metadata".into());
 
     let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
     parquet_writer.append_key_value_metadata(kv_metadata);
-    parquet_writer
-        .finish()
-        .map_err(|e| -> JsValue { format!("Failed to finish parquet_writer: {e:?}").into() })?;
+    parquet_writer.finish()?;
 
     Ok(())
 }
