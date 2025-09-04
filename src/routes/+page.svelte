@@ -52,21 +52,21 @@
 				return;
 			}
 
-			if (data.shp_files && data.shp_files.length > 1) {
-				shpOptions = data.shp_files;
+			if (data.shp_file_candidates && data.shp_file_candidates.length > 1) {
+				shpOptions = data.shp_file_candidates;
 				shpDialogOpen = true;
 				busy = false; // let user choose
 				return;
 			}
 
-			if (!data.handle) return;
+			if (!data.output) return;
 
-			const file = await data.handle.getFile();
+			const file = await data.output.handle.getFile();
 			const url = URL.createObjectURL(file);
 
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = file.name || 'tmp.parquet';
+			a.download = data.output.filename;
 			document.body.appendChild(a);
 			a.click();
 

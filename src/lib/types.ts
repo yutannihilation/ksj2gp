@@ -5,11 +5,17 @@ export type WorkerRequest = {
 	target_shp?: string;
 };
 
+export type ResultFile = {
+	handle: FileSystemFileHandle;
+	filename: string;
+};
+
 export type WorkerResponse = {
 	ready?: boolean;
 	error?: string;
-	handle?: FileSystemFileHandle;
 	// When multiple .shp files are detected in the archive, the worker returns
 	// the list so the main thread can prompt the user to choose one.
-	shp_files?: string[];
+	shp_file_candidates?: string[];
+	// Result file (e.g. GeoParquet)
+	output: ResultFile;
 };
