@@ -1,4 +1,3 @@
-use dbase::encoding::EncodingRs;
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
 use parquet::arrow::ArrowWriter;
@@ -10,11 +9,13 @@ use zip::ZipArchive;
 use crate::{
     builder::construct_schema,
     crs::wild_guess_from_esri_wkt_to_projjson,
+    encoding::guess_encoding,
     io::{OpfsFile, UserLocalFile},
 };
 
 mod builder;
 mod crs;
+mod encoding;
 mod io;
 mod zip_reader;
 
@@ -93,11 +94,11 @@ pub fn convert_shp_to_geoparquet(
 
     web_sys::console::log_1(&format!("CRS: {crs:?}").into());
 
-    let dbase_reader = shapefile::dbase::Reader::new_with_encoding(
-        dbf_file_opfs,
-        EncodingRs::from(encoding_rs::SHIFT_JIS), // TODO: read UTF-8
-    )
-    .map_err(|e| -> JsValue { format!("Got an error on Reading a .dbf file: {e:?}").into() })?;
+    let dbase_reader =
+        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, guess_encoding(target_shp))
+            .map_err(|e| -> JsValue {
+                format!("Got an error on Reading a .dbf file: {e:?}").into()
+            })?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
     let fields_info = construct_schema(&dbf_fields, crs);
