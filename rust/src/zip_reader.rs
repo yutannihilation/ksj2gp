@@ -49,29 +49,43 @@ impl ZippedShapefileReader {
         })
     }
 
-    fn copy_to(&mut self, dst: &mut OpfsFile, filename: &str) -> Result<(), JsValue> {
+    fn copy_to_opfs(
+        &mut self,
+        dst: web_sys::FileSystemSyncAccessHandle,
+        filename: &str,
+    ) -> Result<OpfsFile, JsValue> {
+        let mut opfs = OpfsFile::new(dst)?;
         let mut reader = self.zip.by_name(filename).unwrap();
 
-        std::io::copy(&mut reader, dst).map_err(|e| -> JsValue {
+        std::io::copy(&mut reader, &mut opfs).map_err(|e| -> JsValue {
             format!("Got an error while extracting {filename} to a OPFS file: {e:?}").into()
         })?;
 
-        dst.rewind()
+        opfs.rewind()
             .map_err(|e| -> JsValue { format!("Got an error on rewinding file: {e:?}").into() })?;
 
-        Ok(())
+        Ok(opfs)
     }
 
-    pub fn copy_shp_to(&mut self, dst: &mut OpfsFile) -> Result<(), JsValue> {
-        self.copy_to(dst, &self.shp_filename.clone())
+    pub fn copy_shp_to_opfs(
+        &mut self,
+        dst: web_sys::FileSystemSyncAccessHandle,
+    ) -> Result<OpfsFile, JsValue> {
+        self.copy_to_opfs(dst, &self.shp_filename.clone())
     }
 
-    pub fn copy_dbf_to(&mut self, dst: &mut OpfsFile) -> Result<(), JsValue> {
-        self.copy_to(dst, &self.dbf_filename.clone())
+    pub fn copy_dbf_to_opfs(
+        &mut self,
+        dst: web_sys::FileSystemSyncAccessHandle,
+    ) -> Result<OpfsFile, JsValue> {
+        self.copy_to_opfs(dst, &self.dbf_filename.clone())
     }
 
-    pub fn copy_shx_to(&mut self, dst: &mut OpfsFile) -> Result<(), JsValue> {
-        self.copy_to(dst, &self.shx_filename.clone())
+    pub fn copy_shx_to_opfs(
+        &mut self,
+        dst: web_sys::FileSystemSyncAccessHandle,
+    ) -> Result<OpfsFile, JsValue> {
+        self.copy_to_opfs(dst, &self.shx_filename.clone())
     }
 
     pub fn read_prj(&mut self) -> Result<String, JsValue> {

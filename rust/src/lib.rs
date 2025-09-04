@@ -72,14 +72,9 @@ pub fn convert_shp_to_geoparquet(
     let reader = UserLocalFile::new(zip_file);
     let mut zip = reader.new_zip_reader(target_shp)?;
 
-    let mut shp_file_opfs = OpfsFile::new(intermediate_files.shp)?;
-    zip.copy_shp_to(&mut shp_file_opfs)?;
-
-    let mut shx_file_opfs = OpfsFile::new(intermediate_files.shx)?;
-    zip.copy_shx_to(&mut shx_file_opfs)?;
-
-    let mut dbf_file_opfs = OpfsFile::new(intermediate_files.dbf)?;
-    zip.copy_dbf_to(&mut dbf_file_opfs)?;
+    let shp_file_opfs = zip.copy_shp_to_opfs(intermediate_files.shp)?;
+    let dbf_file_opfs = zip.copy_dbf_to_opfs(intermediate_files.dbf)?;
+    let shx_file_opfs = zip.copy_shx_to_opfs(intermediate_files.shx)?;
 
     let output_file_opfs = OpfsFile::new(output_file)?;
 
