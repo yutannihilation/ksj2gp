@@ -57,9 +57,12 @@ impl ZippedShapefileReader {
         filename: &str,
     ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
         let mut opfs = OpfsFile::new(dst)?;
-        let mut reader = self.zip.by_name(filename).unwrap();
+        let reader = self.zip.by_name(filename).unwrap();
 
-        std::io::copy(&mut reader, &mut opfs)?;
+        std::io::copy(
+            &mut std::io::BufReader::new(reader),
+            &mut std::io::BufWriter::new(&mut opfs),
+        )?;
 
         opfs.rewind()?;
 
