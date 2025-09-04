@@ -19,6 +19,15 @@
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker.ts', import.meta.url), { type: 'module' });
 
+		// Surface worker bootstrap errors in dev
+		worker.onerror = (e: ErrorEvent) => {
+			console.error('Worker error:', e.message, '@', e.filename, e.lineno + ':' + e.colno);
+			if (!ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
+		};
+		worker.onmessageerror = (e: MessageEvent) => {
+			console.error('Worker message error:', e);
+		};
+
 		worker.onmessage = async (event: MessageEvent<WorkerResponse>) => {
 			const data = event.data;
 
