@@ -9,5 +9,9 @@ export default defineConfig({
 		format: 'es',
 		plugins: () => [wasm()]
 	},
+	// It seems this is necessary for `vite dev` to work
+	optimizeDeps: {
+		exclude: ['ksj2gp']
+	},
 	base: '/ksj2gp'
 });
