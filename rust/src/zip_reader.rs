@@ -5,7 +5,7 @@ use zip::ZipArchive;
 
 use crate::io::{OpfsFile, UserLocalFile};
 
-pub struct ZipReader {
+pub struct ZippedShapefileReader {
     zip: ZipArchive<UserLocalFile>,
     shp_filename: String,
     dbf_filename: String,
@@ -13,16 +13,32 @@ pub struct ZipReader {
     prj_filename: String,
 }
 
-impl ZipReader {
-    pub fn new(zip: ZipArchive<UserLocalFile>) -> Result<Self, JsValue> {
+impl ZippedShapefileReader {
+    pub fn new(zip: ZipArchive<UserLocalFile>, target_shp: &str) -> Result<Self, JsValue> {
+        // Sanity checks
+        if !target_shp.ends_with(".shp") {
+            return Err(format!("Not a Shapefile: {target_shp}").into());
+        }
+
+        let (filename_base, _) = target_shp.rsplit_once(".").unwrap();
+        let shp_filename = format!("{filename_base}.shp");
+        let dbf_filename = format!("{filename_base}.dbf");
+        let shx_filename = format!("{filename_base}.shx");
+        let prj_filename = format!("{filename_base}.prj");
+
+        // Check if the file actually exists in the ZIP file
         let filenames: Vec<&str> = zip.file_names().collect();
 
-        let shp_filename = find_specific_ext(&filenames, ".shp")?;
-        let dbf_filename = find_specific_ext(&filenames, ".dbf")?;
-        let shx_filename = find_specific_ext(&filenames, ".shx")?;
-        let prj_filename = find_specific_ext(&filenames, ".prj")?;
-
-        drop(filenames);
+        for f in [
+            shp_filename.as_str(),
+            dbf_filename.as_str(),
+            shx_filename.as_str(),
+            prj_filename.as_str(),
+        ] {
+            if !filenames.contains(&f) {
+                return Err(format!("{f} doesn't exist in the ZIP file").into());
+            }
+        }
 
         Ok(Self {
             zip,
@@ -67,14 +83,4 @@ impl ZipReader {
 
         Ok(wkt)
     }
-}
-
-fn find_specific_ext(filenames: &[&str], ext: &str) -> Result<String, JsValue> {
-    // TODO: how to handle multiple Shapefiles?
-    let filename = match filenames.iter().find(|x| x.ends_with(ext)) {
-        Some(filename) => filename.to_string(),
-        None => return Err(format!("This ZIP file doesn't contain any {ext} file").into()),
-    };
-
-    Ok(filename)
 }

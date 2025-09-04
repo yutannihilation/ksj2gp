@@ -1,4 +1,4 @@
-import { convert_shp_to_geoparquet, IntermediateFiles } from 'ksj2gp';
+import { convert_shp_to_geoparquet, IntermediateFiles, list_shp_files } from 'ksj2gp';
 import type { WorkerRequest, WorkerResponse } from './types';
 
 function postTypedMessage(message: WorkerResponse) {
@@ -20,8 +20,26 @@ async function newSyncAccessHandle(
 	return await fileHandle.createSyncAccessHandle();
 }
 
+console.log('Worker loaded');
+
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
-	const { file } = event.data;
+	const file = event.data.file;
+	let target_shp = event.data.target_shp;
+
+	if (!target_shp) {
+		const shp_files = list_shp_files(file);
+
+		if (shp_files.length == 0) {
+			postTypedMessage({ error: 'No .shp files found in the archive' });
+			return;
+		} else if (shp_files.length == 1) {
+			target_shp = shp_files[0];
+		} else {
+			// Return available .shp files to the main thread so UI can prompt user
+			postTypedMessage({ shp_files });
+			return; // Wait for a follow-up message with target_shp
+		}
+	}
 
 	const opfsRoot = await navigator.storage.getDirectory();
 
@@ -38,7 +56,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
 	try {
-		convert_shp_to_geoparquet(file, intermediate_files, outputFile);
+		convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
 		// Success: send handle in a stable envelope
 		postTypedMessage({ handle: outputFileHandle });
 	} catch (e: unknown) {

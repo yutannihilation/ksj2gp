@@ -11,6 +11,11 @@
 	let worker: Worker | null = null;
 	let ready = false;
 
+	// Multi-shp selection dialog state
+	let shpDialogOpen = false;
+	let shpOptions: string[] = [];
+	let pendingZip: File | null = null;
+
 	// Error dialog state
 	let errorOpen = false;
 	let errorMessage = '';
@@ -19,11 +24,21 @@
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker.ts', import.meta.url), { type: 'module' });
 
+		// Surface worker bootstrap errors in dev
+		worker.onerror = (e: ErrorEvent) => {
+			console.error('Worker error:', e.message, '@', e.filename, e.lineno + ':' + e.colno);
+			if (!ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
+		};
+		worker.onmessageerror = (e: MessageEvent) => {
+			console.error('Worker message error:', e);
+		};
+
 		worker.onmessage = async (event: MessageEvent<WorkerResponse>) => {
 			const data = event.data;
 
 			const finish = () => {
 				busy = false;
+				pendingZip = null;
 			};
 
 			if (data.ready) {
@@ -37,10 +52,14 @@
 				return;
 			}
 
-			if (!data.handle) {
-				// TODO
+			if (data.shp_files && data.shp_files.length > 1) {
+				shpOptions = data.shp_files;
+				shpDialogOpen = true;
+				busy = false; // let user choose
 				return;
 			}
+
+			if (!data.handle) return;
 
 			const file = await data.handle.getFile();
 			const url = URL.createObjectURL(file);
@@ -76,6 +95,7 @@
 			return;
 		}
 		busy = true;
+		pendingZip = file;
 		worker.postMessage({ file });
 	}
 
@@ -109,6 +129,18 @@
 	function showError(message: string) {
 		errorMessage = message;
 		errorOpen = true;
+	}
+
+	function chooseShp(path: string) {
+		if (!worker || !pendingZip) return;
+		shpDialogOpen = false;
+		busy = true;
+		worker.postMessage({ file: pendingZip, target_shp: path });
+	}
+
+	function cancelShpDialog() {
+		shpDialogOpen = false;
+		busy = false;
 	}
 </script>
 
@@ -196,7 +228,7 @@
 
 	<!-- Bits UI: Error dialog -->
 	<Dialog.Root bind:open={errorOpen}>
-		<Dialog.Content class="fixed inset-0 grid place-items-center p-4">
+		<Dialog.Content class="fixed inset-0 grid place-items-center p-4 z-50">
 			<div
 				class="bg-slate-900 text-indigo-50 border border-slate-700 rounded-xl p-4 w-full max-w-lg shadow-2xl"
 			>
@@ -213,6 +245,43 @@
 				</div>
 			</div>
 		</Dialog.Content>
-		<Dialog.Overlay class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+		<Dialog.Overlay class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
+	</Dialog.Root>
+
+	<!-- Bits UI: Shapefile selection dialog -->
+	<Dialog.Root bind:open={shpDialogOpen}>
+		<Dialog.Content class="fixed inset-0 grid place-items-center p-4 z-50">
+			<div
+				class="bg-slate-900 text-indigo-50 border border-slate-700 rounded-xl p-4 w-full max-w-xl shadow-2xl"
+			>
+				<Dialog.Title class="font-bold mb-1">Shapefile を選択</Dialog.Title>
+				<div class="text-indigo-200/80 mb-4">
+					ZIP には複数の .shp が含まれています。変換するファイルを選択してください。
+				</div>
+				<div class="max-h-72 overflow-auto grid gap-2 mb-4">
+					{#each shpOptions as opt}
+						<button
+							type="button"
+							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
+							on:click={() => chooseShp(opt)}
+						>
+							{opt}
+						</button>
+					{/each}
+				</div>
+				<div class="flex justify-end">
+					<Dialog.Close asChild>
+						<button
+							type="button"
+							class="rounded-lg bg-slate-700 text-white px-4 py-2 font-semibold tracking-tight"
+							on:click={cancelShpDialog}
+						>
+							キャンセル
+						</button>
+					</Dialog.Close>
+				</div>
+			</div>
+		</Dialog.Content>
+		<Dialog.Overlay class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
 	</Dialog.Root>
 </div>
