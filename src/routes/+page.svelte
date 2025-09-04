@@ -113,13 +113,13 @@
 </script>
 
 <div
-	class="min-h-dvh bg-hero text-indigo-50 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
+	class="min-h-dvh bg-hero text-slate-900 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
 >
 	<header class="text-center max-w-4xl mx-auto">
 		<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">
 			KSJ → GeoParquet
 		</h1>
-		<p class="text-indigo-200/80 text-base sm:text-lg">
+		<p class="text-slate-700 text-base sm:text-lg">
 			国土数値情報の ZIP をドラッグ＆ドロップすると、GeoParquet に変換します。
 		</p>
 	</header>
@@ -206,8 +206,9 @@
 					<Dialog.Close asChild>
 						<button
 							class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-semibold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]"
-							>閉じる</button
 						>
+							閉じる
+						</button>
 					</Dialog.Close>
 				</div>
 			</div>
