@@ -3,13 +3,12 @@
 /* Lightweight custom utilities for this app */
 @layer utilities {
 	/* Hero background used on the main page */
-    .bg-hero {
-        /* Lighter, airier blue background with soft gradients */
-        background:
-            radial-gradient(1100px 420px at 15% -10%, rgba(173, 216, 255, 0.85) 0%, transparent 60%),
-            radial-gradient(900px 360px at 85% -20%, rgba(99, 179, 237, 0.60) 0%, transparent 60%),
-            #eaf4ff; /* light blue base */
-    }
+	.bg-hero {
+		/* Lighter, airier blue background with soft gradients */
+		background:
+			radial-gradient(1100px 420px at 15% -10%, rgba(173, 216, 255, 0.85) 0%, transparent 60%),
+			radial-gradient(900px 360px at 85% -20%, rgba(99, 179, 237, 0.6) 0%, transparent 60%), #eaf4ff; /* light blue base */
+	}
 
 	/* Subtle glass effect for primary panel */
 	.glass-panel {
