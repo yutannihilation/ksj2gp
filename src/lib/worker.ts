@@ -20,6 +20,12 @@ async function newSyncAccessHandle(
 	return await fileHandle.createSyncAccessHandle();
 }
 
+function getOutputFilename(x: string, ext: string): string {
+	const start = x.lastIndexOf('/') + 1;
+	const end = x.lastIndexOf('.') + 1;
+	return x.substring(start, end) + ext;
+}
+
 console.log('Worker loaded');
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
@@ -27,16 +33,16 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	let target_shp = event.data.target_shp;
 
 	if (!target_shp) {
-		const shp_files = list_shp_files(file);
+		const shp_file_candidates = list_shp_files(file);
 
-		if (shp_files.length == 0) {
+		if (shp_file_candidates.length == 0) {
 			postTypedMessage({ error: 'No .shp files found in the archive' });
 			return;
-		} else if (shp_files.length == 1) {
-			target_shp = shp_files[0];
+		} else if (shp_file_candidates.length == 1) {
+			target_shp = shp_file_candidates[0];
 		} else {
 			// Return available .shp files to the main thread so UI can prompt user
-			postTypedMessage({ shp_files });
+			postTypedMessage({ shp_file_candidates });
 			return; // Wait for a follow-up message with target_shp
 		}
 	}
@@ -58,7 +64,8 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	try {
 		convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
 		// Success: send handle in a stable envelope
-		postTypedMessage({ handle: outputFileHandle });
+		const filename = getOutputFilename(target_shp, 'parquet');
+		postTypedMessage({ output: { handle: outputFileHandle, filename } });
 	} catch (e: unknown) {
 		const msg =
 			typeof e === 'string'
