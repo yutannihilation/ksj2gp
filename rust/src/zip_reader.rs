@@ -55,7 +55,7 @@ impl ZippedShapefileReader {
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
         filename: &str,
-    ) -> Result<OpfsFile, Ksj2GpError> {
+    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
         let mut opfs = OpfsFile::new(dst)?;
         let mut reader = self.zip.by_name(filename).unwrap();
 
@@ -63,27 +63,27 @@ impl ZippedShapefileReader {
 
         opfs.rewind()?;
 
-        Ok(opfs)
+        Ok(std::io::BufReader::new(opfs))
     }
 
     pub fn copy_shp_to_opfs(
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<OpfsFile, Ksj2GpError> {
+    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
         self.copy_to_opfs(dst, &self.shp_filename.clone())
     }
 
     pub fn copy_dbf_to_opfs(
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<OpfsFile, Ksj2GpError> {
+    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
         self.copy_to_opfs(dst, &self.dbf_filename.clone())
     }
 
     pub fn copy_shx_to_opfs(
         &mut self,
         dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<OpfsFile, Ksj2GpError> {
+    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
         self.copy_to_opfs(dst, &self.shx_filename.clone())
     }
 

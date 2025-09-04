@@ -77,7 +77,7 @@ pub fn convert_shp_to_geoparquet(
     let dbf_file_opfs = zip.copy_dbf_to_opfs(intermediate_files.dbf)?;
     let shx_file_opfs = zip.copy_shx_to_opfs(intermediate_files.shx)?;
 
-    let output_file_opfs = OpfsFile::new(output_file)?;
+    let output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
 
     let shapefile_reader = ShapeReader::with_shx(shp_file_opfs, shx_file_opfs)?;
 
