@@ -1,13 +1,13 @@
 import { convert_shp_to_geoparquet, IntermediateFiles } from 'ksj2gp';
 import type { WorkerRequest, WorkerResponse } from './types';
 
-function postMessage(message: WorkerResponse) {
-	window.postMessage(message);
+function postTypedMessage(message: WorkerResponse) {
+	postMessage(message);
 }
 
 // Notify main thread that the worker bundle is ready to accept messages
 // This allows the UI to enable inputs only after initialization
-postMessage({ ready: true });
+postTypedMessage({ ready: true });
 
 async function newSyncAccessHandle(
 	opfsRoot: FileSystemDirectoryHandle,
@@ -40,7 +40,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	try {
 		convert_shp_to_geoparquet(file, intermediate_files, outputFile);
 		// Success: send handle in a stable envelope
-		postMessage({ handle: outputFileHandle });
+		postTypedMessage({ handle: outputFileHandle });
 	} catch (e: unknown) {
 		const msg =
 			typeof e === 'string'
@@ -48,7 +48,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 				: typeof (e as { message?: unknown })?.message === 'string'
 					? (e as { message: string }).message
 					: 'unknown error';
-		postMessage({ error: msg });
+		postTypedMessage({ error: msg });
 	} finally {
 		// Ensure handles are closed even on failure
 		outputFile.close();
