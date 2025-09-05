@@ -1,3 +1,4 @@
+use geojson::JsonObject;
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
 use parquet::arrow::ArrowWriter;
@@ -150,6 +151,72 @@ pub fn convert_shp_to_geoparquet(
     let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
     parquet_writer.append_key_value_metadata(kv_metadata);
     parquet_writer.finish()?;
+
+    Ok(())
+}
+
+#[wasm_bindgen]
+pub fn convert_shp_to_geojosn(
+    zip_file: web_sys::File,
+    target_shp: &str,
+    intermediate_files: IntermediateFiles,
+    output_file: web_sys::FileSystemSyncAccessHandle,
+) -> Result<(), Ksj2GpError> {
+    let reader = UserLocalFile::new(zip_file);
+    let mut zip = reader.new_zip_reader(target_shp)?;
+
+    let shp_file_opfs = zip.copy_shp_to_opfs(intermediate_files.shp)?;
+    let dbf_file_opfs = zip.copy_dbf_to_opfs(intermediate_files.dbf)?;
+    let shx_file_opfs = zip.copy_shx_to_opfs(intermediate_files.shx)?;
+
+    let output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
+
+    let shapefile_reader = ShapeReader::with_shx(shp_file_opfs, shx_file_opfs)?;
+
+    let wkt = zip.read_prj()?;
+    let projjson = wild_guess_from_esri_wkt_to_projjson(&wkt)?;
+    let crs = geoarrow_schema::Crs::from_projjson(projjson);
+
+    web_sys::console::log_1(&format!("CRS: {crs:?}").into());
+
+    let dbase_reader =
+        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, guess_encoding(target_shp))?;
+
+    let dbf_fields = dbase_reader.fields().to_vec();
+    let fields_info = construct_schema(&dbf_fields, crs);
+    let schema_ref = fields_info.schema_ref.clone();
+
+    for f in &fields_info.non_geo_fields {
+        web_sys::console::log_1(&format!("field: {f:?}").into());
+    }
+    web_sys::console::log_1(&format!("geometry: {:?}", &fields_info.geoarrow_type).into());
+
+    let mut reader = Reader::new(shapefile_reader, dbase_reader);
+
+    web_sys::console::log_1(&"writing geojson".into());
+
+    // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
+    // the order. So, this column names vector is needed to ensure the consistent
+    // order with the schema.
+    let (_last, fields_except_geometry) = schema_ref.fields().split_last().unwrap();
+    let field_names: Vec<String> = fields_except_geometry
+        .iter()
+        .map(|f| f.name().to_string())
+        .collect();
+
+    for result in reader.iter_shapes_and_records() {
+        let (shape, record) = result.unwrap();
+
+        // TODO: dbase implements serde, so a Record should be able to be converted to
+        // JsonObject by thw power of serde.
+        let properties: JsonObject = record;
+
+        let geometry = geo_types::Geometry::<f64>::try_from(shape)?;
+    }
+
+    web_sys::console::log_1(&"writing geoparquet metadata".into());
+
+    // TODO
 
     Ok(())
 }
