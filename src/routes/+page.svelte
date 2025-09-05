@@ -10,6 +10,7 @@
 	let busy = false;
 	let worker: Worker | null = null;
 	let ready = false;
+	let outputFormat: OutputFormat = 'GeoParquet';
 
 	// Multi-shp selection dialog state
 	let shpDialogOpen = false;
@@ -96,7 +97,7 @@
 		}
 		busy = true;
 		pendingZip = file;
-		worker.postMessage({ file });
+		worker.postMessage({ file, output_format: outputFormat });
 	}
 
 	function onInputChange(e: Event) {
@@ -148,12 +149,19 @@
 	class="min-h-dvh bg-hero text-slate-900 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
 >
 	<header class="text-center max-w-4xl mx-auto">
-		<!-- TODO: Make this "GeoParquet" to a dropdown to choose "GeoParquet" or "GeoJSON" as output format, and pass it to chooseShp() below -->
 		<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">
-			KSJ → GeoParquet
+			KSJ →
+			<select
+				bind:value={outputFormat}
+				class="ml-2 inline-block align-middle bg-slate-900/60 text-indigo-50 border border-slate-700 rounded-md px-2 py-1 text-lg md:text-2xl lg:text-3xl"
+				aria-label="出力形式を選択"
+			>
+				<option value="GeoParquet">GeoParquet</option>
+				<option value="GeoJson">GeoJSON</option>
+			</select>
 		</h1>
 		<p class="text-slate-700 text-base sm:text-lg">
-			国土数値情報の ZIP をドラッグ＆ドロップすると、GeoParquet に変換します。
+			国土数値情報の ZIP をドラッグ＆ドロップすると、選択した形式に変換します。
 		</p>
 	</header>
 
@@ -264,7 +272,7 @@
 						<button
 							type="button"
 							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
-							on:click={() => chooseShp(opt)}
+							on:click={() => chooseShp(opt, outputFormat)}
 						>
 							{opt}
 						</button>
