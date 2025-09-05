@@ -3,13 +3,14 @@
 	// Use Bits UI for a nicer error dialog
 	// Note: ensure `bits-ui` is installed locally
 	import { Dialog } from 'bits-ui';
-	import type { WorkerResponse } from '$lib/types';
+	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
 	let inputEl: HTMLInputElement;
 	let dragover = false;
 	let busy = false;
 	let worker: Worker | null = null;
 	let ready = false;
+	let outputFormat: OutputFormat = 'GeoParquet';
 
 	// Multi-shp selection dialog state
 	let shpDialogOpen = false;
@@ -96,7 +97,7 @@
 		}
 		busy = true;
 		pendingZip = file;
-		worker.postMessage({ file });
+		worker.postMessage({ file, outputFormat: outputFormat });
 	}
 
 	function onInputChange(e: Event) {
@@ -131,11 +132,11 @@
 		errorOpen = true;
 	}
 
-	function chooseShp(path: string) {
+	function chooseShp(path: string, outputFormat: OutputFormat) {
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
 		busy = true;
-		worker.postMessage({ file: pendingZip, target_shp: path });
+		worker.postMessage({ file: pendingZip, outputFormat, target_shp: path });
 	}
 
 	function cancelShpDialog() {
@@ -149,10 +150,18 @@
 >
 	<header class="text-center max-w-4xl mx-auto">
 		<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">
-			KSJ → GeoParquet
+			KSJ →
+			<select
+				bind:value={outputFormat}
+				class="ml-2 inline-block align-middle bg-slate-900/60 text-indigo-50 border border-slate-700 rounded-md px-2 py-1 text-lg md:text-2xl lg:text-3xl"
+				aria-label="出力形式を選択"
+			>
+				<option value="GeoParquet">GeoParquet</option>
+				<option value="GeoJson">GeoJSON</option>
+			</select>
 		</h1>
 		<p class="text-slate-700 text-base sm:text-lg">
-			国土数値情報の ZIP をドラッグ＆ドロップすると、GeoParquet に変換します。
+			国土数値情報の ZIP をドラッグ＆ドロップすると、選択した形式に変換します。
 		</p>
 	</header>
 
@@ -263,7 +272,7 @@
 						<button
 							type="button"
 							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
-							on:click={() => chooseShp(opt)}
+							on:click={() => chooseShp(opt, outputFormat)}
 						>
 							{opt}
 						</button>

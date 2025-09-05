@@ -1,9 +1,13 @@
 export type WorkerRequest = {
 	// ZIP file
 	file: File;
+	// format of output file
+	outputFormat: OutputFormat;
 	// path to Shapefile in the ZIP file
 	target_shp?: string;
 };
+
+export type OutputFormat = 'GeoParquet' | 'GeoJson';
 
 export type ResultFile = {
 	handle: FileSystemFileHandle;
