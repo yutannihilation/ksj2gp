@@ -1,5 +1,3 @@
-use std::io::Write;
-
 use geojson::JsonObject;
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
@@ -158,7 +156,7 @@ pub fn convert_shp_to_geoparquet(
 }
 
 #[wasm_bindgen]
-pub fn convert_shp_to_geojson(
+pub fn convert_shp_to_geojosn(
     zip_file: web_sys::File,
     target_shp: &str,
     intermediate_files: IntermediateFiles,
@@ -171,7 +169,7 @@ pub fn convert_shp_to_geojson(
     let dbf_file_opfs = zip.copy_dbf_to_opfs(intermediate_files.dbf)?;
     let shx_file_opfs = zip.copy_shx_to_opfs(intermediate_files.shx)?;
 
-    let mut output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
+    let output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
 
     let shapefile_reader = ShapeReader::with_shx(shp_file_opfs, shx_file_opfs)?;
 
@@ -206,78 +204,19 @@ pub fn convert_shp_to_geojson(
         .map(|f| f.name().to_string())
         .collect();
 
-    let mut features: Vec<geojson::Feature> = Vec::new();
     for result in reader.iter_shapes_and_records() {
-        let (shape, mut record) = result.unwrap();
+        let (shape, record) = result.unwrap();
 
-        // Convert dBASE record to GeoJSON properties without serde dependency
-        let mut properties: JsonObject = JsonObject::new();
-        for field_name in &field_names {
-            let value = record
-                .remove(field_name)
-                .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
-            properties.insert(field_name.to_string(), dbase_field_to_json_value(value));
-        }
+        // TODO: dbase implements serde, so a Record should be able to be converted to
+        // JsonObject by thw power of serde.
+        let properties: JsonObject = record;
 
-        let geometry_geo_types = geo_types::Geometry::<f64>::try_from(shape)?;
-        let geometry: geojson::Geometry = (&geometry_geo_types).into();
-
-        features.push(geojson::Feature {
-            bbox: None,
-            geometry: Some(geometry),
-            id: None,
-            properties: Some(properties),
-            foreign_members: None,
-        });
+        let geometry = geo_types::Geometry::<f64>::try_from(shape)?;
     }
 
-    let geojson: geojson::GeoJson = geojson::FeatureCollection {
-        bbox: None,
-        features,
-        foreign_members: None,
-    }
-    .into();
+    web_sys::console::log_1(&"writing geoparquet metadata".into());
 
-    // TODO: implement From<geojson::Error>
-    let geojson_str = geojson.to_string_pretty().unwrap();
-
-    output_file_opfs.write_all(geojson_str.as_bytes())?;
-    output_file_opfs.flush()?;
+    // TODO
 
     Ok(())
-}
-
-fn dbase_field_to_json_value(x: dbase::FieldValue) -> geojson::JsonValue {
-    match x {
-        // String
-        dbase::FieldValue::Character(x) => x.into(),
-        dbase::FieldValue::Memo(x) => x.into(),
-        // Number
-        dbase::FieldValue::Numeric(x) => x.into(),
-        dbase::FieldValue::Float(x) => x.into(),
-        dbase::FieldValue::Integer(x) => x.into(),
-        dbase::FieldValue::Double(x) => x.into(),
-        dbase::FieldValue::Currency(x) => x.into(),
-        // Boolean
-        dbase::FieldValue::Logical(x) => x.into(),
-        // Date
-        dbase::FieldValue::Date(Some(x)) => {
-            format!("{}-{}-{}", x.year(), x.month(), x.day()).into()
-        }
-        dbase::FieldValue::Date(None) => geojson::JsonValue::Null,
-        dbase::FieldValue::DateTime(x) => {
-            let date = x.date();
-            let time = x.time();
-            format!(
-                "{}-{}-{} {}:{}:{}",
-                date.year(),
-                date.month(),
-                date.day(),
-                time.hours(),
-                time.minutes(),
-                time.seconds()
-            )
-            .into()
-        }
-    }
 }
