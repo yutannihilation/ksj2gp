@@ -35,7 +35,7 @@ console.log('Worker loaded');
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const file = event.data.file;
-	const output_format = event.data.output_format;
+	const outputFormat = event.data.outputFormat;
 	let target_shp = event.data.target_shp;
 
 	if (!target_shp) {
@@ -71,10 +71,10 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 
 	try {
 		let file_ext = '';
-		if (output_format === 'GeoParquet') {
+		if (outputFormat === 'GeoParquet') {
 			convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
 			file_ext = 'parquet';
-		} else if (output_format === 'GeoJson') {
+		} else if (outputFormat === 'GeoJson') {
 			convert_shp_to_geojson(file, target_shp, intermediate_files, outputFile);
 			file_ext = 'geojson';
 		}

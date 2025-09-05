@@ -2,7 +2,7 @@ export type WorkerRequest = {
 	// ZIP file
 	file: File;
 	// format of output file
-	output_format: OutputFormat;
+	outputFormat: OutputFormat;
 	// path to Shapefile in the ZIP file
 	target_shp?: string;
 };

@@ -97,7 +97,7 @@
 		}
 		busy = true;
 		pendingZip = file;
-		worker.postMessage({ file, output_format: outputFormat });
+		worker.postMessage({ file, outputFormat: outputFormat });
 	}
 
 	function onInputChange(e: Event) {
@@ -132,11 +132,11 @@
 		errorOpen = true;
 	}
 
-	function chooseShp(path: string, output_format: OutputFormat) {
+	function chooseShp(path: string, outputFormat: OutputFormat) {
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
 		busy = true;
-		worker.postMessage({ file: pendingZip, output_format, target_shp: path });
+		worker.postMessage({ file: pendingZip, outputFormat, target_shp: path });
 	}
 
 	function cancelShpDialog() {
