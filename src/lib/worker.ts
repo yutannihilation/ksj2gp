@@ -1,4 +1,9 @@
-import { convert_shp_to_geoparquet, IntermediateFiles, list_shp_files } from 'ksj2gp';
+import {
+	convert_shp_to_geoparquet,
+	convert_shp_to_geojson,
+	IntermediateFiles,
+	list_shp_files
+} from 'ksj2gp';
 import type { WorkerRequest, WorkerResponse } from './types';
 
 function postTypedMessage(message: WorkerResponse) {
@@ -30,6 +35,7 @@ console.log('Worker loaded');
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const file = event.data.file;
+	const output_format = event.data.output_format;
 	let target_shp = event.data.target_shp;
 
 	if (!target_shp) {
@@ -49,7 +55,9 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 
 	const opfsRoot = await navigator.storage.getDirectory();
 
-	const outputFileHandle = await opfsRoot.getFileHandle('tmp.parquet', {
+	// This file doesn't need to have a proper extension because the filename is
+	// given on frontend anyway.
+	const outputFileHandle = await opfsRoot.getFileHandle('tmp_output', {
 		create: true
 	});
 	const outputFile = await outputFileHandle.createSyncAccessHandle();
@@ -62,9 +70,16 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
 	try {
-		convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
+		let file_ext = '';
+		if (output_format === 'GeoParquet') {
+			convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
+			file_ext = 'parquet';
+		} else if (output_format === 'GeoJson') {
+			convert_shp_to_geojson(file, target_shp, intermediate_files, outputFile);
+			file_ext = 'geojson';
+		}
 		// Success: send handle in a stable envelope
-		const filename = getOutputFilename(target_shp, 'parquet');
+		const filename = getOutputFilename(target_shp, file_ext);
 		postTypedMessage({ output: { handle: outputFileHandle, filename } });
 	} catch (e: unknown) {
 		const msg =

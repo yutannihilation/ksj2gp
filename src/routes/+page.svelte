@@ -3,7 +3,7 @@
 	// Use Bits UI for a nicer error dialog
 	// Note: ensure `bits-ui` is installed locally
 	import { Dialog } from 'bits-ui';
-	import type { WorkerResponse } from '$lib/types';
+	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
 	let inputEl: HTMLInputElement;
 	let dragover = false;
@@ -131,11 +131,11 @@
 		errorOpen = true;
 	}
 
-	function chooseShp(path: string) {
+	function chooseShp(path: string, output_format: OutputFormat) {
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
 		busy = true;
-		worker.postMessage({ file: pendingZip, target_shp: path });
+		worker.postMessage({ file: pendingZip, output_format, target_shp: path });
 	}
 
 	function cancelShpDialog() {
@@ -148,6 +148,7 @@
 	class="min-h-dvh bg-hero text-slate-900 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
 >
 	<header class="text-center max-w-4xl mx-auto">
+		<!-- TODO: Make this "GeoParquet" to a dropdown to choose "GeoParquet" or "GeoJSON" as output format, and pass it to chooseShp() below -->
 		<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">
 			KSJ → GeoParquet
 		</h1>
