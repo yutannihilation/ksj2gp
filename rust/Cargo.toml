@@ -28,7 +28,7 @@ shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.
     "geo-types",
 ] }
 # since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
-dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs", "serde"] }
+dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
 
 # TODO: CRS conversion
 # proj4rs = { version = "0.1.8", default-features = false }
@@ -50,7 +50,6 @@ zip = { version = "4.6.1", default-features = false, features = ["deflate"] }
 # for .chunk()
 itertools = "0.14.0"
 serde_json = "1.0.143"
-geojson = "0.24.2"
 
 [patch.crates-io]
 dbase = { git = "https://github.com/tmontaigu/dbase-rs" }
