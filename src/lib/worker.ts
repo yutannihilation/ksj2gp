@@ -1,10 +1,5 @@
-import {
-	convert_shp_to_geoparquet,
-	convert_shp_to_geojson,
-	IntermediateFiles,
-	list_shp_files
-} from 'ksj2gp';
-import type { WorkerRequest, WorkerResponse } from './types';
+import { convert_shp, IntermediateFiles, list_shp_files } from 'ksj2gp';
+import type { OutputFormat, WorkerRequest, WorkerResponse } from './types';
 
 function postTypedMessage(message: WorkerResponse) {
 	postMessage(message);
@@ -25,7 +20,14 @@ async function newSyncAccessHandle(
 	return await fileHandle.createSyncAccessHandle();
 }
 
-function getOutputFilename(x: string, ext: string): string {
+function getOutputFilename(x: string, outputFormat: OutputFormat): string {
+	let ext = '';
+	if (outputFormat === 'GeoParquet') {
+		ext = 'parquet';
+	} else if (outputFormat === 'GeoJson') {
+		ext = 'geojson';
+	}
+
 	const start = x.lastIndexOf('/') + 1;
 	const end = x.lastIndexOf('.') + 1;
 	return x.substring(start, end) + ext;
@@ -36,20 +38,20 @@ console.log('Worker loaded');
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const file = event.data.file;
 	const outputFormat = event.data.outputFormat;
-	let target_shp = event.data.target_shp;
+	let targetShp = event.data.targetShp;
 
-	if (!target_shp) {
-		const shp_file_candidates = list_shp_files(file);
+	if (!targetShp) {
+		const shpFileCandidates = list_shp_files(file);
 
-		if (shp_file_candidates.length == 0) {
+		if (shpFileCandidates.length == 0) {
 			postTypedMessage({ error: 'No .shp files found in the archive' });
 			return;
-		} else if (shp_file_candidates.length == 1) {
-			target_shp = shp_file_candidates[0];
+		} else if (shpFileCandidates.length == 1) {
+			targetShp = shpFileCandidates[0];
 		} else {
 			// Return available .shp files to the main thread so UI can prompt user
-			postTypedMessage({ shp_file_candidates });
-			return; // Wait for a follow-up message with target_shp
+			postTypedMessage({ shpFileCandidates });
+			return; // Wait for a follow-up message with targetShp
 		}
 	}
 
@@ -70,16 +72,8 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
 	try {
-		let file_ext = '';
-		if (outputFormat === 'GeoParquet') {
-			convert_shp_to_geoparquet(file, target_shp, intermediate_files, outputFile);
-			file_ext = 'parquet';
-		} else if (outputFormat === 'GeoJson') {
-			convert_shp_to_geojson(file, target_shp, intermediate_files, outputFile);
-			file_ext = 'geojson';
-		}
-		// Success: send handle in a stable envelope
-		const filename = getOutputFilename(target_shp, file_ext);
+		convert_shp(file, targetShp, intermediate_files, outputFile, outputFormat);
+		const filename = getOutputFilename(targetShp, outputFormat);
 		postTypedMessage({ output: { handle: outputFileHandle, filename } });
 	} catch (e: unknown) {
 		const msg =

@@ -53,8 +53,8 @@
 				return;
 			}
 
-			if (data.shp_file_candidates && data.shp_file_candidates.length > 1) {
-				shpOptions = data.shp_file_candidates;
+			if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
+				shpOptions = data.shpFileCandidates;
 				shpDialogOpen = true;
 				busy = false; // let user choose
 				return;
@@ -136,7 +136,7 @@
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
 		busy = true;
-		worker.postMessage({ file: pendingZip, outputFormat, target_shp: path });
+		worker.postMessage({ file: pendingZip, outputFormat, targetShp: path });
 	}
 
 	function cancelShpDialog() {
