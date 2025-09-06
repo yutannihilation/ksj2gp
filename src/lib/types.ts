@@ -4,7 +4,7 @@ export type WorkerRequest = {
 	// format of output file
 	outputFormat: OutputFormat;
 	// path to Shapefile in the ZIP file
-	target_shp?: string;
+	targetShp?: string;
 };
 
 export type OutputFormat = 'GeoParquet' | 'GeoJson';
@@ -19,7 +19,7 @@ export type WorkerResponse = {
 	error?: string;
 	// When multiple .shp files are detected in the archive, the worker returns
 	// the list so the main thread can prompt the user to choose one.
-	shp_file_candidates?: string[];
+	shpFileCandidates?: string[];
 	// Result file (e.g. GeoParquet)
 	output: ResultFile;
 };
