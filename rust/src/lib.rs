@@ -15,6 +15,7 @@ use crate::{
     encoding::guess_encoding,
     error::Ksj2GpError,
     io::{OpfsFile, UserLocalFile},
+    writer::write_geojson,
 };
 
 mod builder;
@@ -22,6 +23,7 @@ mod crs;
 mod encoding;
 mod error;
 mod io;
+mod writer;
 mod zip_reader;
 
 // Number of rows to process at once
@@ -197,87 +199,5 @@ pub fn convert_shp_to_geojson(
 
     web_sys::console::log_1(&"writing geojson".into());
 
-    // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
-    // the order. So, this column names vector is needed to ensure the consistent
-    // order with the schema.
-    let (_last, fields_except_geometry) = schema_ref.fields().split_last().unwrap();
-    let field_names: Vec<String> = fields_except_geometry
-        .iter()
-        .map(|f| f.name().to_string())
-        .collect();
-
-    let mut features: Vec<geojson::Feature> = Vec::new();
-    for result in reader.iter_shapes_and_records() {
-        let (shape, mut record) = result.unwrap();
-
-        // Convert dBASE record to GeoJSON properties without serde dependency
-        let mut properties: JsonObject = JsonObject::new();
-        for field_name in &field_names {
-            let value = record
-                .remove(field_name)
-                .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
-            properties.insert(field_name.to_string(), dbase_field_to_json_value(value));
-        }
-
-        let geometry_geo_types = geo_types::Geometry::<f64>::try_from(shape)?;
-        let geometry: geojson::Geometry = (&geometry_geo_types).into();
-
-        features.push(geojson::Feature {
-            bbox: None,
-            geometry: Some(geometry),
-            id: None,
-            properties: Some(properties),
-            foreign_members: None,
-        });
-    }
-
-    let geojson: geojson::GeoJson = geojson::FeatureCollection {
-        bbox: None,
-        features,
-        foreign_members: None,
-    }
-    .into();
-
-    // TODO: implement From<geojson::Error>
-    let geojson_str = geojson.to_string_pretty().unwrap();
-
-    output_file_opfs.write_all(geojson_str.as_bytes())?;
-    output_file_opfs.flush()?;
-
-    Ok(())
-}
-
-fn dbase_field_to_json_value(x: dbase::FieldValue) -> geojson::JsonValue {
-    match x {
-        // String
-        dbase::FieldValue::Character(x) => x.into(),
-        dbase::FieldValue::Memo(x) => x.into(),
-        // Number
-        dbase::FieldValue::Numeric(x) => x.into(),
-        dbase::FieldValue::Float(x) => x.into(),
-        dbase::FieldValue::Integer(x) => x.into(),
-        dbase::FieldValue::Double(x) => x.into(),
-        dbase::FieldValue::Currency(x) => x.into(),
-        // Boolean
-        dbase::FieldValue::Logical(x) => x.into(),
-        // Date
-        dbase::FieldValue::Date(Some(x)) => {
-            format!("{}-{}-{}", x.year(), x.month(), x.day()).into()
-        }
-        dbase::FieldValue::Date(None) => geojson::JsonValue::Null,
-        dbase::FieldValue::DateTime(x) => {
-            let date = x.date();
-            let time = x.time();
-            format!(
-                "{}-{}-{} {}:{}:{}",
-                date.year(),
-                date.month(),
-                date.day(),
-                time.hours(),
-                time.minutes(),
-                time.seconds()
-            )
-            .into()
-        }
-    }
+    write_geojson(&mut reader, &mut output_file_opfs, schema_ref, &wkt)
 }
