@@ -1,25 +1,22 @@
 use std::io::{BufWriter, Read, Seek, Write};
 
-use arrow_schema::SchemaRef;
 use geojson::JsonObject;
 use wasm_bindgen::JsValue;
 
-use crate::{error::Ksj2GpError, io::OpfsFile};
+use crate::{error::Ksj2GpError, io::OpfsFile, writer::get_fields_except_geometry};
 
 pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek>(
     reader: &mut shapefile::Reader<T, D>,
     writer: &mut BufWriter<OpfsFile>,
-    schema_ref: SchemaRef,
+    dbf_fields: &[dbase::FieldInfo],
     _wkt: &str, // TODO: Use this wkt to reproject the coordinates to WGS84 by proj4wkt and proj4rs.
 ) -> Result<(), Ksj2GpError> {
+    web_sys::console::log_1(&"writing geojson".into());
+
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
     // the order. So, this column names vector is needed to ensure the consistent
     // order with the schema.
-    let (_last, fields_except_geometry) = schema_ref.fields().split_last().unwrap();
-    let field_names: Vec<String> = fields_except_geometry
-        .iter()
-        .map(|f| f.name().to_string())
-        .collect();
+    let field_names = get_fields_except_geometry(dbf_fields);
 
     let mut features: Vec<geojson::Feature> = Vec::new();
     for result in reader.iter_shapes_and_records() {
