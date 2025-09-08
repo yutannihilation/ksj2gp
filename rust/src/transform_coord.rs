@@ -77,18 +77,28 @@ impl CoordTransformer {
         &self,
         point: &shapefile::Point,
     ) -> Result<geojson::Position, Ksj2GpError> {
-        let mut pt = (point.x, point.y);
+        // Note: proj4rs requires the longitude and latitude in radian, not in degree.
+        // So, we must convert it to radians and then convert back to degree...
+        let mut pt = (point.x.to_radians(), point.y.to_radians());
         proj4rs::transform::transform(&self.from, &self.to, &mut pt)?;
-        Ok(vec![pt.0, pt.1])
+        Ok(vec![pt.0.to_degrees(), pt.1.to_degrees()])
     }
 
     fn transform_single_point_z(
         &self,
         point: &shapefile::PointZ,
     ) -> Result<geojson::Position, Ksj2GpError> {
-        let mut pt = (point.x, point.y, point.z);
+        let mut pt = (
+            point.x.to_radians(),
+            point.y.to_radians(),
+            point.z.to_radians(),
+        );
         proj4rs::transform::transform(&self.from, &self.to, &mut pt)?;
-        Ok(vec![pt.0, pt.1, pt.2])
+        Ok(vec![
+            pt.0.to_degrees(),
+            pt.1.to_degrees(),
+            pt.2.to_degrees(),
+        ])
     }
 
     fn transform_points(
