@@ -18,12 +18,12 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek>(
     web_sys::console::log_1(&"writing geojson".into());
 
     // TODO: Use LazyCell
-    let proj_from = Proj::from_proj_string(concat!(
+    let proj_to = Proj::from_proj_string(concat!(
         "+proj=longlat +ellps=WGS84",
         " +datum=WGS84 +no_defs"
     ))?;
-    let proj_str_to = proj4wkt::wkt_to_projstring(wkt).map_err(|e| e.to_string())?;
-    let proj_to = Proj::from_proj_string(&proj_str_to)?;
+    let proj_str_from = proj4wkt::wkt_to_projstring(wkt).map_err(|e| e.to_string())?;
+    let proj_from = Proj::from_proj_string(&proj_str_from)?;
     let transformer = CoordTransformer::new(proj_from, proj_to);
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
