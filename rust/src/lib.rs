@@ -15,6 +15,7 @@ mod crs;
 mod encoding;
 mod error;
 mod io;
+mod transform_coord;
 mod writer;
 mod zip_reader;
 
