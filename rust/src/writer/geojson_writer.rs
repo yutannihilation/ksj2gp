@@ -22,8 +22,11 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek>(
         "+proj=longlat +ellps=WGS84",
         " +datum=WGS84 +no_defs"
     ))?;
+
     let proj_str_from = proj4wkt::wkt_to_projstring(wkt).map_err(|e| e.to_string())?;
     let proj_from = Proj::from_proj_string(&proj_str_from)?;
+    web_sys::console::log_1(&format!("PROJ string: {proj_str_from}").into());
+
     let transformer = CoordTransformer::new(proj_from, proj_to);
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
