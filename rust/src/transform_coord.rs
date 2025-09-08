@@ -34,6 +34,8 @@ impl CoordTransformer {
                     .collect::<Result<Vec<Vec<geojson::Position>>, _>>()?;
                 Ok(geojson::Value::MultiLineString(positions))
             }
+            // TODO: this naively assumes the inner ring always comes first.
+            // Need to check the actual specification...
             Shape::Polygon(polygon) => {
                 let positions = polygon
                     .rings()
