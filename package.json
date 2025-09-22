@@ -23,7 +23,7 @@
 		"bits-ui": "^2.9.6",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
-		"eslint-plugin-svelte": "^3.0.0",
+		"eslint-plugin-svelte": "^3.12.4",
 		"globals": "^16.0.0",
 		"ksj2gp": "file:./npm/",
 		"prettier": "^3.4.2",
