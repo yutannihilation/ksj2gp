@@ -983,9 +983,9 @@ dependencies = [
 
 [[package]]
 name = "proj4rs"
-version = "0.1.8"
+version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99f88879081958c109556f14db41e2ee45193090030d93bbbbf28819221e4f13"
+checksum = "2a3c4a66ce46a8b4514d0dce1e7a39b3d2b3a6125f7968093020f96a8a5ad09b"
 dependencies = [
  "console_log",
  "js-sys",
