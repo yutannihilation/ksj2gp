@@ -28,7 +28,7 @@ shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.
     "geo-types",
 ] }
 # since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
-dbase = { git = "https://github.com/tmontaigu/dbase-rs", version = "0.6.0", features = ["encoding_rs"] }
+dbase = { version = "0.6.1", features = ["encoding_rs"] }
 
 proj4rs = { version = "0.1.8", default-features = false }
 proj4wkt = { version = "0.1.0", default-features = false }
@@ -52,5 +52,4 @@ serde_json = "1.0.145"
 geojson = "0.24.2"
 
 [patch.crates-io]
-dbase = { git = "https://github.com/tmontaigu/dbase-rs" }
 wkb = { git = "https://github.com/georust/wkb", rev = "e6c9cc74018209eab01d5e780a4ce388d918b6a5" }
