@@ -103,7 +103,7 @@ impl ZippedShapefileReader {
     }
 
     pub fn guess_encoding(&mut self) -> Result<EncodingRs, Ksj2GpError> {
-        match self.zip.by_name(&self.prj_filename) {
+        match self.zip.by_name(&self.cpg_filename) {
             Ok(mut reader) => {
                 let mut cpg = String::new();
                 reader.read_to_string(&mut cpg)?;
