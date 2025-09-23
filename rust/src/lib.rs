@@ -67,9 +67,9 @@ pub fn convert_shp(
     let reader = UserLocalFile::new(zip_file);
     let mut zip = reader.new_zip_reader(target_shp)?;
 
-    let shp_file_opfs = zip.copy_shp_to_opfs(intermediate_files.shp)?;
-    let dbf_file_opfs = zip.copy_dbf_to_opfs(intermediate_files.dbf)?;
-    let shx_file_opfs = zip.copy_shx_to_opfs(intermediate_files.shx)?;
+    let shp_file_opfs = zip.copy_shp_to(OpfsFile::new(intermediate_files.shp)?)?;
+    let dbf_file_opfs = zip.copy_dbf_to(OpfsFile::new(intermediate_files.dbf)?)?;
+    let shx_file_opfs = zip.copy_shx_to(OpfsFile::new(intermediate_files.shx)?)?;
 
     let mut output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
 

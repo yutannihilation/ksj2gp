@@ -5,13 +5,12 @@ use proj4rs::Proj;
 use wasm_bindgen::JsValue;
 
 use crate::{
-    error::Ksj2GpError, io::OpfsFile, transform_coord::CoordTransformer,
-    writer::get_fields_except_geometry,
+    error::Ksj2GpError, transform_coord::CoordTransformer, writer::get_fields_except_geometry,
 };
 
-pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek>(
+pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
-    writer: &mut BufWriter<OpfsFile>,
+    writer: &mut BufWriter<W>,
     dbf_fields: &[dbase::FieldInfo],
     wkt: &str,
 ) -> Result<(), Ksj2GpError> {

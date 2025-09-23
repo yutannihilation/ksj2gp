@@ -18,7 +18,10 @@ impl UserLocalFile {
         Self { file, offset: 0 }
     }
 
-    pub fn new_zip_reader(&self, target_shp: &str) -> Result<ZippedShapefileReader, Ksj2GpError> {
+    pub fn new_zip_reader(
+        &self,
+        target_shp: &str,
+    ) -> Result<ZippedShapefileReader<Self>, Ksj2GpError> {
         let reader = Self {
             file: self.file.clone(),
             offset: 0,

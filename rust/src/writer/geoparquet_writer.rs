@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Read, Seek};
+use std::io::{BufWriter, Read, Seek, Write};
 
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
@@ -7,15 +7,15 @@ use wasm_bindgen::JsValue;
 
 use crate::{
     builder::construct_schema, crs::wild_guess_from_esri_wkt_to_projjson, error::Ksj2GpError,
-    io::OpfsFile, writer::get_fields_except_geometry,
+    writer::get_fields_except_geometry,
 };
 
 // Number of rows to process at once
 const CHUNK_SIZE: usize = 2048;
 
-pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek>(
+pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
-    writer: &mut BufWriter<OpfsFile>,
+    writer: &mut BufWriter<W>,
     dbf_fields: &[dbase::FieldInfo],
     wkt: &str,
 ) -> Result<(), Ksj2GpError> {

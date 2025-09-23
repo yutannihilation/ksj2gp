@@ -1,15 +1,12 @@
-use std::io::{Read, Seek as _};
+use std::io::{Read, Seek, Write};
 
 use dbase::encoding::EncodingRs;
 use zip::ZipArchive;
 
-use crate::{
-    error::Ksj2GpError,
-    io::{OpfsFile, UserLocalFile},
-};
+use crate::error::Ksj2GpError;
 
-pub struct ZippedShapefileReader {
-    zip: ZipArchive<UserLocalFile>,
+pub struct ZippedShapefileReader<R: Read + Seek> {
+    zip: ZipArchive<R>,
     shp_filename: String,
     dbf_filename: String,
     shx_filename: String,
@@ -17,8 +14,8 @@ pub struct ZippedShapefileReader {
     cpg_filename: String,
 }
 
-impl ZippedShapefileReader {
-    pub fn new(zip: ZipArchive<UserLocalFile>, target_shp: &str) -> Result<Self, Ksj2GpError> {
+impl<R: Read + Seek> ZippedShapefileReader<R> {
+    pub fn new(zip: ZipArchive<R>, target_shp: &str) -> Result<Self, Ksj2GpError> {
         // Sanity checks
         if !target_shp.ends_with(".shp") {
             return Err(format!("Not a Shapefile: {target_shp}").into());
@@ -55,43 +52,43 @@ impl ZippedShapefileReader {
         })
     }
 
-    fn copy_to_opfs(
+    /// Write to the `dst` and return the BufReader fo it
+    fn copy_to<RW: Write + Seek + Read>(
         &mut self,
-        dst: web_sys::FileSystemSyncAccessHandle,
+        mut dst: RW,
         filename: &str,
-    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
-        let mut opfs = OpfsFile::new(dst)?;
+    ) -> Result<std::io::BufReader<RW>, Ksj2GpError> {
         let reader = self.zip.by_name(filename).unwrap();
 
         std::io::copy(
             &mut std::io::BufReader::new(reader),
-            &mut std::io::BufWriter::new(&mut opfs),
+            &mut std::io::BufWriter::new(&mut dst),
         )?;
 
-        opfs.rewind()?;
+        dst.rewind()?;
 
-        Ok(std::io::BufReader::new(opfs))
+        Ok(std::io::BufReader::new(dst))
     }
 
-    pub fn copy_shp_to_opfs(
+    pub fn copy_shp_to<RW: Write + Seek + Read>(
         &mut self,
-        dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
-        self.copy_to_opfs(dst, &self.shp_filename.clone())
+        dst: RW,
+    ) -> Result<std::io::BufReader<RW>, Ksj2GpError> {
+        self.copy_to(dst, &self.shp_filename.clone())
     }
 
-    pub fn copy_dbf_to_opfs(
+    pub fn copy_dbf_to<RW: Write + Seek + Read>(
         &mut self,
-        dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
-        self.copy_to_opfs(dst, &self.dbf_filename.clone())
+        dst: RW,
+    ) -> Result<std::io::BufReader<RW>, Ksj2GpError> {
+        self.copy_to(dst, &self.dbf_filename.clone())
     }
 
-    pub fn copy_shx_to_opfs(
+    pub fn copy_shx_to<RW: Write + Seek + Read>(
         &mut self,
-        dst: web_sys::FileSystemSyncAccessHandle,
-    ) -> Result<std::io::BufReader<OpfsFile>, Ksj2GpError> {
-        self.copy_to_opfs(dst, &self.shx_filename.clone())
+        dst: RW,
+    ) -> Result<std::io::BufReader<RW>, Ksj2GpError> {
+        self.copy_to(dst, &self.shx_filename.clone())
     }
 
     pub fn read_prj(&mut self) -> Result<String, Ksj2GpError> {
