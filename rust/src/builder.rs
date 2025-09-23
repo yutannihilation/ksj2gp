@@ -35,8 +35,6 @@ pub(crate) enum NonGeoArrayBuilder {
 
 impl NonGeoArrayBuilder {
     pub(crate) fn push(&mut self, value: FieldValue) {
-        // web_sys::console::log_1(&format!("pushing field: {value:?} to {self:?}").into());
-
         match (self, value) {
             (NonGeoArrayBuilder::Float64(primitive_builder), FieldValue::Numeric(v)) => {
                 if let Some(v) = v {
@@ -125,8 +123,6 @@ pub(crate) struct ArrayBuilderWithGeo {
 
 impl FieldsWithGeo {
     pub(crate) fn create_builders(&self, capacity: usize) -> ArrayBuilderWithGeo {
-        web_sys::console::log_1(&"creating builders".into());
-
         let builders: Vec<NonGeoArrayBuilder> = self
             .non_geo_fields
             .iter()
@@ -156,15 +152,11 @@ impl FieldsWithGeo {
             })
             .collect();
 
-        web_sys::console::log_1(&"created builders".into());
-
         // Use the same GeoArrow type (with CRS metadata) as in the schema
         let geo_builder = match &self.geoarrow_type {
             GeoArrowType::Wkb(wkb_type) => WkbBuilder::new(wkb_type.clone()),
             _ => unreachable!(),
         };
-
-        web_sys::console::log_1(&"created geo_builders".into());
 
         ArrayBuilderWithGeo {
             builders,

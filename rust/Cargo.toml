@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["lib"]
 
 [dependencies]
 geo-traits = "0.3.0"
@@ -33,16 +33,6 @@ dbase = { version = "0.6.1", features = ["encoding_rs"] }
 proj4rs = { version = "0.1.8", default-features = false }
 proj4wkt = { version = "0.1.0", default-features = false }
 
-# WASM
-wasm-bindgen = "0.2"
-web-sys = { version = "0.3", features = [
-    "File",
-    "FileReaderSync",
-    "FileSystemSyncAccessHandle",
-    "FileSystemReadWriteOptions",
-    "console",
-] }
-
 # Read Zip file
 zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
 
@@ -50,6 +40,15 @@ zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
 itertools = "0.14.0"
 serde_json = "1.0.145"
 geojson = "0.24.2"
+
+[workspace]
+members = [
+    "ksj2gp-cli",
+    "ksj2gp-web"
+]
+
+[workspace.dependencies]
+zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
 
 [patch.crates-io]
 wkb = { git = "https://github.com/georust/wkb", rev = "e6c9cc74018209eab01d5e780a4ce388d918b6a5" }

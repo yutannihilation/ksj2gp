@@ -1,26 +1,23 @@
-use std::io::{BufWriter, Read, Seek};
+use std::io::{Read, Seek, Write};
 
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
 use parquet::arrow::ArrowWriter;
-use wasm_bindgen::JsValue;
 
 use crate::{
     builder::construct_schema, crs::wild_guess_from_esri_wkt_to_projjson, error::Ksj2GpError,
-    io::OpfsFile, writer::get_fields_except_geometry,
+    writer::get_fields_except_geometry,
 };
 
 // Number of rows to process at once
 const CHUNK_SIZE: usize = 2048;
 
-pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek>(
+pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
-    writer: &mut BufWriter<OpfsFile>,
+    writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
     wkt: &str,
 ) -> Result<(), Ksj2GpError> {
-    web_sys::console::log_1(&"writing geoparquet".into());
-
     let projjson = wild_guess_from_esri_wkt_to_projjson(wkt)?;
     let crs = geoarrow_schema::Crs::from_projjson(projjson);
 
@@ -49,7 +46,7 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek>(
             for (i, field_name) in field_names.iter().enumerate() {
                 let value = record
                     .remove(field_name)
-                    .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
+                    .ok_or_else(|| format!("Not found {field_name}"))?;
                 builders.builders[i].push(value);
             }
 
@@ -63,8 +60,6 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek>(
         parquet_writer.write(&encoded_batch)?;
         parquet_writer.flush()?;
     }
-
-    web_sys::console::log_1(&"writing geoparquet metadata".into());
 
     let kv_metadata = gpq_encoder.into_keyvalue().unwrap();
     parquet_writer.append_key_value_metadata(kv_metadata);

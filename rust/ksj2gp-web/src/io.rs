@@ -1,7 +1,6 @@
+use ksj2gp::Ksj2GpError;
 use wasm_bindgen::JsValue;
 use web_sys::{FileReaderSync, FileSystemReadWriteOptions, js_sys::Uint8Array};
-
-use crate::{error::Ksj2GpError, zip_reader::ZippedShapefileReader};
 
 // Note: OnceLock cannot be used here.
 thread_local! {
@@ -16,17 +15,6 @@ pub struct UserLocalFile {
 impl UserLocalFile {
     pub fn new(file: web_sys::File) -> Self {
         Self { file, offset: 0 }
-    }
-
-    pub fn new_zip_reader(&self, target_shp: &str) -> Result<ZippedShapefileReader, Ksj2GpError> {
-        let reader = Self {
-            file: self.file.clone(),
-            offset: 0,
-        };
-        match zip::ZipArchive::new(reader) {
-            Ok(zip) => ZippedShapefileReader::new(zip, target_shp),
-            Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),
-        }
     }
 }
 
@@ -91,7 +79,7 @@ unsafe impl std::marker::Send for OpfsFile {}
 impl OpfsFile {
     pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Result<Self, Ksj2GpError> {
         // currently, the same name of file is repeatedly used, so it needs to be truncated first.
-        file.truncate_with_u32(0)?;
+        file.truncate_with_u32(0).map_err(|e| format!("{e:?}"))?;
 
         Ok(Self {
             file,
