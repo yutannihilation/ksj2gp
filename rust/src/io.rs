@@ -1,7 +1,7 @@
 use wasm_bindgen::JsValue;
 use web_sys::{FileReaderSync, FileSystemReadWriteOptions, js_sys::Uint8Array};
 
-use crate::{error::Ksj2GpError, zip_reader::ZippedShapefileReader};
+use crate::error::Ksj2GpError;
 
 // Note: OnceLock cannot be used here.
 thread_local! {
@@ -16,20 +16,6 @@ pub struct UserLocalFile {
 impl UserLocalFile {
     pub fn new(file: web_sys::File) -> Self {
         Self { file, offset: 0 }
-    }
-
-    pub fn new_zip_reader(
-        &self,
-        target_shp: &str,
-    ) -> Result<ZippedShapefileReader<Self>, Ksj2GpError> {
-        let reader = Self {
-            file: self.file.clone(),
-            offset: 0,
-        };
-        match zip::ZipArchive::new(reader) {
-            Ok(zip) => ZippedShapefileReader::new(zip, target_shp),
-            Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),
-        }
     }
 }
 

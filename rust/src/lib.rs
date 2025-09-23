@@ -1,13 +1,20 @@
+use std::{
+    io::{Read, Seek, Write},
+    path::PathBuf,
+};
+
 use shapefile::{Reader, ShapeReader};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 use zip::ZipArchive;
 
 use crate::{
-    error::Ksj2GpError,
     io::{OpfsFile, UserLocalFile},
     writer::{write_geojson, write_geoparquet},
+    zip_reader::ZippedShapefileReader,
 };
+
+pub use crate::error::Ksj2GpError;
 
 mod builder;
 mod crs;
@@ -56,6 +63,21 @@ pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, Ksj2GpErro
     Ok(shp_files)
 }
 
+pub fn list_shp_files_fs(zip_file: PathBuf) -> Result<Vec<String>, Ksj2GpError> {
+    let reader = std::io::BufReader::new(std::fs::File::open(zip_file)?);
+    match zip::ZipArchive::new(reader) {
+        Ok(zip) => {
+            let shp_files = zip
+                .file_names()
+                .filter(|path| path.ends_with(".shp"))
+                .map(|path| path.to_string())
+                .collect();
+            Ok(shp_files)
+        }
+        Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),
+    }
+}
+
 #[wasm_bindgen]
 pub fn convert_shp(
     zip_file: web_sys::File,
@@ -64,29 +86,52 @@ pub fn convert_shp(
     output_file: web_sys::FileSystemSyncAccessHandle,
     output_format: &str,
 ) -> Result<(), Ksj2GpError> {
-    let reader = UserLocalFile::new(zip_file);
-    let mut zip = reader.new_zip_reader(target_shp)?;
+    let zip = UserLocalFile::new(zip_file);
+    let output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
 
-    let shp_file_opfs = zip.copy_shp_to(OpfsFile::new(intermediate_files.shp)?)?;
-    let dbf_file_opfs = zip.copy_dbf_to(OpfsFile::new(intermediate_files.dbf)?)?;
-    let shx_file_opfs = zip.copy_shx_to(OpfsFile::new(intermediate_files.shx)?)?;
+    convert_shp_inner(
+        zip,
+        target_shp,
+        OpfsFile::new(intermediate_files.shp)?,
+        OpfsFile::new(intermediate_files.dbf)?,
+        OpfsFile::new(intermediate_files.shx)?,
+        output_file_opfs,
+        output_format,
+    )
+}
 
-    let mut output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
+pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Send>(
+    zip: R,
+    target_shp: &str,
+    shp: RW,
+    dbf: RW,
+    shx: RW,
+    mut out: W,
+    output_format: &str,
+) -> Result<(), Ksj2GpError> {
+    let mut zip = match zip::ZipArchive::new(zip) {
+        Ok(zip) => ZippedShapefileReader::new(zip, target_shp),
+        Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),
+    }?;
 
-    let shapefile_reader = ShapeReader::with_shx(shp_file_opfs, shx_file_opfs)?;
+    let shp_reader = zip.copy_shp_to(shp)?;
+    let dbf_reader = zip.copy_dbf_to(dbf)?;
+    let shx_reader = zip.copy_shx_to(shx)?;
+
+    let shapefile_reader = ShapeReader::with_shx(shp_reader, shx_reader)?;
 
     let wkt = zip.read_prj()?;
 
     let dbase_reader =
-        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, zip.guess_encoding()?)?;
+        shapefile::dbase::Reader::new_with_encoding(dbf_reader, zip.guess_encoding()?)?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
 
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
     match output_format {
-        "GeoParquet" => write_geoparquet(&mut reader, &mut output_file_opfs, &dbf_fields, &wkt),
-        "GeoJson" => write_geojson(&mut reader, &mut output_file_opfs, &dbf_fields, &wkt),
+        "GeoParquet" => write_geoparquet(&mut reader, &mut out, &dbf_fields, &wkt),
+        "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields, &wkt),
         _ => Err(format!("Unsupported format: {output_format}").into()),
     }
 }

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "lib"]
 
 [dependencies]
 geo-traits = "0.3.0"
@@ -50,6 +50,11 @@ zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
 itertools = "0.14.0"
 serde_json = "1.0.145"
 geojson = "0.24.2"
+
+[workspace]
+members = [
+    "ksj2gp-cli"
+]
 
 [patch.crates-io]
 wkb = { git = "https://github.com/georust/wkb", rev = "e6c9cc74018209eab01d5e780a4ce388d918b6a5" }

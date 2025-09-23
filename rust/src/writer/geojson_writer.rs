@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Read, Seek, Write};
+use std::io::{Read, Seek, Write};
 
 use geojson::JsonObject;
 use proj4rs::Proj;
@@ -10,7 +10,7 @@ use crate::{
 
 pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
-    writer: &mut BufWriter<W>,
+    writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
     wkt: &str,
 ) -> Result<(), Ksj2GpError> {

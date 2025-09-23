@@ -60,7 +60,7 @@ jobs:
       - name: Compile Rust crate into WebAssembly
         run: |
           cd rust
-          cargo build --release
+          cargo build --release -p ksj2gp
           cd ..
 
           wasm-bindgen \

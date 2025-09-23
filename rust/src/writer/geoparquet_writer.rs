@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Read, Seek, Write};
+use std::io::{Read, Seek, Write};
 
 use geoparquet::writer::{GeoParquetRecordBatchEncoder, GeoParquetWriterOptionsBuilder};
 use itertools::Itertools;
@@ -15,7 +15,7 @@ const CHUNK_SIZE: usize = 2048;
 
 pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
-    writer: &mut BufWriter<W>,
+    writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
     wkt: &str,
 ) -> Result<(), Ksj2GpError> {
