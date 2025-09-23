@@ -1,5 +1,6 @@
 use std::io::{Read, Seek as _};
 
+use dbase::encoding::EncodingRs;
 use zip::ZipArchive;
 
 use crate::{
@@ -13,6 +14,7 @@ pub struct ZippedShapefileReader {
     dbf_filename: String,
     shx_filename: String,
     prj_filename: String,
+    cpg_filename: String,
 }
 
 impl ZippedShapefileReader {
@@ -27,15 +29,16 @@ impl ZippedShapefileReader {
         let dbf_filename = format!("{filename_base}.dbf");
         let shx_filename = format!("{filename_base}.shx");
         let prj_filename = format!("{filename_base}.prj");
+        let cpg_filename = format!("{filename_base}.cpg");
 
         // Check if the file actually exists in the ZIP file
         let filenames: Vec<&str> = zip.file_names().collect();
 
+        // Note: .prj and .cpg are optional, so don't need to check here
         for f in [
             shp_filename.as_str(),
             dbf_filename.as_str(),
             shx_filename.as_str(),
-            prj_filename.as_str(),
         ] {
             if !filenames.contains(&f) {
                 return Err(format!("{f} doesn't exist in the ZIP file").into());
@@ -48,6 +51,7 @@ impl ZippedShapefileReader {
             dbf_filename,
             shx_filename,
             prj_filename,
+            cpg_filename,
         })
     }
 
@@ -96,5 +100,37 @@ impl ZippedShapefileReader {
         reader.read_to_string(&mut wkt)?;
 
         Ok(wkt)
+    }
+
+    pub fn guess_encoding(&mut self) -> Result<EncodingRs, Ksj2GpError> {
+        match self.zip.by_name(&self.prj_filename) {
+            Ok(mut reader) => {
+                let mut cpg = String::new();
+                reader.read_to_string(&mut cpg)?;
+
+                match cpg.as_str() {
+                    "UTF-8" => return Ok(EncodingRs::from(dbase::encoding_rs::UTF_8)),
+                    "CP932" => return Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS)),
+                    _ => {
+                        return Err(format!("Unknown encoding is found in .cpg file: {cpg}").into());
+                    }
+                }
+            }
+            Err(zip::result::ZipError::FileNotFound) => {} // If ZIP file doesn't contain .cpg file, use other heuristics...
+            Err(e) => return Err(e.into()),
+        }
+
+        // If file path contains some characters like "utf-8", it's probably UTF-8
+        if self
+            .shp_filename
+            .to_lowercase()
+            .replace('-', "")
+            .replace('_', "")
+            .contains("utf8")
+        {
+            return Ok(EncodingRs::from(dbase::encoding_rs::UTF_8));
+        }
+
+        Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS))
     }
 }

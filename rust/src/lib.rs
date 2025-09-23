@@ -4,7 +4,6 @@ use web_sys::FileReaderSync;
 use zip::ZipArchive;
 
 use crate::{
-    encoding::guess_encoding,
     error::Ksj2GpError,
     io::{OpfsFile, UserLocalFile},
     writer::{write_geojson, write_geoparquet},
@@ -12,7 +11,6 @@ use crate::{
 
 mod builder;
 mod crs;
-mod encoding;
 mod error;
 mod io;
 mod transform_coord;
@@ -80,7 +78,7 @@ pub fn convert_shp(
     let wkt = zip.read_prj()?;
 
     let dbase_reader =
-        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, guess_encoding(target_shp))?;
+        shapefile::dbase::Reader::new_with_encoding(dbf_file_opfs, zip.guess_encoding()?)?;
 
     let dbf_fields = dbase_reader.fields().to_vec();
 
