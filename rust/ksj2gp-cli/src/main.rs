@@ -25,7 +25,11 @@ pub fn convert_shp_fs(
     let tmp_shx_file_path = tempfile::NamedTempFile::with_suffix(".shx")?;
 
     let output_format = match output_file.extension() {
-        Some(ext) => ext.to_string_lossy(),
+        Some(ext) => match ext.to_string_lossy().as_ref() {
+            "geojson" => "GeoJson",
+            "parquet" => "GeoParquet",
+            e => return Err(format!("Unsupported extension: {e}").into()),
+        },
         None => return Err(format!("Unsupported format: {}", output_file.display()).into()),
     };
 
@@ -34,9 +38,9 @@ pub fn convert_shp_fs(
     convert_shp_inner(
         zip,
         target_shp,
-        std::fs::File::create(tmp_shp_file_path)?,
-        std::fs::File::create(tmp_dbf_file_path)?,
-        std::fs::File::create(tmp_shx_file_path)?,
+        tmp_shp_file_path,
+        tmp_dbf_file_path,
+        tmp_shx_file_path,
         output_file,
         &output_format,
     )
