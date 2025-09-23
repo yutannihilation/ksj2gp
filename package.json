@@ -28,7 +28,7 @@
 		"ksj2gp": "file:./npm/",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
-		"svelte": "^5.0.0",
+		"svelte": "^5.39.4",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^4.1.13",
 		"typescript": "^5.0.0",
