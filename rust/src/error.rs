@@ -1,7 +1,5 @@
-use wasm_bindgen::JsValue;
-
 #[derive(Debug, Clone)]
-pub struct Ksj2GpError(JsValue);
+pub struct Ksj2GpError(String);
 
 impl std::fmt::Display for Ksj2GpError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -11,7 +9,7 @@ impl std::fmt::Display for Ksj2GpError {
 
 impl std::error::Error for Ksj2GpError {}
 
-impl From<Ksj2GpError> for JsValue {
+impl From<Ksj2GpError> for String {
     fn from(value: Ksj2GpError) -> Self {
         value.0
     }
@@ -56,12 +54,6 @@ impl From<arrow_schema::ArrowError> for Ksj2GpError {
 impl From<parquet::errors::ParquetError> for Ksj2GpError {
     fn from(value: parquet::errors::ParquetError) -> Self {
         Self(format!("parquet error: {value:?}").into())
-    }
-}
-
-impl From<wasm_bindgen::JsValue> for Ksj2GpError {
-    fn from(value: wasm_bindgen::JsValue) -> Self {
-        Self(value)
     }
 }
 

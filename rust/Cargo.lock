@@ -793,8 +793,6 @@ dependencies = [
  "proj4wkt",
  "serde_json",
  "shapefile",
- "wasm-bindgen",
- "web-sys",
  "zip",
 ]
 
@@ -805,6 +803,16 @@ dependencies = [
  "clap",
  "ksj2gp",
  "tempfile",
+]
+
+[[package]]
+name = "ksj2gp-web"
+version = "0.1.0"
+dependencies = [
+ "ksj2gp",
+ "wasm-bindgen",
+ "web-sys",
+ "zip",
 ]
 
 [[package]]

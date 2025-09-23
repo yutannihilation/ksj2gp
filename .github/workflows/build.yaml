@@ -60,18 +60,18 @@ jobs:
       - name: Compile Rust crate into WebAssembly
         run: |
           cd rust
-          cargo build --release -p ksj2gp
+          cargo build --target wasm32-unknown-unknown --release -p ksj2gp-web
           cd ..
 
           wasm-bindgen \
             --out-dir ./npm \
             --typescript \
             --target bundler \
-            ./rust/target/wasm32-unknown-unknown/release/ksj2gp.wasm
+            ./rust/target/wasm32-unknown-unknown/release/ksj2gp_web.wasm
 
           # TODO
-          # wasm-opt ./npm/ksj2gp_bg.wasm -O -o tmp.wasm
-          # mv tmp.wasm ./npm/ksj2gp_bg.wasm
+          # wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
+          # mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 
       - name: Install dependencies
         run: pnpm install

@@ -2,14 +2,14 @@
 	"name": "ksj2gp",
 	"version": "0.0.1",
 	"files": [
-		"ksj2gp_bg.wasm",
-		"ksj2gp.js",
-		"ksj2gp_bg.js",
-		"ksj2gp.d.ts"
+		"ksj2gp_web_bg.wasm",
+		"ksj2gp_web.js",
+		"ksj2gp_web_bg.js",
+		"ksj2gp_web.d.ts"
 	],
-	"module": "ksj2gp.js",
-	"types": "ksj2gp.d.ts",
+	"module": "ksj2gp_web.js",
+	"types": "ksj2gp_web.d.ts",
 	"sideEffects": [
-		"./ksj2gp.js"
+		"./ksj2gp_web.js"
 	]
 }

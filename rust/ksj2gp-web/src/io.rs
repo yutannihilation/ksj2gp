@@ -1,7 +1,6 @@
+use ksj2gp::Ksj2GpError;
 use wasm_bindgen::JsValue;
 use web_sys::{FileReaderSync, FileSystemReadWriteOptions, js_sys::Uint8Array};
-
-use crate::error::Ksj2GpError;
 
 // Note: OnceLock cannot be used here.
 thread_local! {
@@ -80,7 +79,7 @@ unsafe impl std::marker::Send for OpfsFile {}
 impl OpfsFile {
     pub fn new(file: web_sys::FileSystemSyncAccessHandle) -> Result<Self, Ksj2GpError> {
         // currently, the same name of file is repeatedly used, so it needs to be truncated first.
-        file.truncate_with_u32(0)?;
+        file.truncate_with_u32(0).map_err(|e| format!("{e:?}"))?;
 
         Ok(Self {
             file,

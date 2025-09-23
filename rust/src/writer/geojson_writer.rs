@@ -2,7 +2,6 @@ use std::io::{Read, Seek, Write};
 
 use geojson::JsonObject;
 use proj4rs::Proj;
-use wasm_bindgen::JsValue;
 
 use crate::{
     error::Ksj2GpError, transform_coord::CoordTransformer, writer::get_fields_except_geometry,
@@ -14,8 +13,6 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     dbf_fields: &[dbase::FieldInfo],
     wkt: &str,
 ) -> Result<(), Ksj2GpError> {
-    web_sys::console::log_1(&"writing geojson".into());
-
     // TODO: Use LazyCell
     let proj_to = Proj::from_proj_string(concat!(
         "+proj=longlat +ellps=WGS84",
@@ -24,7 +21,6 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
 
     let proj_str_from = proj4wkt::wkt_to_projstring(wkt).map_err(|e| e.to_string())?;
     let proj_from = Proj::from_proj_string(&proj_str_from)?;
-    web_sys::console::log_1(&format!("PROJ string: {proj_str_from}").into());
 
     let transformer = CoordTransformer::new(proj_from, proj_to);
 
@@ -42,7 +38,7 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
         for field_name in &field_names {
             let value = record
                 .remove(field_name)
-                .ok_or_else(|| -> JsValue { format!("Not found {field_name}").into() })?;
+                .ok_or_else(|| format!("Not found {field_name}"))?;
             properties.insert(field_name.to_string(), dbase_field_to_json_value(value));
         }
 
