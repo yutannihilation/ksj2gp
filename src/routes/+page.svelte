@@ -155,11 +155,11 @@
 			<Icon icon="mdi:arrow-right" class="inline" height="0.7em" />
 			<Select.Root onValueChange={(v) => (outputFormat = v as OutputFormat)} type="single">
 				<Select.Trigger
-					class="inline-block tracking-tight align-baseline min-w-[7.6em] border border-slate-700 px-3 py-3 relative"
+					class="inline-block tracking-tight align-baseline min-w-[7.2em] border border-slate-700 py-3 relative"
 					aria-label="出力形式を選択"
 				>
 					{outputFormat}
-					<Icon icon="mdi:caret-down" class="inline align-middle absolute top-1/3 h-1/3" />
+					<Icon icon="mdi:caret-down" class="absolute top-1/3 right-0 h-1/3" width="0.5em" />
 				</Select.Trigger>
 				<Select.Portal>
 					<Select.Content
