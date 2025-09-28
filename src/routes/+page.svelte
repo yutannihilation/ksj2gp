@@ -151,7 +151,8 @@
 >
 	<header class="text-center max-w-4xl mx-auto">
 		<h1 class="text-7xl font-extrabold font-title tracking-tight mb-2">
-			KSJ →
+			KSJ
+			<Icon icon="mdi:arrow-right" class="inline" height="0.7em" />
 			<select
 				bind:value={outputFormat}
 				class="inline-block align-baseline border border-slate-700 rounded-md px-3 py-3"
