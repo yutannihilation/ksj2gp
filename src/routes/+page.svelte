@@ -146,14 +146,14 @@
 </script>
 
 <div
-	class="min-h-dvh bg-hero text-slate-900 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
+	class="min-h-dvh text-slate-900 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
 >
 	<header class="text-center max-w-4xl mx-auto">
 		<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">
 			KSJ →
 			<select
 				bind:value={outputFormat}
-				class="ml-2 inline-block align-middle bg-slate-900/60 text-indigo-50 border border-slate-700 rounded-md px-2 py-1 text-lg md:text-2xl lg:text-3xl"
+				class="ml-2 inline-block align-middle border border-slate-700 rounded-md px-3 py-3"
 				aria-label="出力形式を選択"
 			>
 				<option value="GeoParquet">GeoParquet</option>
@@ -165,16 +165,14 @@
 		</p>
 	</header>
 
-	<section
-		class="max-w-7xl mx-auto glass-panel border border-slate-700/60 rounded-2xl p-10 sm:p-12 lg:p-14 shadow-[0_10px_30px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.06)]"
-	>
+	<section class="max-w-7xl mx-auto glass-panel border border-slate-700/60 p-10 sm:p-12 lg:p-14">
 		<div
 			id="dropzone"
 			class={`relative grid place-items-center gap-5 ` +
 				// Make the box more square-like: width drives height
 				`w-full max-w-[56rem] sm:max-w-[64rem] lg:max-w-[70rem] aspect-square mx-auto ` +
 				`p-12 sm:p-14 lg:p-16 ` +
-				`border-2 border-dashed border-blue-800/70 rounded-xl ` +
+				`border-2 border-dashed border-blue-800/70  ` +
 				`bg-slate-900/60 outline-none transition ` +
 				`${dragover ? 'ring-4 ring-sky-400/35 border-sky-400/80 -translate-y-0.5' : ''}`}
 			role="button"
@@ -191,20 +189,20 @@
 		>
 			{#if bigLoading}
 				<div
-					class="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 border-4 border-white/25 border-t-sky-400 rounded-full animate-spin"
+					class="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 border-4 border-white/25 border-t-sky-400 animate-spin"
 					aria-label="読み込み中"
 				></div>
 			{:else}
 				<div class="text-8xl lg:text-9xl" aria-hidden="true">📦</div>
 			{/if}
-			<div class="text-indigo-200/80 text-center leading-relaxed text-xl sm:text-2xl lg:text-3xl">
+			<div class="text-white text-center leading-relaxed text-xl sm:text-2xl lg:text-3xl">
 				<strong>ここに ZIP をドロップ</strong><br />または下のボタンから選択
 			</div>
 
 			<div class="flex gap-2.5">
 				<button
 					type="button"
-					class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-6 py-3.5 text-lg sm:text-xl font-semibold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)] transition active:brightness-95 hover:brightness-105 disabled:opacity-60 disabled:cursor-not-allowed"
+					class="bg-gradient-to-b from-blue-400 to-blue-600 rounded-md text-white px-6 py-3.5 text-lg sm:text-xl font-semibold tracking-tight transition active:brightness-95 hover:brightness-105 disabled:opacity-60 disabled:cursor-not-allowed"
 					on:click|stopPropagation={pick}
 					disabled={!ready || busy}
 				>
@@ -215,9 +213,7 @@
 
 			{#if busy && !bigLoading}
 				<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
-					<span
-						class="w-[18px] h-[18px] border-2 border-white/25 border-t-teal-400 rounded-full animate-spin"
-						aria-hidden="true"
+					<span class="w-[18px] h-[18px] border-2 border-white/25 animate-spin" aria-hidden="true"
 					></span>
 					<span class="sr-only">処理中</span>
 				</div>
@@ -226,7 +222,7 @@
 			{#if !busy && !ready && !bigLoading}
 				<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 					<span
-						class="w-[18px] h-[18px] border-2 border-white/25 border-t-sky-400 rounded-full animate-spin"
+						class="w-[18px] h-[18px] border-2 border-white/25 border-t-sky-400 animate-spin"
 						aria-hidden="true"
 					></span>
 					<span aria-hidden="true">初期化中…</span>
