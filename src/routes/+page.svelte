@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 	// Use Bits UI for a nicer error dialog
 	// Note: ensure `bits-ui` is installed locally
@@ -161,53 +162,55 @@
 			</select>
 		</h1>
 		<p class="text-slate-700 text-base sm:text-lg">
-			国土数値情報の ZIP をドラッグ＆ドロップすると、選択した形式に変換します。
+			国土数値情報の Shapefile を、選択した形式に変換します。
 		</p>
 	</header>
 
-	<section class="max-w-7xl mx-auto glass-panel border border-slate-700/60 p-10 sm:p-12 lg:p-14">
-		<div
-			id="dropzone"
-			class={`relative grid place-items-center gap-5 ` +
-				// Make the box more square-like: width drives height
-				`w-full max-w-[56rem] sm:max-w-[64rem] lg:max-w-[70rem] aspect-square mx-auto ` +
-				`p-12 sm:p-14 lg:p-16 ` +
-				`border-2 border-dashed border-blue-800/70  ` +
-				`bg-slate-900/60 outline-none transition ` +
-				`${dragover ? 'ring-4 ring-sky-400/35 border-sky-400/80 -translate-y-0.5' : ''}`}
-			role="button"
-			tabindex="0"
-			aria-label="ファイルのドラッグ＆ドロップ領域"
-			on:dragover={onDragOver}
-			on:dragleave={onDragLeave}
-			on:drop={onDrop}
-			on:keydown={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					pick();
-				}
-			}}
-		>
+	<div
+		id="dropzone"
+		class={`relative grid place-items-center ` +
+			// Make the box more square-like: width drives height
+			`w-1/3 aspect-square mx-auto ` +
+			`p-16 ` +
+			`border-4 border-dashed border-gray-400/50 ` +
+			`outline-none transition ` +
+			`${dragover ? 'border-sky-400/80 bg-sky-400/20' : ''}`}
+		role="button"
+		tabindex="0"
+		aria-label="ファイルのドラッグ＆ドロップ領域"
+		on:dragover={onDragOver}
+		on:dragleave={onDragLeave}
+		on:drop={onDrop}
+		on:keydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				pick();
+			}
+		}}
+	>
+		<div class="place-items-center">
 			{#if bigLoading}
-				<div
-					class="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 border-4 border-white/25 border-t-sky-400 animate-spin"
-					aria-label="読み込み中"
-				></div>
+				<div class="animate-spin" aria-label="読み込み中"></div>
 			{:else}
-				<div class="text-8xl lg:text-9xl" aria-hidden="true">📦</div>
+				<div class="" aria-label="読み込み中">
+					<Icon icon="formkit:zip" width="6em" color="#bbb" />
+				</div>
 			{/if}
-			<div class="text-white text-center leading-relaxed text-xl sm:text-2xl lg:text-3xl">
-				<strong>ここに ZIP をドロップ</strong><br />または下のボタンから選択
-			</div>
-
-			<div class="flex gap-2.5">
-				<button
-					type="button"
-					class="bg-gradient-to-b from-blue-400 to-blue-600 rounded-md text-white px-6 py-3.5 text-lg sm:text-xl font-semibold tracking-tight transition active:brightness-95 hover:brightness-105 disabled:opacity-60 disabled:cursor-not-allowed"
-					on:click|stopPropagation={pick}
-					disabled={!ready || busy}
-				>
-					{busy ? '変換中…' : !ready ? '読み込み中…' : 'ZIP を選択'}
-				</button>
+			<div class="text-gray-400 text-center font-extrabold leading-relaxed text-2xl py-8">
+				{#if busy}
+					変換中...
+				{:else if !ready}
+					読み込み中…
+				{:else}
+					ここに ZIP ファイルを<br />ドラッグ＆ドロップ<br />または
+					<button
+						class="text-blue-600 hover:underline"
+						type="button"
+						on:click|stopPropagation={pick}
+						disabled={!ready || busy}
+					>
+						ZIP ファイルを選択
+					</button>
+				{/if}
 				<input bind:this={inputEl} type="file" accept=".zip" hidden on:change={onInputChange} />
 			</div>
 
@@ -229,7 +232,7 @@
 				</div>
 			{/if}
 		</div>
-	</section>
+	</div>
 
 	<!-- Bits UI: Error dialog -->
 	<Dialog.Root bind:open={errorOpen}>
