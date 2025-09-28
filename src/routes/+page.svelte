@@ -147,14 +147,14 @@
 </script>
 
 <div
-	class="min-h-dvh text-slate-900 flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
+	class="min-h-dvh text-slate-900 font-display flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
 >
 	<header class="text-center max-w-4xl mx-auto">
-		<h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2">
+		<h1 class="text-7xl font-extrabold font-title tracking-tight mb-2">
 			KSJ →
 			<select
 				bind:value={outputFormat}
-				class="ml-2 inline-block align-middle border border-slate-700 rounded-md px-3 py-3"
+				class="inline-block align-baseline border border-slate-700 rounded-md px-3 py-3"
 				aria-label="出力形式を選択"
 			>
 				<option value="GeoParquet">GeoParquet</option>
@@ -195,7 +195,7 @@
 					<Icon icon="formkit:zip" width="6em" color="#bbb" />
 				</div>
 			{/if}
-			<div class="text-gray-400 text-center font-extrabold leading-relaxed text-2xl py-8">
+			<div class="text-gray-400 text-center font-bold leading-relaxed text-2xl py-8">
 				{#if busy}
 					変換中...
 				{:else if !ready}
@@ -245,7 +245,7 @@
 				<div class="flex justify-end">
 					<Dialog.Close asChild>
 						<button
-							class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-semibold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]"
+							class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-bold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]"
 						>
 							閉じる
 						</button>
@@ -281,7 +281,7 @@
 					<Dialog.Close asChild>
 						<button
 							type="button"
-							class="rounded-lg bg-slate-700 text-white px-4 py-2 font-semibold tracking-tight"
+							class="rounded-lg bg-slate-700 text-white px-4 py-2 font-bold tracking-tight"
 							on:click={cancelShpDialog}
 						>
 							キャンセル

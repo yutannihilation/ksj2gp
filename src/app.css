@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Noto+Sans+JP:wght@100..900&display=swap');
 @import 'tailwindcss';
 
-/* Lightweight custom utilities for this app */
-@layer utilities {
+@theme {
+    --font-display: "Noto Sans JP", sans-serif;
+    --font-title: "Montserrat";
 }
