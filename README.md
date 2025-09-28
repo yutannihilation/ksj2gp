@@ -27,10 +27,10 @@
 
 ```sh
 cd rust
-cargo build
+cargo build --target wasm32-unknown-unknown -p ksj2gp-web
 cd -
 
-wasm-bindgen --out-dir npm --typescript --target bundler ./rust/target/wasm32-unknown-unknown/debug/ksj2gp.wasm
+wasm-bindgen --out-dir npm --typescript --target bundler ./rust/target/wasm32-unknown-unknown/debug/ksj2gp_web.wasm
 ```
 
 Note: needs `vite --force` to reflect the new binary
@@ -42,6 +42,6 @@ pnpm run dev --force
 To optimize:
 
 ```sh
-path/to/wasm-opt ./npm/ksj2gp_bg.wasm -O -o tmp.wasm
-mv tmp.wasm ./npm/ksj2gp_bg.wasm
+path/to/wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
+mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 ```
