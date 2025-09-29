@@ -99,7 +99,19 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
         Ok(wkt)
     }
 
+    // cf. https://github.com/EsriJapan/shapefile_info
     pub fn guess_encoding(&mut self) -> Result<EncodingRs, Ksj2GpError> {
+        // First, try to guess from LDID (29th byte of dBASE file)
+        let mut dbf_reader = self.zip.by_name(&self.dbf_filename).unwrap();
+        let mut buf = vec![0u8; 29];
+        dbf_reader.read(&mut buf)?;
+        match buf[28] {
+            13 => return Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS)),
+            _ => {}
+        }
+        drop(dbf_reader);
+
+        // Next, check .cpg file
         match self.zip.by_name(&self.cpg_filename) {
             Ok(mut reader) => {
                 let mut cpg = String::new();
@@ -117,6 +129,7 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
             Err(e) => return Err(e.into()),
         }
 
+        // In case of no LDID and no .cpg file, try to wild guess from the path...
         // If file path contains some characters like "utf-8", it's probably UTF-8
         if self
             .shp_filename
