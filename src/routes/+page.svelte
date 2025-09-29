@@ -146,9 +146,7 @@
 	}
 </script>
 
-<div
-	class="min-h-dvh text-slate-900 font-display flex flex-col gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-16 px-5 sm:px-6 lg:justify-center"
->
+<div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 py-10 px-5 lg:justify-center">
 	<header class="text-center max-w-4xl mx-auto">
 		<h1 class="text-7xl font-extrabold tracking-wider font-title mb-4">
 			KSJ
@@ -194,7 +192,7 @@
 		id="dropzone"
 		class={`relative grid place-items-center ` +
 			// Make the box more square-like: width drives height
-			`w-1/3 aspect-square mx-auto ` +
+			`w-1/3 aspect-square mx-auto min-w-120 ` +
 			`p-16 ` +
 			`border-4 border-dashed border-gray-400/50 ` +
 			`outline-none transition ` +
