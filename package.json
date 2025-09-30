@@ -34,7 +34,7 @@
 		"tailwindcss": "^4.1.13",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.44.1",
-		"vite": "^7.1.5",
+		"vite": "^7.1.7",
 		"vite-plugin-wasm": "^3.5.0"
 	},
 	"pnpm": {
