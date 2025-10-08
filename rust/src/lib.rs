@@ -65,7 +65,7 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Sen
 
     match output_format {
         "GeoParquet" => write_geoparquet(&mut reader, &mut out, &dbf_fields, &wkt),
-        "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields, &wkt),
+        "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields),
         _ => Err(format!("Unsupported format: {output_format}").into()),
     }
 }

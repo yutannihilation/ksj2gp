@@ -57,12 +57,6 @@ impl From<parquet::errors::ParquetError> for Ksj2GpError {
     }
 }
 
-impl From<proj4rs::errors::Error> for Ksj2GpError {
-    fn from(value: proj4rs::errors::Error) -> Self {
-        Self(format!("proj4rs error: {value:?}").into())
-    }
-}
-
 impl From<&str> for Ksj2GpError {
     fn from(value: &str) -> Self {
         Self(value.into())

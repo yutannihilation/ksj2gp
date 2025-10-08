@@ -1,16 +1,12 @@
-use proj4rs::Proj;
 use shapefile::Shape;
 
 use crate::error::Ksj2GpError;
 
-pub struct CoordTransformer {
-    from: Proj,
-    to: Proj,
-}
+pub struct CoordTransformer {}
 
 impl CoordTransformer {
-    pub fn new(from: Proj, to: Proj) -> Self {
-        Self { from, to }
+    pub fn new() -> Self {
+        Self {}
     }
     pub fn transform_to_geojson(&self, shape: &Shape) -> Result<geojson::Value, Ksj2GpError> {
         match shape {
@@ -77,28 +73,18 @@ impl CoordTransformer {
         &self,
         point: &shapefile::Point,
     ) -> Result<geojson::Position, Ksj2GpError> {
-        // Note: proj4rs requires the longitude and latitude in radian, not in degree.
-        // So, we must convert it to radians and then convert back to degree...
-        let mut pt = (point.x.to_radians(), point.y.to_radians());
-        proj4rs::transform::transform(&self.from, &self.to, &mut pt)?;
-        Ok(vec![pt.0.to_degrees(), pt.1.to_degrees()])
+        // TODO: add PatchJDG transformation here
+
+        Ok(vec![point.x, point.y])
     }
 
     fn transform_single_point_z(
         &self,
         point: &shapefile::PointZ,
     ) -> Result<geojson::Position, Ksj2GpError> {
-        let mut pt = (
-            point.x.to_radians(),
-            point.y.to_radians(),
-            point.z.to_radians(),
-        );
-        proj4rs::transform::transform(&self.from, &self.to, &mut pt)?;
-        Ok(vec![
-            pt.0.to_degrees(),
-            pt.1.to_degrees(),
-            pt.2.to_degrees(),
-        ])
+        // TODO: add PatchJDG transformation here
+
+        Ok(vec![point.x, point.y, point.z])
     }
 
     fn transform_points(
