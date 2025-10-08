@@ -1757,8 +1757,9 @@ dependencies = [
 
 [[package]]
 name = "wkb"
-version = "0.9.0"
-source = "git+https://github.com/georust/wkb?rev=e6c9cc74018209eab01d5e780a4ce388d918b6a5#e6c9cc74018209eab01d5e780a4ce388d918b6a5"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "908e92c755a5f5ff8781c1c7ebcedb60ce5443879d20f4a0b6a1ee8fb3e6dfb6"
 dependencies = [
  "byteorder",
  "geo-traits",

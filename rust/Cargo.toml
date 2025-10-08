@@ -34,7 +34,7 @@ proj4rs = { version = "0.1.8", default-features = false }
 proj4wkt = { version = "0.1.0", default-features = false }
 
 # Read Zip file
-zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
+zip = { workspace = true }
 
 # for .chunk()
 itertools = "0.14.0"
@@ -49,6 +49,3 @@ members = [
 
 [workspace.dependencies]
 zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
-
-[patch.crates-io]
-wkb = { git = "https://github.com/georust/wkb", rev = "e6c9cc74018209eab01d5e780a4ce388d918b6a5" }
