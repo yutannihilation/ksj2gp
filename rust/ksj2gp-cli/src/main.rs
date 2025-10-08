@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use clap::Parser;
-use ksj2gp::{Ksj2GpError, convert_shp_inner, list_shp_files_fs};
+use ksj2gp::{Ksj2GpError, convert_shp_inner, encode_utf8_to_cp437cp932, list_shp_files_fs};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -37,7 +37,7 @@ pub fn convert_shp_fs(
 
     convert_shp_inner(
         zip,
-        target_shp,
+        &encode_utf8_to_cp437cp932(target_shp)?,
         tmp_shp_file_path,
         tmp_dbf_file_path,
         tmp_shx_file_path,

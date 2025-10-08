@@ -11,9 +11,11 @@ use crate::{
 };
 
 pub use crate::error::Ksj2GpError;
+pub use encoding::{decode_cp437cp932_to_utf8, encode_utf8_to_cp437cp932};
 
 mod builder;
 mod crs;
+mod encoding;
 mod error;
 mod transform_coord;
 mod writer;
@@ -26,8 +28,8 @@ pub fn list_shp_files_fs(zip_file: PathBuf) -> Result<Vec<String>, Ksj2GpError> 
             let shp_files = zip
                 .file_names()
                 .filter(|path| path.ends_with(".shp"))
-                .map(|path| path.to_string())
-                .collect();
+                .map(decode_cp437cp932_to_utf8)
+                .collect::<Result<_, _>>()?;
             Ok(shp_files)
         }
         Err(e) => Err(format!("Failed to read ZIP file!: {e:?}").into()),

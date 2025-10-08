@@ -777,6 +777,7 @@ dependencies = [
  "arrow-array",
  "arrow-schema",
  "dbase",
+ "encoding_rs",
  "geo-traits",
  "geo-types",
  "geoarrow-array",
