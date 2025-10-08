@@ -80,7 +80,20 @@ fn cp437_map() -> &'static HashMap<char, u8> {
     })
 }
 
-/// Encode CP437-encoded CP932 to UTF-8
+fn cp437_revmap() -> &'static HashMap<u8, char> {
+    static CP437_REVMAP: OnceLock<HashMap<u8, char>> = OnceLock::new();
+    CP437_REVMAP.get_or_init(|| {
+        let mut map = HashMap::with_capacity(CP437_UNICODE.len());
+        for (byte, code_point) in CP437_UNICODE.iter().enumerate() {
+            if let Some(ch) = char::from_u32(*code_point as u32) {
+                map.insert(byte as u8, ch);
+            }
+        }
+        map
+    })
+}
+
+/// Decode CP437-encoded CP932 to UTF-8
 pub fn decode_cp437cp932_to_utf8(input: &str) -> Result<String, Ksj2GpError> {
     let map = cp437_map();
     let mut cp932_bytes = Vec::with_capacity(input.len());
@@ -97,10 +110,31 @@ pub fn decode_cp437cp932_to_utf8(input: &str) -> Result<String, Ksj2GpError> {
     let (out, _, error) = encoding_rs::SHIFT_JIS.decode(&cp932_bytes);
 
     if error {
-        return Err(format!("Failed to decode CP932").into());
+        return Err(format!("Failed to decode from CP932").into());
     }
 
     Ok(out.to_string())
+}
+
+/// Encode UTF-8 to CP437-encoded CP932
+pub fn encode_utf8_to_cp437cp932(input: &str) -> Result<String, Ksj2GpError> {
+    let (cp932_bytes, _, error) = encoding_rs::SHIFT_JIS.encode(input);
+    if error {
+        return Err(format!("Failed to encode to CP932").into());
+    }
+
+    let map = cp437_revmap();
+    let mut cp437_chars = String::with_capacity(cp932_bytes.len());
+
+    for b in cp932_bytes.iter() {
+        if let Some(&byte) = map.get(b) {
+            cp437_chars.push(byte);
+        } else {
+            return Err(format!("Failed to encode to CP437").into());
+        }
+    }
+
+    Ok(cp437_chars.to_string())
 }
 
 #[cfg(test)]

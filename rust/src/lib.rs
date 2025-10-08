@@ -11,7 +11,7 @@ use crate::{
 };
 
 pub use crate::error::Ksj2GpError;
-pub use encoding::decode_cp437cp932_to_utf8;
+pub use encoding::{decode_cp437cp932_to_utf8, encode_utf8_to_cp437cp932};
 
 mod builder;
 mod crs;

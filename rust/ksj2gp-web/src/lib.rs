@@ -1,4 +1,4 @@
-use ksj2gp::{convert_shp_inner, decode_cp437cp932_to_utf8};
+use ksj2gp::{convert_shp_inner, decode_cp437cp932_to_utf8, encode_utf8_to_cp437cp932};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 use zip::ZipArchive;
@@ -59,7 +59,7 @@ pub fn convert_shp(
 
     convert_shp_inner(
         zip,
-        target_shp,
+        &encode_utf8_to_cp437cp932(target_shp)?,
         OpfsFile::new(intermediate_files.shp)?,
         OpfsFile::new(intermediate_files.dbf)?,
         OpfsFile::new(intermediate_files.shx)?,
