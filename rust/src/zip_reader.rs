@@ -91,12 +91,16 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
         self.copy_to(dst, &self.shx_filename.clone())
     }
 
-    pub fn read_prj(&mut self) -> Result<String, Ksj2GpError> {
-        let mut reader = self.zip.by_name(&self.prj_filename).unwrap();
+    pub fn read_prj(&mut self) -> Result<Option<String>, Ksj2GpError> {
+        let mut reader = match self.zip.by_name(&self.prj_filename) {
+            Ok(reader) => reader,
+            Err(zip::result::ZipError::FileNotFound) => return Ok(None),
+            Err(e) => return Err(e.into()),
+        };
         let mut wkt = String::new();
         reader.read_to_string(&mut wkt)?;
 
-        Ok(wkt)
+        Ok(Some(wkt))
     }
 
     // cf. https://github.com/EsriJapan/shapefile_info

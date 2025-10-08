@@ -1,7 +1,6 @@
 use std::io::{Read, Seek, Write};
 
 use geojson::JsonObject;
-use proj4rs::Proj;
 
 use crate::{
     error::Ksj2GpError, transform_coord::CoordTransformer, writer::get_fields_except_geometry,
@@ -11,18 +10,8 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
     writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
-    wkt: &str,
 ) -> Result<(), Ksj2GpError> {
-    // TODO: Use LazyCell
-    let proj_to = Proj::from_proj_string(concat!(
-        "+proj=longlat +ellps=WGS84",
-        " +datum=WGS84 +no_defs"
-    ))?;
-
-    let proj_str_from = proj4wkt::wkt_to_projstring(wkt).map_err(|e| e.to_string())?;
-    let proj_from = Proj::from_proj_string(&proj_str_from)?;
-
-    let transformer = CoordTransformer::new(proj_from, proj_to);
+    let transformer = CoordTransformer::new();
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
     // the order. So, this column names vector is needed to ensure the consistent
