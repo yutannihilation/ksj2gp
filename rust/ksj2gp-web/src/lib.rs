@@ -1,4 +1,4 @@
-use ksj2gp::convert_shp_inner;
+use ksj2gp::{convert_shp_inner, decode_cp437cp932_to_utf8};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 use zip::ZipArchive;
@@ -40,8 +40,8 @@ pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, String> {
     let shp_files: Vec<String> = zip
         .file_names()
         .filter(|path| path.ends_with(".shp"))
-        .map(|path| path.to_string())
-        .collect();
+        .map(decode_cp437cp932_to_utf8)
+        .collect::<Result<_, _>>()?;
 
     Ok(shp_files)
 }
