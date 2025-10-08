@@ -1,7 +1,6 @@
-use ksj2gp::{convert_shp_inner, decode_cp437cp932_to_utf8, encode_utf8_to_cp437cp932};
+use ksj2gp::{convert_shp_inner, encode_utf8_to_cp437cp932};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
-use zip::ZipArchive;
 
 use crate::io::{OpfsFile, UserLocalFile};
 
@@ -35,15 +34,7 @@ impl IntermediateFiles {
 #[wasm_bindgen]
 pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, String> {
     let reader = UserLocalFile::new(zip_file);
-    let zip = ZipArchive::new(reader).map_err(|e| format!("{e}"))?;
-
-    let shp_files: Vec<String> = zip
-        .file_names()
-        .filter(|path| path.ends_with(".shp"))
-        .map(decode_cp437cp932_to_utf8)
-        .collect::<Result<_, _>>()?;
-
-    Ok(shp_files)
+    ksj2gp::list_shp_files(reader).map_err(|e| format!("{e}"))
 }
 
 #[wasm_bindgen]
