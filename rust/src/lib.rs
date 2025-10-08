@@ -1,7 +1,4 @@
-use std::{
-    io::{Read, Seek, Write},
-    path::PathBuf,
-};
+use std::io::{Read, Seek, Write};
 
 use shapefile::{Reader, ShapeReader};
 
@@ -21,8 +18,7 @@ mod transform_coord;
 mod writer;
 mod zip_reader;
 
-pub fn list_shp_files_fs(zip_file: PathBuf) -> Result<Vec<String>, Ksj2GpError> {
-    let reader = std::io::BufReader::new(std::fs::File::open(zip_file)?);
+pub fn list_shp_files<R: Read + Seek>(reader: R) -> Result<Vec<String>, Ksj2GpError> {
     match zip::ZipArchive::new(reader) {
         Ok(zip) => {
             let shp_files = zip
