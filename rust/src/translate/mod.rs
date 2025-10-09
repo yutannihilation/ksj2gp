@@ -2,6 +2,8 @@ use std::sync::LazyLock;
 
 use regex::Regex;
 
+// TODO: probably, it's a bit overkill to use regex just for extracting KSJ id.
+// Maybe we can list all the possible IDs first and then match against it?
 pub(crate) fn extract_ksj_id(filename: &str) -> Result<&str, crate::Ksj2GpError> {
     static RE: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r"[A-Z][0-9]{2}[a-z]?[0-9]?(?:-[a-z])?(?:-[cu])?").unwrap());
