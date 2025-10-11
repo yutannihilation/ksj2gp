@@ -18,3 +18,13 @@ pub(crate) fn translate_colnames(code: &str) -> String {
         None => code.to_string(),
     }
 }
+
+fn translate_colnames_L01(code: &str) -> String {
+    // TODO
+    code.to_string()
+}
+
+fn translate_colnames_L02(code: &str) -> String {
+    // TODO
+    code.to_string()
+}
