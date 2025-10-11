@@ -1,0 +1,38 @@
+name: Rust Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rust/**'
+      - '.github/workflows/rust-tests.yaml'
+  pull_request:
+    paths:
+      - 'rust/**'
+      - '.github/workflows/rust-tests.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './rust -> ./rust/target'
+
+      - name: Run tests
+        run: cargo test --workspace --locked

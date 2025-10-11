@@ -1,4 +1,4 @@
-use ksj2gp::{convert_shp_inner, encode_utf8_to_cp437cp932};
+use ksj2gp::{TranslateOptions, convert_shp_inner, encode_utf8_to_cp437cp932, extract_ksj_id};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
@@ -45,6 +45,9 @@ pub fn convert_shp(
     output_file: web_sys::FileSystemSyncAccessHandle,
     output_format: &str,
 ) -> Result<(), String> {
+    let filename = zip_file.name();
+    let (ksj_id, year) = extract_ksj_id(&filename)?;
+
     let zip = UserLocalFile::new(zip_file);
     let output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
 
@@ -56,6 +59,14 @@ pub fn convert_shp(
         OpfsFile::new(intermediate_files.shx)?,
         output_file_opfs,
         output_format,
+        &TranslateOptions {
+            // TODO: pass this option from outside
+            translate_colnames: true,
+            translate_contents: true,
+            ignore_translation_errors: false,
+            ksj_id,
+            year,
+        },
     )?;
 
     Ok(())

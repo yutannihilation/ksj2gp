@@ -1,7 +1,10 @@
 use std::path::PathBuf;
 
 use clap::Parser;
-use ksj2gp::{Ksj2GpError, convert_shp_inner, encode_utf8_to_cp437cp932, list_shp_files};
+use ksj2gp::{
+    Ksj2GpError, TranslateOptions, convert_shp_inner, encode_utf8_to_cp437cp932, extract_ksj_id,
+    list_shp_files,
+};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -18,6 +21,9 @@ pub fn convert_shp_fs(
     target_shp: &str,
     output_file: PathBuf,
 ) -> Result<(), Ksj2GpError> {
+    let filename = zip_file.file_name().unwrap().to_string_lossy().to_string();
+    let (ksj_id, year) = extract_ksj_id(&filename)?;
+
     let zip = std::io::BufReader::new(std::fs::File::open(zip_file)?);
 
     let tmp_shp_file_path = tempfile::NamedTempFile::with_suffix(".shp")?;
@@ -43,6 +49,14 @@ pub fn convert_shp_fs(
         tmp_shx_file_path,
         output_file,
         &output_format,
+        &TranslateOptions {
+            // TODO: pass this option from outside
+            translate_colnames: true,
+            translate_contents: true,
+            ignore_translation_errors: false,
+            ksj_id,
+            year,
+        },
     )
 }
 

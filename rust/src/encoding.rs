@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::OnceLock};
+use std::{collections::HashMap, sync::LazyLock};
 
 use crate::error::Ksj2GpError;
 
@@ -65,8 +65,7 @@ const CP437_ALT_GLYPHS: &[(char, u8)] = &[
 ];
 
 fn cp437_map() -> &'static HashMap<char, u8> {
-    static CP437_MAP: OnceLock<HashMap<char, u8>> = OnceLock::new();
-    CP437_MAP.get_or_init(|| {
+    static CP437_MAP: LazyLock<HashMap<char, u8>> = LazyLock::new(|| {
         let mut map = HashMap::with_capacity(CP437_UNICODE.len() + CP437_ALT_GLYPHS.len());
         for (byte, code_point) in CP437_UNICODE.iter().enumerate() {
             if let Some(ch) = char::from_u32(*code_point as u32) {
@@ -77,12 +76,12 @@ fn cp437_map() -> &'static HashMap<char, u8> {
             map.insert(glyph, byte);
         }
         map
-    })
+    });
+    LazyLock::force(&CP437_MAP)
 }
 
 fn cp437_revmap() -> &'static HashMap<u8, char> {
-    static CP437_REVMAP: OnceLock<HashMap<u8, char>> = OnceLock::new();
-    CP437_REVMAP.get_or_init(|| {
+    static CP437_REVMAP: LazyLock<HashMap<u8, char>> = LazyLock::new(|| {
         let mut map = HashMap::with_capacity(CP437_UNICODE.len());
         for (byte, code_point) in CP437_UNICODE.iter().enumerate() {
             if let Some(ch) = char::from_u32(*code_point as u32) {
@@ -90,7 +89,8 @@ fn cp437_revmap() -> &'static HashMap<u8, char> {
             }
         }
         map
-    })
+    });
+    LazyLock::force(&CP437_REVMAP)
 }
 
 /// Decode CP437-encoded CP932 to UTF-8
