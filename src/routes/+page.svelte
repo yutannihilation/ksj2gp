@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	// Use Bits UI for a nicer error dialog
 	// Note: ensure `bits-ui` is installed locally
-	import { Dialog, Select } from 'bits-ui';
+	import { Dialog, Label, Select, Switch } from 'bits-ui';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
 	let inputEl: HTMLInputElement;
@@ -12,6 +12,9 @@
 	let worker: Worker | null = null;
 	let ready = false;
 	let outputFormat: OutputFormat = 'GeoParquet';
+	let translateColumns = true;
+	let translateContents = true;
+	let ignoreTranslationErrors = true;
 
 	// Multi-shp selection dialog state
 	let shpDialogOpen = false;
@@ -98,7 +101,13 @@
 		}
 		busy = true;
 		pendingZip = file;
-		worker.postMessage({ file, outputFormat: outputFormat });
+		worker.postMessage({
+			file,
+			translateColumns,
+			translateContents,
+			ignoreTranslationErrors,
+			outputFormat: outputFormat
+		});
 	}
 
 	function onInputChange(e: Event) {
@@ -137,7 +146,14 @@
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
 		busy = true;
-		worker.postMessage({ file: pendingZip, outputFormat, targetShp: path });
+		worker.postMessage({
+			file: pendingZip,
+			outputFormat,
+			translateColumns,
+			translateContents,
+			ignoreTranslationErrors,
+			targetShp: path
+		});
 	}
 
 	function cancelShpDialog() {
@@ -254,6 +270,55 @@
 				</div>
 			{/if}
 		</div>
+	</div>
+
+	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
+		<Switch.Root
+			bind:checked={translateColumns}
+			id="translate_colnames"
+			name="translate_colnames"
+			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-20"
+		>
+			<Switch.Thumb
+				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
+			/>
+		</Switch.Root>
+		<Label.Root for="translate_colnames" class="font-bold text-2xl text-slate-700">
+			属性名を変換する
+		</Label.Root>
+	</div>
+
+	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
+		<Switch.Root
+			bind:checked={translateContents}
+			disabled
+			id="translate_contents"
+			name="translate_contents"
+			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-10"
+		>
+			<Switch.Thumb
+				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0 disabled:opacity-0"
+			/>
+		</Switch.Root>
+		<Label.Root for="translate_contents" class="font-bold text-2xl text-slate-700">
+			データの中身を変換する（準備中）
+		</Label.Root>
+	</div>
+
+	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
+		<Switch.Root
+			bind:checked={ignoreTranslationErrors}
+			id="ignore_translation_errors"
+			name="ignore_translation_errors"
+			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-20"
+		>
+			<Switch.Thumb
+				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
+			/>
+		</Switch.Root>
+		<Label.Root for="ignore_translation_errors" class="font-bold text-2xl text-slate-700">
+			変換エラーを無視する
+		</Label.Root>
 	</div>
 
 	<!-- Bits UI: Error dialog -->

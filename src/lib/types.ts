@@ -3,6 +3,12 @@ export type WorkerRequest = {
 	file: File;
 	// format of output file
 	outputFormat: OutputFormat;
+	// whether to traslate column names or not
+	translateColumns: boolean;
+	// whether to traslate cotents or not
+	translateContents: boolean;
+	// whether to ignore translation errors or not
+	ignoreTranslationErrors: boolean;
 	// path to Shapefile in the ZIP file
 	targetShp?: string;
 };

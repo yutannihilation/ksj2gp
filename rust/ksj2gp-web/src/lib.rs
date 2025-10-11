@@ -44,6 +44,9 @@ pub fn convert_shp(
     intermediate_files: IntermediateFiles,
     output_file: web_sys::FileSystemSyncAccessHandle,
     output_format: &str,
+    translate_colnames: bool,
+    translate_contents: bool,
+    ignore_translation_errors: bool,
 ) -> Result<(), String> {
     let filename = zip_file.name();
     let (ksj_id, year) = extract_ksj_id(&filename)?;
@@ -61,9 +64,9 @@ pub fn convert_shp(
         output_format,
         &TranslateOptions {
             // TODO: pass this option from outside
-            translate_colnames: true,
-            translate_contents: true,
-            ignore_translation_errors: false,
+            translate_colnames,
+            translate_contents,
+            ignore_translation_errors,
             ksj_id,
             year,
         },
