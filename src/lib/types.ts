@@ -7,6 +7,8 @@ export type WorkerRequest = {
 	translateColumns: boolean;
 	// whether to traslate cotents or not
 	translateContents: boolean;
+	// whether to ignore translation errors or not
+	ignoreTranslationErrors: boolean;
 	// path to Shapefile in the ZIP file
 	targetShp?: string;
 };

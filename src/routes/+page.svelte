@@ -14,6 +14,7 @@
 	let outputFormat: OutputFormat = 'GeoParquet';
 	let translateColumns = true;
 	let translateContents = true;
+	let ignoreTranslationErrors = true;
 
 	// Multi-shp selection dialog state
 	let shpDialogOpen = false;
@@ -100,7 +101,13 @@
 		}
 		busy = true;
 		pendingZip = file;
-		worker.postMessage({ file, translateColumns, translateContents, outputFormat: outputFormat });
+		worker.postMessage({
+			file,
+			translateColumns,
+			translateContents,
+			ignoreTranslationErrors,
+			outputFormat: outputFormat
+		});
 	}
 
 	function onInputChange(e: Event) {
@@ -144,6 +151,7 @@
 			outputFormat,
 			translateColumns,
 			translateContents,
+			ignoreTranslationErrors,
 			targetShp: path
 		});
 	}
@@ -294,6 +302,22 @@
 		</Switch.Root>
 		<Label.Root for="translate_contents" class="font-bold text-2xl text-slate-700">
 			データの中身を変換する（準備中）
+		</Label.Root>
+	</div>
+
+	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
+		<Switch.Root
+			bind:checked={ignoreTranslationErrors}
+			id="ignore_translation_errors"
+			name="ignore_translation_errors"
+			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-20"
+		>
+			<Switch.Thumb
+				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
+			/>
+		</Switch.Root>
+		<Label.Root for="ignore_translation_errors" class="font-bold text-2xl text-slate-700">
+			変換エラーを無視する
 		</Label.Root>
 	</div>
 

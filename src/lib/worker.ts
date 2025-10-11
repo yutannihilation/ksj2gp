@@ -38,6 +38,9 @@ console.log('Worker loaded');
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const file = event.data.file;
 	const outputFormat = event.data.outputFormat;
+	const translateColumns = event.data.translateColumns;
+	const translateContents = event.data.translateContents;
+	const ignoreTranslationErrors = event.data.ignoreTranslationErrors;
 	let targetShp = event.data.targetShp;
 
 	if (!targetShp) {
@@ -72,7 +75,16 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const intermediate_files = new IntermediateFiles(shp, dbf, shx);
 
 	try {
-		convert_shp(file, targetShp, intermediate_files, outputFile, outputFormat);
+		convert_shp(
+			file,
+			targetShp,
+			intermediate_files,
+			outputFile,
+			outputFormat,
+			translateColumns,
+			translateContents,
+			ignoreTranslationErrors
+		);
 		const filename = getOutputFilename(targetShp, outputFormat);
 		postTypedMessage({ output: { handle: outputFileHandle, filename } });
 	} catch (e: unknown) {
