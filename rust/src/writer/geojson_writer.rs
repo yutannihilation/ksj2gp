@@ -32,13 +32,13 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
                 .remove(field_name)
                 .ok_or_else(|| format!("Not found {field_name}"))?;
 
-            let field_name = if use_readable_colnames {
-                translate_colnames(field_name)
+            let translated_field_name = if use_readable_colnames {
+                translate_colnames(field_name)?
             } else {
                 field_name.to_string()
             };
 
-            properties.insert(field_name, dbase_field_to_json_value(value));
+            properties.insert(translated_field_name, dbase_field_to_json_value(value));
         }
 
         let geometry = geojson::Geometry::new(transformer.transform_to_geojson(&shape)?);

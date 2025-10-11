@@ -13,7 +13,7 @@ use geoarrow_schema::GeoArrowType;
 
 use std::sync::Arc;
 
-use crate::translate::translate_colnames;
+use crate::{error::Ksj2GpError, translate::translate_colnames};
 
 pub(crate) struct FieldsWithGeo {
     pub(crate) schema_ref: arrow_schema::SchemaRef,
@@ -182,12 +182,12 @@ pub(crate) fn construct_schema(
     fields: &[FieldInfo],
     crs: geoarrow_schema::Crs,
     use_readable_colnames: bool,
-) -> FieldsWithGeo {
+) -> Result<FieldsWithGeo, Ksj2GpError> {
     let mut non_geo_fields = Vec::with_capacity(fields.len());
 
     for field in fields {
         let name = if use_readable_colnames {
-            translate_colnames(field.name())
+            translate_colnames(field.name())?.to_owned()
         } else {
             field.name().to_string()
         };
@@ -229,9 +229,9 @@ pub(crate) fn construct_schema(
     fields.push(Arc::new(geo_field));
     let schema_ref = Arc::new(arrow_schema::Schema::new(fields));
 
-    FieldsWithGeo {
+    Ok(FieldsWithGeo {
         schema_ref,
         non_geo_fields,
         geoarrow_type,
-    }
+    })
 }
