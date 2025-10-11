@@ -74,274 +74,145 @@ mod tests {
 
     #[test]
     fn test_extract_ksj_id() {
-        assert_eq!(
-            extract_ksj_id("m1000-17_27_GML.zip").unwrap(),
-            ("mesh1000", 2017)
-        );
-        assert_eq!(
-            extract_ksj_id("m500-17_44_GML.zip").unwrap(),
-            ("mesh500", 2017)
-        );
-        assert_eq!(
-            extract_ksj_id("1km_mesh_suikei_2018_shape_19.zip").unwrap(),
-            ("mesh1000h30", 2018)
-        );
-        assert_eq!(
-            extract_ksj_id("1km_mesh_2024_04_GML.zip").unwrap(),
-            ("mesh1000r6", 2024)
-        );
-        assert_eq!(
-            extract_ksj_id("500m_mesh_suikei_2018_shape_23.zip").unwrap(),
-            ("mesh500h30", 2018)
-        );
-        assert_eq!(
-            extract_ksj_id("500m_mesh_2024_GML.zip").unwrap(),
-            ("mesh500r6", 2018)
-        );
-        assert_eq!(
-            extract_ksj_id("250m_mesh_2024_GML.zip").unwrap(),
-            ("mesh250r6", 2018)
-        );
-        assert_eq!(extract_ksj_id("A09-06_02_GML.zip").unwrap(), ("A09", 2006));
-        assert_eq!(extract_ksj_id("A10-06_03_GML.zip").unwrap(), ("A10", 2006));
-        assert_eq!(extract_ksj_id("A11-15_31_GML.zip").unwrap(), ("A11", 2015));
-        assert_eq!(extract_ksj_id("A12-06_04_GML.zip").unwrap(), ("A12", 2006));
-        assert_eq!(extract_ksj_id("A13-06_14_GML.zip").unwrap(), ("A13", 2006));
-        assert_eq!(extract_ksj_id("A15-15_12_GML.zip").unwrap(), ("A15", 2015));
-        assert_eq!(extract_ksj_id("A16-75_34_GML.zip").unwrap(), ("A16", 1975));
-        assert_eq!(
-            extract_ksj_id("A17-901001_20_GML.zip").unwrap(),
-            ("A17", 1990)
-        );
-        assert_eq!(
-            extract_ksj_id("A18-051001_16_GML.zip").unwrap(),
-            ("A18", 2005)
-        );
-        assert_eq!(
-            extract_ksj_id("A18s-a-10_GML.zip").unwrap(),
-            ("A18s_a", 2010)
-        );
-        assert_eq!(
-            extract_ksj_id("A19-651001_45_GML.zip").unwrap(),
-            ("A19", 1965)
-        );
-        assert_eq!(
-            extract_ksj_id("A19s-05_17_GML.zip").unwrap(),
-            ("A19s", 2005)
-        );
-        assert_eq!(
-            extract_ksj_id("A19s-a-05_17_GML.zip").unwrap(),
-            ("A19s", 2005)
-        ); // A19s_a is same as A19s
-        assert_eq!(
-            extract_ksj_id("A20-601001_46_GML.zip").unwrap(),
-            ("A20", 1960)
-        );
-        assert_eq!(
-            extract_ksj_id("A20s-05_46_GML.zip").unwrap(),
-            ("A20s", 2005)
-        );
-        assert_eq!(
-            extract_ksj_id("A21-001001_13_GML.zip").unwrap(),
-            ("A21", 2000)
-        );
-        assert_eq!(
-            extract_ksj_id("A21s-10_13_GML.zip").unwrap(),
-            ("A21s", 2010)
-        );
-        assert_eq!(
-            extract_ksj_id("A22-070402_32_GML.zip").unwrap(),
-            ("A22", 2007)
-        );
-        assert_eq!(
-            extract_ksj_id("A22-m-14_33_GML.zip").unwrap(),
-            ("A22-m", 2014)
-        );
-        assert_eq!(
-            extract_ksj_id("A22s-00_19_GML.zip").unwrap(),
-            ("A22s", 2000)
-        );
-        assert_eq!(
-            extract_ksj_id("A23-051001_46_GML.zip").unwrap(),
-            ("A23", 2005)
-        );
-        assert_eq!(
-            extract_ksj_id("A24-901001_36_GML.zip").unwrap(),
-            ("A24", 1990)
-        );
-        assert_eq!(
-            extract_ksj_id("A25-930928_35_GML.zip").unwrap(),
-            ("A25", 1993)
-        );
-        assert_eq!(extract_ksj_id("A27-21_10_GML.zip").unwrap(), ("A27", 2021));
-        assert_eq!(extract_ksj_id("A28-10_GML.zip").unwrap(), ("A28", 2010));
-        assert_eq!(extract_ksj_id("A29-11_39_GML.zip").unwrap(), ("A29", 2011));
-        assert_eq!(
-            extract_ksj_id("A30a5-11_5438-jgd_GML.zip").unwrap(),
-            ("A30a5", 2011)
-        );
-        assert_eq!(extract_ksj_id("A30b-11_GML.zip").unwrap(), ("A30b", 2011));
-        assert_eq!(
-            extract_ksj_id("A31a-24_81_10_GML.zip").unwrap(),
-            ("A31a", 2024)
-        );
-        assert_eq!(
-            extract_ksj_id("A31b-24_10_5540_GML.zip").unwrap(),
-            ("A31b", 2024)
-        );
-        assert_eq!(extract_ksj_id("A32-21_29_GML.zip").unwrap(), ("A32", 2021));
-        assert_eq!(extract_ksj_id("A33-24_00_GML.zip").unwrap(), ("A33", 2024));
-        assert_eq!(extract_ksj_id("A34-180316_GML.zip").unwrap(), ("A34", 2018));
-        assert_eq!(
-            extract_ksj_id("A35a-14_46_GML.zip").unwrap(),
-            ("A35a", 2014)
-        );
-        assert_eq!(
-            extract_ksj_id("A35b-14_26_GML.zip").unwrap(),
-            ("A35b", 2014)
-        );
-        assert_eq!(
-            extract_ksj_id("A35c-14_07_GML.zip").unwrap(),
-            ("A35c", 2014)
-        );
-        assert_eq!(extract_ksj_id("A37-15_39_GML.zip").unwrap(), ("A37", 2015));
-        assert_eq!(extract_ksj_id("A38-20_27_GML.zip").unwrap(), ("A38", 2020));
-        assert_eq!(extract_ksj_id("A39-15_GML.zip").unwrap(), ("A39", 2015));
-        assert_eq!(extract_ksj_id("A40-20_14_GML.zip").unwrap(), ("A40", 2020));
-        assert_eq!(extract_ksj_id("A42-18_GML.zip").unwrap(), ("A42", 2018));
-        assert_eq!(extract_ksj_id("A43-18_GML.zip").unwrap(), ("A43", 2018));
-        assert_eq!(extract_ksj_id("A44-18_GML.zip").unwrap(), ("A44", 2018));
-        assert_eq!(extract_ksj_id("A45-19_41_GML.zip").unwrap(), ("A45", 2019));
-        assert_eq!(extract_ksj_id("A46-20_04_GML.zip").unwrap(), ("A46", 2020));
-        assert_eq!(extract_ksj_id("A47-21_52_GML.zip").unwrap(), ("A47", 2021));
-        assert_eq!(extract_ksj_id("A48-21_17_GML.zip").unwrap(), ("A48", 2021));
-        assert_eq!(extract_ksj_id("A49-20_13_GML.zip").unwrap(), ("A49", 2020));
-        assert_eq!(extract_ksj_id("A50-20_14_GML.zip").unwrap(), ("A50", 2020));
-        assert_eq!(extract_ksj_id("A51-24_20_GML.zip").unwrap(), ("A51", 2024));
-        assert_eq!(extract_ksj_id("A52-23_25_GML.zip").unwrap(), ("A52", 2023));
-        assert_eq!(extract_ksj_id("A53-23-81_GML.zip").unwrap(), ("A53", 2023));
-        assert_eq!(extract_ksj_id("A54-23_GML.zip").unwrap(), ("A54", 2023));
-        assert_eq!(
-            extract_ksj_id("A55-22_01100_SHP.zip").unwrap(),
-            ("A55", 2022)
-        );
-        assert_eq!(extract_ksj_id("C02-06_GML.zip").unwrap(), ("C02", 2006));
-        assert_eq!(extract_ksj_id("C09-06_GML.zip").unwrap(), ("C09", 2006));
-        assert_eq!(extract_ksj_id("C23-06_28_GML.zip").unwrap(), ("C23", 2006));
-        assert_eq!(extract_ksj_id("C28-13.zip").unwrap(), ("C28", 2013));
-        assert_eq!(
-            extract_ksj_id("G02-12_5238-jgd_GML.zip").unwrap(),
-            ("G02", 2012)
-        );
-        assert_eq!(
-            extract_ksj_id("G04-a-11_5940-jgd_GML.zip").unwrap(),
-            ("G04a", 2011)
-        );
-        assert_eq!(
-            extract_ksj_id("G04-c-11_5439-jgd_GML.zip").unwrap(),
-            ("G04c", 2011)
-        );
-        assert_eq!(
-            extract_ksj_id("G04-d-11_5338-jgd_GML.zip").unwrap(),
-            ("G04d", 2011)
-        );
-        assert_eq!(extract_ksj_id("G08-15_43_GML.zip").unwrap(), ("G08", 2015));
-        assert_eq!(extract_ksj_id("L01-87_05_GML.zip").unwrap(), ("L01", 1987));
-        assert_eq!(extract_ksj_id("L02-09_02_GML.zip").unwrap(), ("L02", 2009));
-        assert_eq!(
-            extract_ksj_id("L03-a-21_5339-jgd2011_GML.zip").unwrap(),
-            ("L03-a", 2021)
-        );
-        assert_eq!(
-            extract_ksj_id("L03-b-21_5336-jgd2011_GML.zip").unwrap(),
-            ("L03-b", 2021)
-        );
-        assert_eq!(
-            extract_ksj_id("L03-b-c-21_5339-jgd2011_GML.zip").unwrap(),
-            ("L03-b-c", 2021)
-        );
-        assert_eq!(
-            extract_ksj_id("L03-b-u-21_5539-jgd2011_GML.zip").unwrap(),
-            ("L03-b-u", 2021)
-        );
-        // L03-b_r is for raster, so ignore.
-        assert_eq!(
-            extract_ksj_id("L05-1-09_04_GML.zip").unwrap(),
-            ("L05-1", 2009)
-        );
-        assert_eq!(
-            extract_ksj_id("L05-2-09_04_GML.zip").unwrap(),
-            ("L05-2", 2009)
-        );
-        assert_eq!(extract_ksj_id("N02-05_GML.zip").unwrap(), ("N02", 2005));
-        assert_eq!(
-            extract_ksj_id("N03-170101_32_GML.zip").unwrap(),
-            ("N03", 2017)
-        );
-        assert_eq!(
-            extract_ksj_id("N04-78_5439-tky_GML.zip").unwrap(),
-            ("N04", 1978)
-        );
-        assert_eq!(extract_ksj_id("N05-15_GML.zip").unwrap(), ("N05", 2015));
-        assert_eq!(extract_ksj_id("N06-16_GML.zip").unwrap(), ("N06", 2016));
-        assert_eq!(extract_ksj_id("N07-22_GML.zip").unwrap(), ("N07", 2022));
-        assert_eq!(extract_ksj_id("N08-18_GML.zip").unwrap(), ("N08", 2018));
-        assert_eq!(extract_ksj_id("N09-12_GML.zip").unwrap(), ("N09", 2012));
-        assert_eq!(extract_ksj_id("N10-20_19_GML.zip").unwrap(), ("N10", 2020));
-        assert_eq!(extract_ksj_id("N11-13_38.zip").unwrap(), ("N11", 2013));
-        assert_eq!(extract_ksj_id("N12-21_37_GML.zip").unwrap(), ("N12", 2021));
-        assert_eq!(extract_ksj_id("P02-90_43_GML.zip").unwrap(), ("P02", 1990));
-        assert_eq!(extract_ksj_id("P03-13.zip").unwrap(), ("P03", 2013));
-        assert_eq!(extract_ksj_id("P04-14_47_GML.zip").unwrap(), ("P04", 2014));
-        assert_eq!(extract_ksj_id("P05-10_27_GML.zip").unwrap(), ("P05", 2010));
-        assert_eq!(extract_ksj_id("P07-15_29_GML.zip").unwrap(), ("P07", 2015));
-        assert_eq!(
-            extract_ksj_id("P09-10_4830-jgd_GML.zip").unwrap(),
-            ("P09", 2010)
-        );
-        assert_eq!(extract_ksj_id("P11-22_01_SHP.zip").unwrap(), ("P11", 2022));
-        assert_eq!(extract_ksj_id("P12-14_17_GML.zip").unwrap(), ("P12", 2014));
-        assert_eq!(extract_ksj_id("P13-11_42_GML.zip").unwrap(), ("P13", 2011));
-        assert_eq!(extract_ksj_id("P14-15_33_GML.zip").unwrap(), ("P14", 2015));
-        assert_eq!(extract_ksj_id("P15-12_28_GML.zip").unwrap(), ("P15", 2012));
-        assert_eq!(extract_ksj_id("P16-12_22_GML.zip").unwrap(), ("P16", 2012));
-        assert_eq!(extract_ksj_id("P17-12_26_GML.zip").unwrap(), ("P17", 2012));
-        assert_eq!(extract_ksj_id("P18-12_30_GML.zip").unwrap(), ("P18", 2012));
-        assert_eq!(extract_ksj_id("P19-12_44_GML.zip").unwrap(), ("P19", 2012));
-        assert_eq!(extract_ksj_id("P20-12_08_GML.zip").unwrap(), ("P20", 2012));
-        assert_eq!(extract_ksj_id("P21-12_39_GML.zip").unwrap(), ("P21", 2012));
-        assert_eq!(extract_ksj_id("P22-12_11_GML.zip").unwrap(), ("P22", 2012));
-        assert_eq!(extract_ksj_id("P23-12_22_GML.zip").unwrap(), ("P23", 2012));
-        assert_eq!(extract_ksj_id("P24-12_GML.zip").unwrap(), ("P24", 2012));
-        assert_eq!(extract_ksj_id("P26-13_34.zip").unwrap(), ("P26", 2013));
-        assert_eq!(extract_ksj_id("P27-13_21.zip").unwrap(), ("P27", 2013));
-        assert_eq!(extract_ksj_id("P28-13_03.zip").unwrap(), ("P28", 2013));
-        assert_eq!(extract_ksj_id("P29-13_01.zip").unwrap(), ("P29", 2013));
-        assert_eq!(extract_ksj_id("P30-13_37.zip").unwrap(), ("P30", 2013));
-        assert_eq!(extract_ksj_id("P31-13_13.zip").unwrap(), ("P31", 2013));
-        assert_eq!(extract_ksj_id("P32-14_35_GML.zip").unwrap(), ("P32", 2014));
-        assert_eq!(extract_ksj_id("P33-14_44_GML.zip").unwrap(), ("P33", 2014));
-        assert_eq!(extract_ksj_id("P34-14_03_GML.zip").unwrap(), ("P34", 2014));
-        assert_eq!(extract_ksj_id("P35-18_GML.zip").unwrap(), ("P35", 2018));
-        assert_eq!(extract_ksj_id("P36-23_01_SHP.zip").unwrap(), ("P36", 2023));
-        assert_eq!(
-            extract_ksj_id("S05-a-12_KINKI_GML.zip").unwrap(),
-            ("S05-a", 2012)
-        );
-        assert_eq!(
-            extract_ksj_id("S05-b-10_KINKI_GML.zip").unwrap(),
-            ("S05-b", 2010)
-        );
-        assert_eq!(
-            extract_ksj_id("S05-c-10_SYUTO_GML.zip").unwrap(),
-            ("S05-c", 2010)
-        );
-        assert_eq!(extract_ksj_id("S05-d-04_GML.zip").unwrap(), ("S05-d", 2004));
-        assert_eq!(extract_ksj_id("S10a-14_GML.zip").unwrap(), ("S10a", 2014));
-        assert_eq!(extract_ksj_id("S10b-14_GML.zip").unwrap(), ("S10b", 2014));
-        assert_eq!(extract_ksj_id("S12-19_GML.zip").unwrap(), ("S12", 2019));
-        assert_eq!(extract_ksj_id("W01-05_GML.zip").unwrap(), ("W01", 2005));
-        assert_eq!(extract_ksj_id("W05-08_21_GML.zip").unwrap(), ("W05", 2008));
-        assert_eq!(extract_ksj_id("W09-05_GML.zip").unwrap(), ("W09", 2005));
+        let cases: &[(&str, &str, u16)] = &[
+            ("m1000-17_27_GML.zip", "mesh1000", 2017),
+            ("m500-17_44_GML.zip", "mesh500", 2017),
+            ("1km_mesh_suikei_2018_shape_19.zip", "mesh1000h30", 2018),
+            ("1km_mesh_2024_04_GML.zip", "mesh1000r6", 2024),
+            ("500m_mesh_suikei_2018_shape_23.zip", "mesh500h30", 2018),
+            ("500m_mesh_2024_GML.zip", "mesh500r6", 2018),
+            ("250m_mesh_2024_GML.zip", "mesh250r6", 2018),
+            ("A09-06_02_GML.zip", "A09", 2006),
+            ("A10-06_03_GML.zip", "A10", 2006),
+            ("A11-15_31_GML.zip", "A11", 2015),
+            ("A12-06_04_GML.zip", "A12", 2006),
+            ("A13-06_14_GML.zip", "A13", 2006),
+            ("A15-15_12_GML.zip", "A15", 2015),
+            ("A16-75_34_GML.zip", "A16", 1975),
+            ("A17-901001_20_GML.zip", "A17", 1990),
+            ("A18-051001_16_GML.zip", "A18", 2005),
+            ("A18s-a-10_GML.zip", "A18s_a", 2010),
+            ("A19-651001_45_GML.zip", "A19", 1965),
+            ("A19s-05_17_GML.zip", "A19s", 2005),
+            ("A19s-a-05_17_GML.zip", "A19s", 2005),
+            ("A20-601001_46_GML.zip", "A20", 1960),
+            ("A20s-05_46_GML.zip", "A20s", 2005),
+            ("A21-001001_13_GML.zip", "A21", 2000),
+            ("A21s-10_13_GML.zip", "A21s", 2010),
+            ("A22-070402_32_GML.zip", "A22", 2007),
+            ("A22-m-14_33_GML.zip", "A22-m", 2014),
+            ("A22s-00_19_GML.zip", "A22s", 2000),
+            ("A23-051001_46_GML.zip", "A23", 2005),
+            ("A24-901001_36_GML.zip", "A24", 1990),
+            ("A25-930928_35_GML.zip", "A25", 1993),
+            ("A27-21_10_GML.zip", "A27", 2021),
+            ("A28-10_GML.zip", "A28", 2010),
+            ("A29-11_39_GML.zip", "A29", 2011),
+            ("A30a5-11_5438-jgd_GML.zip", "A30a5", 2011),
+            ("A30b-11_GML.zip", "A30b", 2011),
+            ("A31a-24_81_10_GML.zip", "A31a", 2024),
+            ("A31b-24_10_5540_GML.zip", "A31b", 2024),
+            ("A32-21_29_GML.zip", "A32", 2021),
+            ("A33-24_00_GML.zip", "A33", 2024),
+            ("A34-180316_GML.zip", "A34", 2018),
+            ("A35a-14_46_GML.zip", "A35a", 2014),
+            ("A35b-14_26_GML.zip", "A35b", 2014),
+            ("A35c-14_07_GML.zip", "A35c", 2014),
+            ("A37-15_39_GML.zip", "A37", 2015),
+            ("A38-20_27_GML.zip", "A38", 2020),
+            ("A39-15_GML.zip", "A39", 2015),
+            ("A40-20_14_GML.zip", "A40", 2020),
+            ("A42-18_GML.zip", "A42", 2018),
+            ("A43-18_GML.zip", "A43", 2018),
+            ("A44-18_GML.zip", "A44", 2018),
+            ("A45-19_41_GML.zip", "A45", 2019),
+            ("A46-20_04_GML.zip", "A46", 2020),
+            ("A47-21_52_GML.zip", "A47", 2021),
+            ("A48-21_17_GML.zip", "A48", 2021),
+            ("A49-20_13_GML.zip", "A49", 2020),
+            ("A50-20_14_GML.zip", "A50", 2020),
+            ("A51-24_20_GML.zip", "A51", 2024),
+            ("A52-23_25_GML.zip", "A52", 2023),
+            ("A53-23-81_GML.zip", "A53", 2023),
+            ("A54-23_GML.zip", "A54", 2023),
+            ("A55-22_01100_SHP.zip", "A55", 2022),
+            ("C02-06_GML.zip", "C02", 2006),
+            ("C09-06_GML.zip", "C09", 2006),
+            ("C23-06_28_GML.zip", "C23", 2006),
+            ("C28-13.zip", "C28", 2013),
+            ("G02-12_5238-jgd_GML.zip", "G02", 2012),
+            ("G04-a-11_5940-jgd_GML.zip", "G04a", 2011),
+            ("G04-c-11_5439-jgd_GML.zip", "G04c", 2011),
+            ("G04-d-11_5338-jgd_GML.zip", "G04d", 2011),
+            ("G08-15_43_GML.zip", "G08", 2015),
+            ("L01-87_05_GML.zip", "L01", 1987),
+            ("L02-09_02_GML.zip", "L02", 2009),
+            ("L03-a-21_5339-jgd2011_GML.zip", "L03-a", 2021),
+            ("L03-b-21_5336-jgd2011_GML.zip", "L03-b", 2021),
+            ("L03-b-c-21_5339-jgd2011_GML.zip", "L03-b-c", 2021),
+            ("L03-b-u-21_5539-jgd2011_GML.zip", "L03-b-u", 2021),
+            // L03-b_r is for raster, so ignore.
+            ("L05-1-09_04_GML.zip", "L05-1", 2009),
+            ("L05-2-09_04_GML.zip", "L05-2", 2009),
+            ("N02-05_GML.zip", "N02", 2005),
+            ("N03-170101_32_GML.zip", "N03", 2017),
+            ("N04-78_5439-tky_GML.zip", "N04", 1978),
+            ("N05-15_GML.zip", "N05", 2015),
+            ("N06-16_GML.zip", "N06", 2016),
+            ("N07-22_GML.zip", "N07", 2022),
+            ("N08-18_GML.zip", "N08", 2018),
+            ("N09-12_GML.zip", "N09", 2012),
+            ("N10-20_19_GML.zip", "N10", 2020),
+            ("N11-13_38.zip", "N11", 2013),
+            ("N12-21_37_GML.zip", "N12", 2021),
+            ("P02-90_43_GML.zip", "P02", 1990),
+            ("P03-13.zip", "P03", 2013),
+            ("P04-14_47_GML.zip", "P04", 2014),
+            ("P05-10_27_GML.zip", "P05", 2010),
+            ("P07-15_29_GML.zip", "P07", 2015),
+            ("P09-10_4830-jgd_GML.zip", "P09", 2010),
+            ("P11-22_01_SHP.zip", "P11", 2022),
+            ("P12-14_17_GML.zip", "P12", 2014),
+            ("P13-11_42_GML.zip", "P13", 2011),
+            ("P14-15_33_GML.zip", "P14", 2015),
+            ("P15-12_28_GML.zip", "P15", 2012),
+            ("P16-12_22_GML.zip", "P16", 2012),
+            ("P17-12_26_GML.zip", "P17", 2012),
+            ("P18-12_30_GML.zip", "P18", 2012),
+            ("P19-12_44_GML.zip", "P19", 2012),
+            ("P20-12_08_GML.zip", "P20", 2012),
+            ("P21-12_39_GML.zip", "P21", 2012),
+            ("P22-12_11_GML.zip", "P22", 2012),
+            ("P23-12_22_GML.zip", "P23", 2012),
+            ("P24-12_GML.zip", "P24", 2012),
+            ("P26-13_34.zip", "P26", 2013),
+            ("P27-13_21.zip", "P27", 2013),
+            ("P28-13_03.zip", "P28", 2013),
+            ("P29-13_01.zip", "P29", 2013),
+            ("P30-13_37.zip", "P30", 2013),
+            ("P31-13_13.zip", "P31", 2013),
+            ("P32-14_35_GML.zip", "P32", 2014),
+            ("P33-14_44_GML.zip", "P33", 2014),
+            ("P34-14_03_GML.zip", "P34", 2014),
+            ("P35-18_GML.zip", "P35", 2018),
+            ("P36-23_01_SHP.zip", "P36", 2023),
+            ("S05-a-12_KINKI_GML.zip", "S05-a", 2012),
+            ("S05-b-10_KINKI_GML.zip", "S05-b", 2010),
+            ("S05-c-10_SYUTO_GML.zip", "S05-c", 2010),
+            ("S05-d-04_GML.zip", "S05-d", 2004),
+            ("S10a-14_GML.zip", "S10a", 2014),
+            ("S10b-14_GML.zip", "S10b", 2014),
+            ("S12-19_GML.zip", "S12", 2019),
+            ("W01-05_GML.zip", "W01", 2005),
+            ("W05-08_21_GML.zip", "W05", 2008),
+            ("W09-05_GML.zip", "W09", 2005),
+        ];
+
+        for &(filename, expected_id, expected_year) in cases {
+            assert_eq!(
+                extract_ksj_id(filename).unwrap(),
+                (expected_id, expected_year)
+            );
+        }
     }
 }
