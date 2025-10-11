@@ -3,7 +3,10 @@
 	import { onMount } from 'svelte';
 	// Use Bits UI for a nicer error dialog
 	// Note: ensure `bits-ui` is installed locally
-	import { Dialog, Label, Select, Switch } from 'bits-ui';
+	import { Dialog } from 'bits-ui';
+	import HeroHeader from '$lib/components/HeroHeader.svelte';
+	import ErrorDialog from '$lib/components/ErrorDialog.svelte';
+	import ToggleRow from '$lib/components/ToggleRow.svelte';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
 	let inputEl: HTMLInputElement;
@@ -162,47 +165,8 @@
 	}
 </script>
 
-<div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 py-10 px-5 lg:justify-center">
-	<header class="text-center max-w-4xl mx-auto">
-		<h1 class="text-7xl font-extrabold tracking-wider font-title mb-4">
-			KSJ
-			<Icon icon="mdi:arrow-right" class="inline" height="0.7em" />
-			<Select.Root onValueChange={(v) => (outputFormat = v as OutputFormat)} type="single">
-				<Select.Trigger
-					class="inline-block tracking-tight align-baseline min-w-[7.2em] border border-slate-700 py-3 relative"
-					aria-label="出力形式を選択"
-				>
-					{outputFormat}
-					<Icon icon="mdi:caret-down" class="absolute top-1/3 right-0 h-1/3" width="0.5em" />
-				</Select.Trigger>
-				<Select.Portal>
-					<Select.Content
-						class="focus-override text-center border-muted bg-white shadow-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 outline-hidden z-50 max-h-[var(--bits-select-content-available-height)] w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] select-none border data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1"
-					>
-						<Select.Viewport>
-							<Select.Item
-								value="GeoParquet"
-								class="text-7xl font-extrabold font-title tracking-tight  data-highlighted:bg-gray-300 pb-2"
-								label="GeoParquet"
-							>
-								GeoParquet
-							</Select.Item>
-							<Select.Item
-								value="GeoJson"
-								class="text-7xl font-extrabold font-title tracking-tight  data-highlighted:bg-gray-300 pb-2"
-								label="GeoJson"
-							>
-								GeoJson
-							</Select.Item>
-						</Select.Viewport>
-					</Select.Content>
-				</Select.Portal>
-			</Select.Root>
-		</h1>
-		<p class="text-slate-700 text-base sm:text-lg">
-			国土数値情報の Shapefile を、選択した形式に変換します。
-		</p>
-	</header>
+<div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 px-5 py-16 lg:py-24">
+	<HeroHeader bind:value={outputFormat} />
 
 	<div
 		id="dropzone"
@@ -272,76 +236,33 @@
 		</div>
 	</div>
 
-	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
-		<Switch.Root
-			bind:checked={translateColumns}
-			id="translate_colnames"
-			name="translate_colnames"
-			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-20"
-		>
-			<Switch.Thumb
-				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
-			/>
-		</Switch.Root>
-		<Label.Root for="translate_colnames" class="font-bold text-2xl text-slate-700">
-			属性名を変換する
-		</Label.Root>
-	</div>
+	<ToggleRow
+		id="translate_colnames"
+		name="translate_colnames"
+		bind:checked={translateColumns}
+		label="属性名を変換する"
+		switchClass="disabled:opacity-20"
+	/>
 
-	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
-		<Switch.Root
-			bind:checked={translateContents}
-			disabled
-			id="translate_contents"
-			name="translate_contents"
-			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-10"
-		>
-			<Switch.Thumb
-				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0 disabled:opacity-0"
-			/>
-		</Switch.Root>
-		<Label.Root for="translate_contents" class="font-bold text-2xl text-slate-700">
-			データの中身を変換する（準備中）
-		</Label.Root>
-	</div>
+	<ToggleRow
+		id="translate_contents"
+		name="translate_contents"
+		bind:checked={translateContents}
+		label="データの中身を変換する（準備中）"
+		disabled
+		switchClass="disabled:opacity-10"
+		thumbClass="disabled:opacity-0"
+	/>
 
-	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
-		<Switch.Root
-			bind:checked={ignoreTranslationErrors}
-			id="ignore_translation_errors"
-			name="ignore_translation_errors"
-			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-20"
-		>
-			<Switch.Thumb
-				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
-			/>
-		</Switch.Root>
-		<Label.Root for="ignore_translation_errors" class="font-bold text-2xl text-slate-700">
-			変換エラーを無視する
-		</Label.Root>
-	</div>
+	<ToggleRow
+		id="ignore_translation_errors"
+		name="ignore_translation_errors"
+		bind:checked={ignoreTranslationErrors}
+		label="変換エラーを無視する"
+		switchClass="disabled:opacity-20"
+	/>
 
-	<!-- Bits UI: Error dialog -->
-	<Dialog.Root bind:open={errorOpen}>
-		<Dialog.Content class="fixed inset-0 grid place-items-center p-4 z-50">
-			<div
-				class="bg-slate-900 text-indigo-50 border border-slate-700 rounded-xl p-4 w-full max-w-lg shadow-2xl"
-			>
-				<Dialog.Title class="font-bold mb-1">エラーが発生しました</Dialog.Title>
-				<div class="text-indigo-200/80 mb-3">{errorMessage}</div>
-				<div class="flex justify-end">
-					<Dialog.Close asChild>
-						<button
-							class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-bold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]"
-						>
-							閉じる
-						</button>
-					</Dialog.Close>
-				</div>
-			</div>
-		</Dialog.Content>
-		<Dialog.Overlay class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-	</Dialog.Root>
+	<ErrorDialog bind:open={errorOpen} message={errorMessage} />
 
 	<!-- Bits UI: Shapefile selection dialog -->
 	<Dialog.Root bind:open={shpDialogOpen}>
