@@ -17,6 +17,8 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
     wkt: &Option<String>,
+    use_readable_colnames: bool,
+    use_readable_contents: bool,
 ) -> Result<(), Ksj2GpError> {
     let projjson = match wkt {
         Some(wkt) => wild_guess_from_esri_wkt_to_projjson(wkt)?,

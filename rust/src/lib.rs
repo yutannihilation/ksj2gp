@@ -62,9 +62,26 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Sen
 
     let mut reader = Reader::new(shapefile_reader, dbase_reader);
 
+    // TODO: pass this option from outside
+    let translate_colnames = true;
+    let translate_contents = true;
+
     match output_format {
-        "GeoParquet" => write_geoparquet(&mut reader, &mut out, &dbf_fields, &wkt),
-        "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields),
+        "GeoParquet" => write_geoparquet(
+            &mut reader,
+            &mut out,
+            &dbf_fields,
+            &wkt,
+            translate_colnames,
+            translate_contents,
+        ),
+        "GeoJson" => write_geojson(
+            &mut reader,
+            &mut out,
+            &dbf_fields,
+            translate_colnames,
+            translate_contents,
+        ),
         _ => Err(format!("Unsupported format: {output_format}").into()),
     }
 }

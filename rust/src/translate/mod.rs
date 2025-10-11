@@ -2,6 +2,11 @@ use std::sync::LazyLock;
 
 use regex::Regex;
 
+mod colnames;
+mod data;
+
+pub(crate) use colnames::translate_colnames;
+
 // TODO: probably, it's a bit overkill to use regex just for extracting KSJ id.
 // Maybe we can list all the possible IDs first and then match against it?
 pub(crate) fn extract_ksj_id(filename: &str) -> Result<&str, crate::Ksj2GpError> {
