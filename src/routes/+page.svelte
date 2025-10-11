@@ -209,7 +209,7 @@
 			}
 		}}
 	>
-		<div class="place-items-center">
+		<div class="grid place-items-center text-center">
 			{#if bigLoading}
 				<div class="animate-spin" aria-label="読み込み中"></div>
 			{:else}
