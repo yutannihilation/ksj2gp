@@ -264,12 +264,12 @@
 		</div>
 	</div>
 
-	<div class="flex items-center justify-center gap-3">
+	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
 		<Switch.Root
 			bind:checked={translateColumns}
 			id="translate_colnames"
 			name="translate_colnames"
-			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 "
+			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-20"
 		>
 			<Switch.Thumb
 				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
@@ -280,16 +280,16 @@
 		</Label.Root>
 	</div>
 
-	<div class="flex items-center justify-center gap-3">
+	<div class="mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3">
 		<Switch.Root
 			bind:checked={translateContents}
 			disabled
 			id="translate_contents"
 			name="translate_contents"
-			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 "
+			class="peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-10"
 		>
 			<Switch.Thumb
-				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0"
+				class="pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0 disabled:opacity-0"
 			/>
 		</Switch.Root>
 		<Label.Root for="translate_contents" class="font-bold text-2xl text-slate-700">
