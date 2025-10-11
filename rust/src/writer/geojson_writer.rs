@@ -3,7 +3,9 @@ use std::io::{Read, Seek, Write};
 use geojson::JsonObject;
 
 use crate::{
-    error::Ksj2GpError, transform_coord::CoordTransformer, translate::translate_colnames,
+    error::Ksj2GpError,
+    transform_coord::CoordTransformer,
+    translate::{TranslateOptions, translate_colnames},
     writer::get_fields_except_geometry,
 };
 
@@ -11,8 +13,7 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
     writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
-    use_readable_colnames: bool,
-    use_readable_contents: bool,
+    translate_options: &TranslateOptions,
 ) -> Result<(), Ksj2GpError> {
     let transformer = CoordTransformer::new();
 
@@ -32,11 +33,7 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
                 .remove(field_name)
                 .ok_or_else(|| format!("Not found {field_name}"))?;
 
-            let translated_field_name = if use_readable_colnames {
-                translate_colnames(field_name)?
-            } else {
-                field_name.to_string()
-            };
+            let translated_field_name = translate_colnames(field_name, translate_options)?;
 
             properties.insert(translated_field_name, dbase_field_to_json_value(value));
         }
