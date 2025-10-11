@@ -4068,8 +4068,8 @@ pub(crate) const COLNAMES: &[(&str, &str)] = &[
   ("W09_004", "水面標高"),
 ];
 
-// 1984～2013年まで
-pub(crate) const L01_COLNAMES_1984: [&str; 31] = [
+// 1983～2013年まで
+pub(crate) const L01_COLNAMES_1983: [&str; 31] = [
     "標準地コード_見出し番号",
     "標準地コード_一連番号",
     "前年度標準地コード_見出し番号",

@@ -4,7 +4,7 @@ use crate::{
     TranslateOptions,
     error::Ksj2GpError,
     translate::data::colnames::{
-        COLNAMES, L01_COLNAMES_1984, L01_COLNAMES_2014, L01_COLNAMES_2018, L01_COLNAMES_2022,
+        COLNAMES, L01_COLNAMES_1983, L01_COLNAMES_2014, L01_COLNAMES_2018, L01_COLNAMES_2022,
         L01_COLNAMES_2024,
     },
 };
@@ -55,7 +55,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
 
     match (year, idx) {
         (_, 0) => panic!("Something is wrong"),
-        (..=2013, _) => return Ok(L01_COLNAMES_1984[idx - 1].to_string()),
+        (..=2013, _) => return Ok(L01_COLNAMES_1983[idx - 1].to_string()),
         (2014..=2017, 1..=47) => return Ok(L01_COLNAMES_2014[idx - 1].to_string()),
         (2014..=2017, 48..) => {
             let y = (idx - 48) + 1983;
