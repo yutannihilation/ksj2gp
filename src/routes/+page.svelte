@@ -165,7 +165,7 @@
 	}
 </script>
 
-<div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 py-10 px-5 lg:justify-center">
+<div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 px-5 py-16 lg:py-24">
 	<HeroHeader bind:value={outputFormat} />
 
 	<div
