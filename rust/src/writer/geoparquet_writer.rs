@@ -27,7 +27,7 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     };
     let crs = geoarrow_schema::Crs::from_projjson(projjson);
 
-    let fields_info = construct_schema(dbf_fields, crs);
+    let fields_info = construct_schema(dbf_fields, crs, use_readable_colnames);
     let schema_ref = fields_info.schema_ref.clone();
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain

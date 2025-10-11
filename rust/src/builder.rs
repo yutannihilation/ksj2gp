@@ -13,6 +13,8 @@ use geoarrow_schema::GeoArrowType;
 
 use std::sync::Arc;
 
+use crate::translate::translate_colnames;
+
 pub(crate) struct FieldsWithGeo {
     pub(crate) schema_ref: arrow_schema::SchemaRef,
     pub(crate) non_geo_fields: Vec<Arc<arrow_schema::Field>>,
@@ -176,11 +178,19 @@ impl ArrayBuilderWithGeo {
 // This function is derived from geoarrow-rs's old code, which is licensed under MIT/Apache
 //
 // https://github.com/geoarrow/geoarrow-rs/blob/06e1d615134b249eb5fee39020673c8659978d18/rust/geoarrow-old/src/io/shapefile/reader.rs#L385-L411
-pub(crate) fn construct_schema(fields: &[FieldInfo], crs: geoarrow_schema::Crs) -> FieldsWithGeo {
+pub(crate) fn construct_schema(
+    fields: &[FieldInfo],
+    crs: geoarrow_schema::Crs,
+    use_readable_colnames: bool,
+) -> FieldsWithGeo {
     let mut non_geo_fields = Vec::with_capacity(fields.len());
 
     for field in fields {
-        let name = field.name().to_string();
+        let name = if use_readable_colnames {
+            translate_colnames(field.name())
+        } else {
+            field.name().to_string()
+        };
         let field = match field.field_type() {
             FieldType::Numeric | FieldType::Double | FieldType::Currency => {
                 arrow_schema::Field::new(name, arrow_schema::DataType::Float64, true)
