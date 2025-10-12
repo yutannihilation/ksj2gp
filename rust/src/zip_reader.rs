@@ -108,7 +108,7 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
         // First, try to guess from LDID (29th byte of dBASE file)
         let mut dbf_reader = self.zip.by_name(&self.dbf_filename).unwrap();
         let mut buf = vec![0u8; 29];
-        dbf_reader.read(&mut buf)?;
+        dbf_reader.read_exact(&mut buf)?;
         match buf[28] {
             13 => return Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS)),
             _ => {}
