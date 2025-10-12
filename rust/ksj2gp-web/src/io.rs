@@ -34,7 +34,7 @@ impl std::io::Read for UserLocalFile {
         let len = u8_array.length() as u64;
         u8_array.copy_to(buf);
 
-        self.offset = self.offset + len;
+        self.offset += len;
 
         Ok(len as usize)
     }
@@ -45,7 +45,7 @@ impl std::io::Seek for UserLocalFile {
         let size = self.file.size() as i64;
         let new_offset = match pos {
             std::io::SeekFrom::Start(offset) => offset as i64,
-            std::io::SeekFrom::End(offset) => size as i64 - offset,
+            std::io::SeekFrom::End(offset) => size - offset,
             std::io::SeekFrom::Current(offset) => self.offset as i64 + offset,
         };
 
@@ -157,11 +157,8 @@ impl Drop for OpfsFile {
 }
 
 fn convert_js_error_to_io_error(e: JsValue) -> std::io::Error {
-    std::io::Error::new(
-        std::io::ErrorKind::Other,
-        format!(
-            "Some error happened on JS API: {}",
-            e.as_string().unwrap_or("<undisplayable>".to_string())
-        ),
-    )
+    std::io::Error::other(format!(
+        "Some error happened on JS API: {}",
+        e.as_string().unwrap_or("<undisplayable>".to_string())
+    ))
 }

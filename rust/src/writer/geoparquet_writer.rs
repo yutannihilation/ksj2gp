@@ -22,7 +22,7 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     let projjson = match wkt {
         Some(wkt) => wild_guess_from_esri_wkt_to_projjson(wkt)?,
         // TODO: if .prj is not found, guess from other information
-        None => return Err(format!(".prj not found").into()),
+        None => return Err(".prj not found".into()),
     };
     let crs = geoarrow_schema::Crs::from_projjson(projjson);
 
