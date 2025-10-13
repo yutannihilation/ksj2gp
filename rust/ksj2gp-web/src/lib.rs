@@ -63,8 +63,7 @@ pub fn convert_shp(
         OpfsFile::new(intermediate_files.shx)?,
         output_file_opfs,
         output_format,
-        &TranslateOptions {
-            // TODO: pass this option from outside
+        TranslateOptions {
             translate_colnames,
             translate_contents,
             ignore_translation_errors,

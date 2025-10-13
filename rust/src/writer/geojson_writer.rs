@@ -5,7 +5,7 @@ use geojson::JsonObject;
 use crate::{
     error::Ksj2GpError,
     transform_coord::CoordTransformer,
-    translate::{TranslateOptions, translate_codelists, translate_colnames},
+    translate::{CODELISTS_MAP, TranslateOptions, translate_colnames},
     writer::get_fields_except_geometry,
 };
 
@@ -69,40 +69,57 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
 }
 
 fn dbase_field_to_json_value(x: dbase::FieldValue, field_name: &str) -> geojson::JsonValue {
-    match x {
-        // TODO: I'm assuming all fields to translate is string, not number.
-        // TODO: Is this too costly to always try to get() on the HashMap? Should I place some filter before actually calling translate_codelists()?
+    if let Some(codelist_map) = CODELISTS_MAP.get(field_name) {
+        let code: String = match x {
+            // String
+            dbase::FieldValue::Character(Some(x)) => x.into(),
+            dbase::FieldValue::Memo(x) => x.into(),
+            // Number
+            dbase::FieldValue::Numeric(Some(x)) => format!("{x:.0}"),
+            dbase::FieldValue::Float(Some(x)) => format!("{x:.0}"),
+            dbase::FieldValue::Integer(x) => format!("{x:.0}"),
+            dbase::FieldValue::Double(x) => format!("{x:.0}"),
+            // TODO: raise error for unexpected type
+            _ => return geojson::JsonValue::Null,
+        };
 
-        // String
-        dbase::FieldValue::Character(Some(x)) => translate_codelists(field_name, &x).into(),
-        dbase::FieldValue::Character(None) => geojson::JsonValue::Null,
-        dbase::FieldValue::Memo(x) => translate_codelists(field_name, &x).into(),
-        // Number
-        dbase::FieldValue::Numeric(x) => x.into(),
-        dbase::FieldValue::Float(x) => x.into(),
-        dbase::FieldValue::Integer(x) => x.into(),
-        dbase::FieldValue::Double(x) => x.into(),
-        dbase::FieldValue::Currency(x) => x.into(),
-        // Boolean
-        dbase::FieldValue::Logical(x) => x.into(),
-        // Date
-        dbase::FieldValue::Date(Some(x)) => {
-            format!("{}-{}-{}", x.year(), x.month(), x.day()).into()
+        match codelist_map.get(code.as_str()) {
+            Some(label) => label.to_string().into(),
+            // TODO: raise error for unexpected value
+            None => geojson::JsonValue::Null,
         }
-        dbase::FieldValue::Date(None) => geojson::JsonValue::Null,
-        dbase::FieldValue::DateTime(x) => {
-            let date = x.date();
-            let time = x.time();
-            format!(
-                "{}-{}-{} {}:{}:{}",
-                date.year(),
-                date.month(),
-                date.day(),
-                time.hours(),
-                time.minutes(),
-                time.seconds()
-            )
-            .into()
+    } else {
+        match x {
+            // String
+            dbase::FieldValue::Character(x) => x.into(),
+            dbase::FieldValue::Memo(x) => x.into(),
+            // Number
+            dbase::FieldValue::Numeric(x) => x.into(),
+            dbase::FieldValue::Float(x) => x.into(),
+            dbase::FieldValue::Integer(x) => x.into(),
+            dbase::FieldValue::Double(x) => x.into(),
+            dbase::FieldValue::Currency(x) => x.into(),
+            // Boolean
+            dbase::FieldValue::Logical(x) => x.into(),
+            // Date
+            dbase::FieldValue::Date(Some(x)) => {
+                format!("{}-{}-{}", x.year(), x.month(), x.day()).into()
+            }
+            dbase::FieldValue::Date(None) => geojson::JsonValue::Null,
+            dbase::FieldValue::DateTime(x) => {
+                let date = x.date();
+                let time = x.time();
+                format!(
+                    "{}-{}-{} {}:{}:{}",
+                    date.year(),
+                    date.month(),
+                    date.day(),
+                    time.hours(),
+                    time.minutes(),
+                    time.seconds()
+                )
+                .into()
+            }
         }
     }
 }
