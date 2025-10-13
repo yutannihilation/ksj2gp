@@ -1,8 +1,8 @@
 #[derive(Clone, Copy)]
 pub(crate) enum CodelistId {
-    A10_area_code,
-    A10_layer_no,
-    A42_historical_district_type,
+    A10AreaCode,
+    A10LayerNo,
+    A42HistoricalDistrictType,
     // 全国地方公共団体コードはたぶんそのままの方がいい
     // AdminAreaCd_R105,
     // AdminAreaCd,
@@ -14,7 +14,7 @@ pub(crate) enum CodelistId {
     AggUnitFlagEmerTransCd,
     AgriculturalAreaCd,
     AirJetCd,
-    AirportCatCd__html,
+    AirportCatCdHtml,
     AirportTransitionCd,
     AirportUseCd,
     authority_type,
@@ -30,13 +30,13 @@ pub(crate) enum CodelistId {
     CodeNoncombustibleCd,
     CodeOfPhenomenon,
     CodeOfUnSpecification,
-    CodeOfZone_h27,
-    communityCenterType,
+    CodeOfZoneH27,
+    CommunityCenterType,
     CultureFacCd,
     DamInstitutionCd,
     DamPurposeCd,
     DamTypeCd,
-    direction,
+    Direction,
     DistributionCd,
     DistributionCenterCd,
     EntrepreneurCd,
@@ -44,58 +44,58 @@ pub(crate) enum CodelistId {
     // 機関分類コードはたぶんそのままの方がいい
     // FacClassCd,
     FacilitiesClassificationCd,
-    facilityTypeCode,
-    firehouse_type,
+    FacilityTypeCode,
+    FirehouseType,
     FishPortAdminCd,
-    flood_duration_code,
+    FloodDurationCode,
     ForestAreaCd,
     FuelStoreCd,
     FurnaceType,
-    hazardous_area_classification_code,
+    HazardousAreaClassificationCode,
     HeavySnowTypeCode,
     HighwayCatCd,
     HighwayConCd,
     HighwayTransitionCd,
     HighwayUseCd,
-    hoanrinCd,
-    hogorinCd,
-    hydroelectric_power_plant_type,
-    IndexNumL01_v1_1,
-    IndexNumL02_v2_4,
-    industrial_waste_disposal,
-    industrial_waste_special_treatment,
-    InstallAdminCd_v2_3,
-    InstallAirPortCd_v2_3,
+    HoanrinCd,
+    HogorinCd,
+    HydroelectricPowerPlantType,
+    IndexNumL01V1_1,
+    IndexNumL02V2_4,
+    IndustrialWasteDisposal,
+    IndustrialWasteSpecialTreatment,
+    InstallAdminCdV2_3,
+    InstallAirPortCdV2_3,
     InstitutionTypeCd,
     KasoCd,
-    kinouruikeiCd,
+    KinouruikeiCd,
     landscape_district_type,
-    LandUseCd_09_u,
-    LandUseCd_09,
-    LandUseCd_77,
-    LandUseCd_88,
-    LandUseCd_YY,
+    LandUseCd09U,
+    LandUseCd09,
+    LandUseCd77,
+    LandUseCd88,
+    LandUseCdYY,
     LargeClassificationCd,
     LocationAccuracyCd,
     MaritimeOrgCd,
     MedClassCd,
     midorinokairoCd,
-    N04_fukuin_H16,
-    N04_fukuin_H22,
+    N04FukuinH16,
+    N04FukuinH22,
     NaturalfeatureCd,
     NaturalParkAreaCd,
     NaturalsceneCd,
     NatureConservationAreaCd,
     OriginalDataCodeCd,
     PointClassificationCd,
-    pointClassificationCode,
+    PointClassificationCode,
     PoliceStationCd,
     PosSpecificLevel,
-    postOfficeCd,
+    PostOfficeCd,
     // 全国地方公共団体コードはたぶんそのままの方がいい
     // PrefCd,
     // PrefCdA33,
-    protection_area_type,
+    ProtectionAreaType,
     PTAreaCd,
     PubFacAdminCd,
     PubFacMaclassCd,
@@ -104,60 +104,61 @@ pub(crate) enum CodelistId {
     PubFacMinclassCd,
     PubOfficeCd,
     PubOfficeClassCd,
-    pumpingup_type,
+    PumpingupType,
     RailwayClass2Cd,
     RailwayClassCd,
     RailwayDuplicateCd,
     RailwayExistenceCd,
     RailwayTransitionCd,
-    refereced_from_agri,
+    ReferecedFromAgri,
     ReferenceDataCd,
     RegularFlightCd,
     ResearchInstitutionCd,
-    rinshunosaibunCd,
+    RinshunosaibunCd,
     RitoCd,
     // 河川コードは、河川名とかぶっているのでたぶんそのままの方がいい
     // RiverCodeCd,
     RoadCategoryCd,
     SchoolClassCd,
-    seaside_type,
-    section_type,
-    SectionCd_cyubu,
-    SectionCd_kinki,
-    SectionCd_syuto,
-    SectionTypeCd_cyubu,
-    SectionTypeCd_kinki,
-    SectionTypeCd_syuto,
+    SeasideType,
+    SectionType,
+    SectionCdCyubu,
+    SectionCdKinki,
+    SectionCdSyuto,
+    SectionTypeCdCyubu,
+    SectionTypeCdKinki,
+    SectionTypeCdSyuto,
     SedimentDisastersProneAreaCd,
-    SelectLandStatus_v1_1,
-    SelectLandStatus_v2_4,
+    SelectLandStatusV1_1,
+    SelectLandStatusV2_4,
     SettingFlag,
-    shouhanshubanCd,
+    ShouhanshubanCd,
     SmallClassificationCd,
     SpecificAirPortSpecifiedSituationCd,
     SubprefectureNameCd,
     ThermalPowerEngine,
-    TokusyudojyoCd_v3_0,
-    tourismResourceCategoryCd,
+    TokusyudojyoCdV3_0,
+    TourismResourceCategoryCd,
     TripGenerationCd,
-    tweak_LandUseCd_09,
-    tweak_SectionCd,
-    underConstruction,
-    undersea,
-    urban_planning_decided,
+    LandUseCd09Tweaked,
+    SectionCdTweaked,
+    UnderConstruction,
+    Undersea,
+    UrbanPlanningDecided,
     UrbanPlanningAreaCd_2019,
     UrgentRoadCd,
-    useDistrict,
+    UseDistrict,
     UseDistrictCd,
-    water_depth_code,
-    water_supply_type,
+    WaterDepthCode,
+    WaterSupplyType,
     WaterSystemCodeCd,
-    WelfareFacMiclassCd_h23,
-    WelfareFacMiclassCd_h27,
+    WelfareFacMiclassCdH23,
+    WelfareFacMiclassCdH27,
     WorldHeritageCd,
 }
+
 #[rustfmt::skip]
-pub(crate) const A10_area_code: &[(&str, &str)] = &[
+pub(crate) const A10AreaCode: &[(&str, &str)] = &[
   ("00", "北海道以外の都府県"),
   ("01", "石狩振興局"),
   ("02", "渡島総合振興局"),
@@ -176,7 +177,7 @@ pub(crate) const A10_area_code: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const A10_layer_no: &[(&str, &str)] = &[
+pub(crate) const A10LayerNo: &[(&str, &str)] = &[
   ("01", "都市地域"),
   ("02", "市街化区域"),
   ("03", "市街化調整区域"),
@@ -196,7 +197,7 @@ pub(crate) const A10_layer_no: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const A42_historical_district_type: &[(&str, &str)] = &[
+pub(crate) const A42HistoricalDistrictType: &[(&str, &str)] = &[
   ("1", "歴史的風土特別保存地区"),
   ("2", "第１種歴史的風土保存地区（明日香村のみ）"),
   ("3", "第２種歴史的風土保存地区（明日香村のみ）"),
@@ -274,7 +275,7 @@ pub(crate) const AirJetCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const AirportCatCd__html: &[(&str, &str)] = &[
+pub(crate) const AirportCatCdHtml: &[(&str, &str)] = &[
   ("1", "旧空港法に基づく第一種空港"),
   ("2", "旧空港法に基づく第二種空港"),
   ("3", "旧空港法に基づく第三種空港"),
@@ -426,7 +427,7 @@ pub(crate) const CodeOfUnSpecification: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const CodeOfZone_h27: &[(&str, &str)] = &[
+pub(crate) const CodeOfZoneH27: &[(&str, &str)] = &[
   ("1", "土砂災害警戒区域(指定済)"),
   ("2", "土砂災害特別警戒区域(指定済)"),
   ("3", "土砂災害警戒区域(指定前)"),
@@ -434,7 +435,7 @@ pub(crate) const CodeOfZone_h27: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const communityCenterType: &[(&str, &str)] = &[
+pub(crate) const CommunityCenterType: &[(&str, &str)] = &[
   ("1", "中央"),
   ("2", "地区"),
   ("3", "分館"),
@@ -548,7 +549,7 @@ pub(crate) const DamTypeCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const direction: &[(&str, &str)] = &[
+pub(crate) const Direction: &[(&str, &str)] = &[
   ("0", "方向なし"),
   ("1", "北"),
   ("2", "北東"),
@@ -640,7 +641,7 @@ pub(crate) const FacilitiesClassificationCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const facilityTypeCode: &[(&str, &str)] = &[
+pub(crate) const FacilityTypeCode: &[(&str, &str)] = &[
   ("1", "映画館"),
   ("2", "公会堂・集会場"),
   ("3", "劇場・演劇場"),
@@ -650,7 +651,7 @@ pub(crate) const facilityTypeCode: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const firehouse_type: &[(&str, &str)] = &[
+pub(crate) const FirehouseType: &[(&str, &str)] = &[
   ("1", "消防本部"),
   ("2", "消防署"),
   ("3", "分署・出張所"),
@@ -664,7 +665,7 @@ pub(crate) const FishPortAdminCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const flood_duration_code: &[(&str, &str)] = &[
+pub(crate) const FloodDurationCode: &[(&str, &str)] = &[
   ("1", "12時間未満"),
   ("2", "12時間以上24時間未満（1日間）"),
   ("3", "24時間以上72時間未満（3日間）"),
@@ -701,7 +702,7 @@ pub(crate) const FurnaceType: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const hazardous_area_classification_code: &[(&str, &str)] = &[
+pub(crate) const HazardousAreaClassificationCode: &[(&str, &str)] = &[
   ("1", "氾濫流"),
   ("2", "河岸浸食"),
   ("3", "どちらも該当"),
@@ -748,7 +749,7 @@ pub(crate) const HighwayUseCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const hoanrinCd: &[(&str, &str)] = &[
+pub(crate) const HoanrinCd: &[(&str, &str)] = &[
   ("水涵保", "水源かん養保安林"),
   ("土流保", "土砂流出防備保安林"),
   ("土崩保", "土砂崩壊防備保安林"),
@@ -786,19 +787,19 @@ pub(crate) const hoanrinCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const hogorinCd: &[(&str, &str)] = &[
+pub(crate) const HogorinCd: &[(&str, &str)] = &[
   ("保護林", "保護林に設定されているもの"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const hydroelectric_power_plant_type: &[(&str, &str)] = &[
+pub(crate) const HydroelectricPowerPlantType: &[(&str, &str)] = &[
   ("1", "ダム式"),
   ("2", "水路式"),
   ("3", "ダム水路"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const IndexNumL01_v1_1: &[(&str, &str)] = &[
+pub(crate) const IndexNumL01V1_1: &[(&str, &str)] = &[
   ("000", "住宅地"),
   ("003", "宅地見込地"),
   ("005", "商業地"),
@@ -809,7 +810,7 @@ pub(crate) const IndexNumL01_v1_1: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const IndexNumL02_v2_4: &[(&str, &str)] = &[
+pub(crate) const IndexNumL02V2_4: &[(&str, &str)] = &[
   ("000", "住宅地"),
   ("003", "宅地見込地"),
   ("005", "商業地"),
@@ -819,19 +820,19 @@ pub(crate) const IndexNumL02_v2_4: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const industrial_waste_disposal: &[(&str, &str)] = &[
+pub(crate) const IndustrialWasteDisposal: &[(&str, &str)] = &[
   ("1", "中間処理施設"),
   ("2", "最終処理施設"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const industrial_waste_special_treatment: &[(&str, &str)] = &[
+pub(crate) const IndustrialWasteSpecialTreatment: &[(&str, &str)] = &[
   ("0", "特別管理産業廃棄物処理以外"),
   ("1", "特別管理産業廃棄物処理"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const InstallAdminCd_v2_3: &[(&str, &str)] = &[
+pub(crate) const InstallAdminCdV2_3: &[(&str, &str)] = &[
   ("1", "国土交通大臣"),
   ("2", "防衛大臣"),
   ("3", "米軍"),
@@ -844,7 +845,7 @@ pub(crate) const InstallAdminCd_v2_3: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const InstallAirPortCd_v2_3: &[(&str, &str)] = &[
+pub(crate) const InstallAirPortCdV2_3: &[(&str, &str)] = &[
   ("1", "拠点空港（会社管理）"),
   ("2", "拠点空港（国管理空港）"),
   ("3", "拠点空港（特定地方管理空港）"),
@@ -870,7 +871,7 @@ pub(crate) const KasoCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const kinouruikeiCd: &[(&str, &str)] = &[
+pub(crate) const KinouruikeiCd: &[(&str, &str)] = &[
   ("山地災害防止（土砂）", "山地災害防止タイプ（土砂流出崩壊防備）"),
   ("山地災害防止（気象）", "山地災害防止タイプ（気象害防備）"),
   ("自然維持", "自然維持タイプ"),
@@ -886,7 +887,7 @@ pub(crate) const landscape_district_type: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const LandUseCd_09_u: &[(&str, &str)] = &[
+pub(crate) const LandUseCd09U: &[(&str, &str)] = &[
   ("0100", "田"),
   ("0200", "その他の農用地"),
   ("0300", "-"),
@@ -915,7 +916,7 @@ pub(crate) const LandUseCd_09_u: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const LandUseCd_09: &[(&str, &str)] = &[
+pub(crate) const LandUseCd09: &[(&str, &str)] = &[
   ("0100", "田"),
   ("0200", "その他の農用地"),
   ("0300", "-"),
@@ -936,7 +937,7 @@ pub(crate) const LandUseCd_09: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const LandUseCd_77: &[(&str, &str)] = &[
+pub(crate) const LandUseCd77: &[(&str, &str)] = &[
   ("1", "田"),
   ("2", "畑"),
   ("3", "果樹園"),
@@ -955,7 +956,7 @@ pub(crate) const LandUseCd_77: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const LandUseCd_88: &[(&str, &str)] = &[
+pub(crate) const LandUseCd88: &[(&str, &str)] = &[
   ("1", "田"),
   ("2", "畑"),
   ("3", "果樹園"),
@@ -971,7 +972,7 @@ pub(crate) const LandUseCd_88: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const LandUseCd_YY: &[(&str, &str)] = &[
+pub(crate) const LandUseCdYY: &[(&str, &str)] = &[
   ("1", "田"),
   ("2", "その他の農用地"),
   ("3", "-"),
@@ -1063,7 +1064,7 @@ pub(crate) const midorinokairoCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const N04_fukuin_H16: &[(&str, &str)] = &[
+pub(crate) const N04FukuinH16: &[(&str, &str)] = &[
   ("1", "幅員13.0m（11.0m）以上"),
   ("2", "幅員5.5m以上13.0m（11.0m）未満"),
   ("3", "幅員3.0m（2.5m）以上5.5m未満"),
@@ -1073,7 +1074,7 @@ pub(crate) const N04_fukuin_H16: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const N04_fukuin_H22: &[(&str, &str)] = &[
+pub(crate) const N04FukuinH22: &[(&str, &str)] = &[
   ("1", "幅員25.0m以上"),
   ("2", "幅員19.5m以上25.0m未満"),
   ("3", "幅員13.0m（11.0m）以上19.5m未満"),
@@ -1220,7 +1221,7 @@ pub(crate) const PointClassificationCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const pointClassificationCode: &[(&str, &str)] = &[
+pub(crate) const PointClassificationCode: &[(&str, &str)] = &[
   ("1", "敷地・号・建物レベル"),
   ("2", "番地レベル"),
   ("3", "大字・町丁目レベル"),
@@ -1251,13 +1252,13 @@ pub(crate) const PosSpecificLevel: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const postOfficeCd: &[(&str, &str)] = &[
+pub(crate) const PostOfficeCd: &[(&str, &str)] = &[
   ("18004", "簡易郵便局"),
   ("18006", "直営郵便局"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const protection_area_type: &[(&str, &str)] = &[
+pub(crate) const ProtectionAreaType: &[(&str, &str)] = &[
   ("1", "鳥獣保護区"),
   ("2", "特別保護地区"),
   ("3", "休猟区"),
@@ -1619,7 +1620,7 @@ pub(crate) const PubOfficeClassCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const pumpingup_type: &[(&str, &str)] = &[
+pub(crate) const PumpingupType: &[(&str, &str)] = &[
   ("1", "混合揚水式水力"),
   ("2", "純揚水式水力"),
 ];
@@ -1673,7 +1674,7 @@ pub(crate) const RailwayTransitionCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const refereced_from_agri: &[(&str, &str)] = &[
+pub(crate) const ReferecedFromAgri: &[(&str, &str)] = &[
   ("1", "グリーン・ツーリズムデータベース"),
   ("2", "農業協同組合名鑑"),
   ("3", "全国市民農園リスト"),
@@ -1711,7 +1712,7 @@ pub(crate) const ResearchInstitutionCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const rinshunosaibunCd: &[(&str, &str)] = &[
+pub(crate) const RinshunosaibunCd: &[(&str, &str)] = &[
   ("単", "単層林"),
   ("単未", "単層林（主伐実行後で更新未了林分）"),
   ("複", "複層林"),
@@ -1764,13 +1765,13 @@ pub(crate) const SchoolClassCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const seaside_type: &[(&str, &str)] = &[
+pub(crate) const SeasideType: &[(&str, &str)] = &[
   ("1", "臨海"),
   ("2", "内陸"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const section_type: &[(&str, &str)] = &[
+pub(crate) const SectionType: &[(&str, &str)] = &[
   ("1", "1級直轄区間"),
   ("2", "1級指定区間"),
   ("3", "2級河川区間"),
@@ -1783,7 +1784,7 @@ pub(crate) const section_type: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SectionCd_cyubu: &[(&str, &str)] = &[
+pub(crate) const SectionCdCyubu: &[(&str, &str)] = &[
   ("C01", "都市整備区域"),
   ("C02TT", "都市開発区域.富山・高岡区域"),
   ("C02KK", "都市開発区域.金沢・小松区域"),
@@ -1819,7 +1820,7 @@ pub(crate) const SectionCd_cyubu: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SectionCd_kinki: &[(&str, &str)] = &[
+pub(crate) const SectionCdKinki: &[(&str, &str)] = &[
   ("K01", "既成都市区域"),
   ("K02K", "近郊整備区域.京都地区"),
   ("K02O", "近郊整備区域.大阪地区"),
@@ -1878,7 +1879,7 @@ pub(crate) const SectionCd_kinki: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SectionCd_syuto: &[(&str, &str)] = &[
+pub(crate) const SectionCdSyuto: &[(&str, &str)] = &[
   ("S01", "既成市街地"),
   ("S02T", "近郊整備区域.東京都"),
   ("S02S", "近郊整備区域.埼玉県"),
@@ -1934,7 +1935,7 @@ pub(crate) const SectionCd_syuto: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SectionTypeCd_cyubu: &[(&str, &str)] = &[
+pub(crate) const SectionTypeCdCyubu: &[(&str, &str)] = &[
   ("0", "無指定"),
   ("1", "都市整備区域(［保全区域］との重複無し"),
   ("2", "都市開発区域"),
@@ -1943,7 +1944,7 @@ pub(crate) const SectionTypeCd_cyubu: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SectionTypeCd_kinki: &[(&str, &str)] = &[
+pub(crate) const SectionTypeCdKinki: &[(&str, &str)] = &[
   ("0", "無指定"),
   ("1", "既成都市区域"),
   ("2", "近郊整備区域"),
@@ -1954,7 +1955,7 @@ pub(crate) const SectionTypeCd_kinki: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SectionTypeCd_syuto: &[(&str, &str)] = &[
+pub(crate) const SectionTypeCdSyuto: &[(&str, &str)] = &[
   ("0", "無指定"),
   ("1", "既成市街地"),
   ("2", "近郊整備地帯（[近郊緑地保全区域]との複合無し）"),
@@ -1979,7 +1980,7 @@ pub(crate) const SedimentDisastersProneAreaCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SelectLandStatus_v1_1: &[(&str, &str)] = &[
+pub(crate) const SelectLandStatusV1_1: &[(&str, &str)] = &[
   ("1", "継続"),
   ("2", "標準地・基準地番号変更"),
   ("4", "選定替えで当該年追加"),
@@ -1987,7 +1988,7 @@ pub(crate) const SelectLandStatus_v1_1: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SelectLandStatus_v2_4: &[(&str, &str)] = &[
+pub(crate) const SelectLandStatusV2_4: &[(&str, &str)] = &[
   ("1", "継続"),
   ("2", "標準地・基準地番号変更"),
   ("4", "新設・選定替えで当該年追加"),
@@ -2000,7 +2001,7 @@ pub(crate) const SettingFlag: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const shouhanshubanCd: &[(&str, &str)] = &[
+pub(crate) const ShouhanshubanCd: &[(&str, &str)] = &[
   ("1", "い"),
   ("2", "ろ"),
   ("3", "は"),
@@ -2142,7 +2143,7 @@ pub(crate) const ThermalPowerEngine: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const TokusyudojyoCd_v3_0: &[(&str, &str)] = &[
+pub(crate) const TokusyudojyoCdV3_0: &[(&str, &str)] = &[
   ("01", "シラス・ボラ・コラ・赤ホヤ・花崗岩風化土"),
   ("02", "赤ホヤ・シラス・花崗岩風化土"),
   ("03", "赤ホヤ"),
@@ -2154,7 +2155,7 @@ pub(crate) const TokusyudojyoCd_v3_0: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const tourismResourceCategoryCd: &[(&str, &str)] = &[
+pub(crate) const TourismResourceCategoryCd: &[(&str, &str)] = &[
   ("1", "自然（行催事・イベント）"),
   ("2", "歴史・文化"),
   ("3", "温泉・健康"),
@@ -2170,7 +2171,7 @@ pub(crate) const TripGenerationCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const tweak_LandUseCd_09: &[(&str, &str)] = &[
+pub(crate) const LandUseCd09Tweaked: &[(&str, &str)] = &[
   ("0100", "田"),
   ("0200", "その他の農用地"),
   ("0500", "森林"),
@@ -2193,7 +2194,7 @@ pub(crate) const tweak_LandUseCd_09: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const tweak_SectionCd: &[(&str, &str)] = &[
+pub(crate) const SectionCdTweaked: &[(&str, &str)] = &[
   ("C01", "都市整備区域"),
   ("C02B", "都市開発区域.琵琶湖東北部区域"),
   ("C02E", "都市開発区域.遠州区域"),
@@ -2336,7 +2337,7 @@ pub(crate) const tweak_SectionCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const underConstruction: &[(&str, &str)] = &[
+pub(crate) const UnderConstruction: &[(&str, &str)] = &[
   ("1", "既設"),
   ("2", "工事中（建設中）"),
   ("3", "着工準備中"),
@@ -2344,14 +2345,14 @@ pub(crate) const underConstruction: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const undersea: &[(&str, &str)] = &[
+pub(crate) const Undersea: &[(&str, &str)] = &[
   ("0", "その他"),
   ("5", "海面下"),
   ("unknown", "NA"),
 ];
 
 #[rustfmt::skip]
-pub(crate) const urban_planning_decided: &[(&str, &str)] = &[
+pub(crate) const UrbanPlanningDecided: &[(&str, &str)] = &[
   ("0", "未確認"),
   ("1", "決定"),
   ("2", "未決定"),
@@ -2374,7 +2375,7 @@ pub(crate) const UrgentRoadCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const useDistrict: &[(&str, &str)] = &[
+pub(crate) const UseDistrict: &[(&str, &str)] = &[
   ("1", "工業専用地域"),
   ("2", "工業地域"),
   ("3", "準工業地域"),
@@ -2401,7 +2402,7 @@ pub(crate) const UseDistrictCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const water_depth_code: &[(&str, &str)] = &[
+pub(crate) const WaterDepthCode: &[(&str, &str)] = &[
   ("1", "0m以上0.5m未満"),
   ("2", "0.5m以上3.0m未満"),
   ("3", "3.0m以上5.0m未満"),
@@ -2411,7 +2412,7 @@ pub(crate) const water_depth_code: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const water_supply_type: &[(&str, &str)] = &[
+pub(crate) const WaterSupplyType: &[(&str, &str)] = &[
   ("1", "上水道"),
   ("2", "簡易水道（公営）"),
   ("3", "簡易水道（非公営）"),
@@ -7899,7 +7900,7 @@ pub(crate) const WaterSystemCodeCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const WelfareFacMiclassCd_h23: &[(&str, &str)] = &[
+pub(crate) const WelfareFacMiclassCdH23: &[(&str, &str)] = &[
   ("101", "通所介護事業所"),
   ("102", "老人短期入所介護事業所"),
   ("103", "養護老人ホーム（一般"),
@@ -7995,7 +7996,7 @@ pub(crate) const WelfareFacMiclassCd_h23: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const WelfareFacMiclassCd_h27: &[(&str, &str)] = &[
+pub(crate) const WelfareFacMiclassCdH27: &[(&str, &str)] = &[
   ("101", "通所介護事業所"),
   ("102", "老人短期入所介護事業所"),
   ("103", "養護老人ホーム（一般）"),
