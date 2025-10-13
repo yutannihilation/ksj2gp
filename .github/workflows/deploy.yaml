@@ -76,11 +76,11 @@ jobs:
             --target bundler \
             ./rust/target/wasm32-unknown-unknown/release/ksj2gp_web.wasm
 
-          # Optimize the binary
-          wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
-          # Compare sizes
-          ls -lh ./npm/ksj2gp_web_bg.wasm tmp.wasm
-          mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
+          # # Optimize the binary
+          # wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
+          # # Compare sizes
+          # ls -lh ./npm/ksj2gp_web_bg.wasm tmp.wasm
+          # mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 
       - name: Install dependencies
         run: pnpm install
