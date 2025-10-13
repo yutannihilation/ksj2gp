@@ -46,6 +46,18 @@ pub(crate) fn get_codelist_map(
                 return CODELISTS_MAP.get("A42HistoricalDistrictType");
             }
         }
+        ("A03_006", _) => {
+            if target_shp.contains("KINKI") {
+                return CODELISTS_MAP.get("A03SectionTypeCdKinki");
+            }
+            if target_shp.contains("CHUBU") {
+                // コード一覧のリンクは cyubu だけどファイル名は CHUBU...
+                return CODELISTS_MAP.get("A03SectionTypeCdCyubu");
+            }
+            if target_shp.contains("SYUTO") {
+                return CODELISTS_MAP.get("A03SectionTypeCdSyuto");
+            }
+        }
         _ => {}
     }
 
@@ -81,6 +93,7 @@ static CODELISTS_MAP: LazyLock<
             map, col_id, codelist_id;
             A10AreaCode,
             A10LayerNo,
+            A10InsideDiv,
             A42HistoricalDistrictType,
             AdminCd,
             AdminConAreaCd,
@@ -93,7 +106,7 @@ static CODELISTS_MAP: LazyLock<
             AirportCatCdHtml,
             AirportTransitionCd,
             AirportUseCd,
-            authority_type,
+            AuthorityType,
             AviationActCd,
             BiomassType,
             BusClassCd,
@@ -142,7 +155,7 @@ static CODELISTS_MAP: LazyLock<
             InstitutionTypeCd,
             KasoCd,
             KinouruikeiCd,
-            landscape_district_type,
+            LandscapeDistrictType,
             LandUseCd09U,
             LandUseCd09,
             LandUseCd77,
@@ -209,7 +222,10 @@ static CODELISTS_MAP: LazyLock<
             TourismResourceCategoryCd,
             TripGenerationCd,
             LandUseCd09Tweaked,
-            SectionCdTweaked,
+            A03SectionCd,
+            A03SectionTypeCdKinki,
+            A03SectionTypeCdCyubu,
+            A03SectionTypeCdSyuto,
             UnderConstruction,
             Undersea,
             UrbanPlanningDecided,
