@@ -56,6 +56,7 @@ pub fn convert_shp_fs(
             ignore_translation_errors: false,
             ksj_id,
             year,
+            target_shp: target_shp.to_string(),
         },
     )
 }
