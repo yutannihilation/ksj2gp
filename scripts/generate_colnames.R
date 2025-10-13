@@ -3,8 +3,15 @@ output_path <- "rust/src/translate/data/colnames.rs"
 d <- kokudosuuchi:::.col_info$other
 ids <- unique(d$id)
 
-result <- "#[rustfmt::skip]
-pub(crate) const COLNAMES: &[(&str, &str)] = &["
+f <- \(x) {
+  x <- ifelse(is.na(x), "None", paste0("Some(CodelistId::", x, ")"))
+  chartr("-.", "__", x)
+}
+
+result <- "use crate::translate::data::codelists::CodelistId;
+
+#[rustfmt::skip]
+pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &["
 
 for (id in ids) {
   result <- append(result, glue::glue("\n  ///// {id} /////\n", .trim = FALSE))
@@ -13,7 +20,7 @@ for (id in ids) {
 
   result <- append(
     result,
-    glue::glue_data(d_tmp, '  ("{code}", "{name}"),')
+    glue::glue_data(d_tmp, '  ("{code}", ("{name}", {f(codelist_id)})),')
   )
 }
 

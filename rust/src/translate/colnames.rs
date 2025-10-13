@@ -11,8 +11,8 @@ use crate::{
 
 static COLNAMES_MAP: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| {
     let mut map: HashMap<&'static str, &'static str> = HashMap::with_capacity(COLNAMES.len());
-    for &(code, name) in COLNAMES {
-        map.insert(code, name);
+    for (code, name) in COLNAMES {
+        map.insert(code, name.0);
     }
     map
 });
@@ -56,8 +56,8 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
 
     match (year, idx) {
         (_, 0) => panic!("Something is wrong"),
-        (..=2013, _) => Ok(L01_COLNAMES_1983[idx - 1].to_string()),
-        (2014..=2017, 1..=47) => Ok(L01_COLNAMES_2014[idx - 1].to_string()),
+        (..=2013, _) => Ok(L01_COLNAMES_1983[idx - 1].0.to_string()),
+        (2014..=2017, 1..=47) => Ok(L01_COLNAMES_2014[idx - 1].0.to_string()),
         (2014..=2017, 48..) => {
             let y = (idx - 48) + 1983;
             if y <= year as _ {
@@ -69,7 +69,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
                 ))
             }
         }
-        (2018..=2021, 1..=55) => Ok(L01_COLNAMES_2018[idx - 1].to_string()),
+        (2018..=2021, 1..=55) => Ok(L01_COLNAMES_2018[idx - 1].0.to_string()),
         (2018..=2021, 56..) => {
             let y = (idx - 56) + 1983;
             if y <= year as _ {
@@ -81,7 +81,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
                 ))
             }
         }
-        (2022..=2023, 1..=60) => Ok(L01_COLNAMES_2022[idx - 1].to_string()),
+        (2022..=2023, 1..=60) => Ok(L01_COLNAMES_2022[idx - 1].0.to_string()),
         (2022..=2023, 61..) => {
             let y = (idx - 61) + 1983;
             if y <= year as _ {
@@ -93,7 +93,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
                 ))
             }
         }
-        (2024.., 1..=61) => Ok(L01_COLNAMES_2024[idx - 1].to_string()),
+        (2024.., 1..=61) => Ok(L01_COLNAMES_2024[idx - 1].0.to_string()),
         (2024.., 62..) => {
             let y = (idx - 62) + 1983;
             if y <= year as _ {

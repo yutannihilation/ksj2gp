@@ -1,12 +1,12 @@
 codelist <- kokudosuuchi:::.codelist
-codes_sanitized <- chartr("-.", "__", names(codelist))
-names(codelist) <- codes_sanitized
+codelist_id_sanitized <- chartr("-.", "__", names(codelist))
+names(codelist) <- codelist_id_sanitized
 
 output_path <- "rust/src/translate/data/codelists.rs"
 
 enum <- c(
-  "pub(crate) enum ColTypes {",
-  paste0("    ", codes_sanitized, ","),
+  "pub(crate) enum CodelistId {",
+  paste0("    ", codelist_id_sanitized, ","),
   "}"
 )
 
@@ -20,5 +20,4 @@ map <- purrr::imap(codelist, \(df, codelist_name) {
 }) |>
   purrr::flatten_chr()
 
-setwd("~/GitHub/ksj2gp/")
 brio::write_lines(c(enum, map), output_path)

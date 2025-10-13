@@ -1,4 +1,4 @@
-pub(crate) enum ColTypes {
+pub(crate) enum CodelistId {
     A10_area_code,
     A10_layer_no,
     A42_historical_district_type,
