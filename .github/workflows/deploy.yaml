@@ -34,9 +34,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      # cf. https://zenn.dev/mierune/articles/2af7b9e447712a
-      - uses: chetan/git-restore-mtime-action@v2
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -53,7 +50,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: './rust -> ./rust/target'
-          cache-workspace-crates: 'true'
 
       - uses: dtolnay/rust-toolchain@stable
         with:
