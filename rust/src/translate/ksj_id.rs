@@ -31,6 +31,31 @@ pub fn extract_ksj_id(filename: &str) -> Result<(String, u16), Ksj2GpError> {
         return Ok(("mesh250r6".to_string(), 2018));
     }
 
+    // N03 は 100 年以上あるので、2桁では判別できない
+    if filename.starts_with("N03") {
+        if let Some((ymd, _)) = filename[4..].split_once("_") {
+            let year = match ymd.len() {
+                6 => {
+                    let year_part = parse_year(&ymd[0..2])?;
+                    if year_part >= 20 {
+                        // e.g. N03-200101_01_GML.zip は 1920 年
+                        year_part + 1900
+                    } else {
+                        // e.g. N03-551001_01_GML.zip は 1980 年
+                        year_part + 2000
+                    }
+                }
+                // e.g. N03-20200101_01_GML.zip は 2020 年
+                8 => parse_year(&ymd[0..4])?,
+                _ => return Err(format!("Unexpected year: {ymd}").into()),
+            };
+
+            return Ok(("N03".to_string(), year));
+        }
+
+        return Err(format!("Unexpected filename: {filename}").into());
+    }
+
     // Otherwise, use the regex pattern
 
     let (_, [id_raw, year_str]) = match RE.captures(filename) {
@@ -38,9 +63,7 @@ pub fn extract_ksj_id(filename: &str) -> Result<(String, u16), Ksj2GpError> {
         None => return Err(format!("Failed to detect KSJ id from filename: {filename}").into()),
     };
 
-    let year_2digits = year_str
-        .parse::<u16>()
-        .map_err(|e| -> Ksj2GpError { format!("Failed to parse year: {e}").into() })?;
+    let year_2digits = parse_year(year_str)?;
 
     // もっといい感じの解決策が 2040 年までに現れてこのレポジトリが不要になることを祈りつつ...
     let year = if year_2digits >= 40 {
@@ -61,6 +84,12 @@ pub fn extract_ksj_id(filename: &str) -> Result<(String, u16), Ksj2GpError> {
     };
 
     Ok((id.to_string(), year))
+}
+
+fn parse_year(year_str: &str) -> Result<u16, Ksj2GpError> {
+    year_str
+        .parse::<u16>()
+        .map_err(|e| -> Ksj2GpError { format!("Failed to parse year: {e}").into() })
 }
 
 #[cfg(test)]
@@ -150,7 +179,9 @@ mod tests {
             ("L05-1-09_04_GML.zip", "L05-1", 2009),
             ("L05-2-09_04_GML.zip", "L05-2", 2009),
             ("N02-05_GML.zip", "N02", 2005),
-            ("N03-170101_32_GML.zip", "N03", 2017),
+            ("N03-20200101_01_GML.zip", "N03", 2020),
+            ("N03-200101_01_GML.zip", "N03", 1920),
+            ("N03-170101_01_GML.zip", "N03", 2017),
             ("N04-78_5439-tky_GML.zip", "N04", 1978),
             ("N05-15_GML.zip", "N05", 2015),
             ("N06-16_GML.zip", "N06", 2016),
