@@ -31,21 +31,6 @@ pub(crate) fn get_codelist_map(
 ) -> Option<&'static LazyLock<HashMap<&'static str, &'static str>>> {
     // Handle special cases
     match (col_id, year) {
-        // L01: 用途区分
-        ("L01_001" | "L01_003", ..=2023) | ("L01_002" | "L01_005", 2024..) => {
-            return CODELISTS_MAP.get("IndexNumL01");
-        }
-        // L01: 選定状況
-        ("L01_007", ..=2019) => return CODELISTS_MAP.get("SelectLandStatusL01V1"),
-        ("L01_007", 2020..=2021) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
-        ("L01_008", 2022..=2023) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
-        ("L01_010", 2024..) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
-        // A42: shapefile が複数入っていて、片方にしかない
-        ("A42_005", _) => {
-            if target_shp.ends_with("Spacial_Preservation_Area_of_Historic_Landscape.shp") {
-                return CODELISTS_MAP.get("A42HistoricalDistrictType");
-            }
-        }
         ("A03_006", _) => {
             if target_shp.contains("KINKI") {
                 return CODELISTS_MAP.get("A03SectionTypeCdKinki");
@@ -58,6 +43,21 @@ pub(crate) fn get_codelist_map(
                 return CODELISTS_MAP.get("A03SectionTypeCdSyuto");
             }
         }
+        // A42: shapefile が複数入っていて、片方にしかない
+        ("A42_005", _) => {
+            if target_shp.ends_with("Spacial_Preservation_Area_of_Historic_Landscape.shp") {
+                return CODELISTS_MAP.get("A42HistoricalDistrictType");
+            }
+        }
+        // L01: 用途区分
+        ("L01_001" | "L01_003", ..=2023) | ("L01_002" | "L01_005", 2024..) => {
+            return CODELISTS_MAP.get("IndexNumL01");
+        }
+        // L01: 選定状況
+        ("L01_007", ..=2019) => return CODELISTS_MAP.get("SelectLandStatusL01V1"),
+        ("L01_007", 2020..=2021) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
+        ("L01_008", 2022..=2023) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
+        ("L01_010", 2024..) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
         _ => {}
     }
 
