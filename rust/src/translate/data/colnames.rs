@@ -16,8 +16,8 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// A09 /////
 
-  ("prefec_cd", ("都道府県コード", Some(CodelistId::PrefCd))),
-  ("area_cd", ("地区コード", Some(CodelistId::AdminAreaCd))),
+  ("prefec_cd", ("都道府県コード", None)),
+  ("area_cd", ("地区コード", None)),
   ("layer_no", ("レイヤ番号", Some(CodelistId::A10_layer_no))),
 
   ///// A10 /////
@@ -29,7 +29,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("IOSIDE_DIV", ("内外区分", None)),
   ("LAYER_NO", ("レイヤ番号", Some(CodelistId::A10_layer_no))),
   ("OBJ_NAME", ("名称", None)),
-  ("PREFEC_CD", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("PREFEC_CD", ("都道府県コード", None)),
   ("REMARK_STR", ("備考", None)),
   ("THEMA_NO", ("主題番号", None)),
 
@@ -42,7 +42,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("IOSIDE_DIV", ("内外区分", None)),
   ("LAYER_NO", ("レイヤ番号", Some(CodelistId::A10_layer_no))),
   ("OBJ_NAME", ("名称", None)),
-  ("PREFEC_CD", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("PREFEC_CD", ("都道府県コード", None)),
   ("REMARK_STR", ("備考", None)),
   ("THEMA_NO", ("主題番号", None)),
 
@@ -55,7 +55,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("IOSIDE_DIV", ("内外区分", None)),
   ("LAYER_NO", ("レイヤ番号", Some(CodelistId::A10_layer_no))),
   ("OBJ_NAME", ("名称", None)),
-  ("PREFEC_CD", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("PREFEC_CD", ("都道府県コード", None)),
   ("REMARK_STR", ("備考", None)),
   ("THEMA_NO", ("主題番号", None)),
 
@@ -68,14 +68,14 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("IOSIDE_DIV", ("内外区分", None)),
   ("LAYER_NO", ("レイヤ番号", Some(CodelistId::A10_layer_no))),
   ("OBJ_NAME", ("名称", None)),
-  ("PREFEC_CD", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("PREFEC_CD", ("都道府県コード", None)),
   ("REMARK_STR", ("備考", None)),
   ("THEMA_NO", ("主題番号", None)),
 
   ///// A15 /////
 
   ("A15_001", ("鳥獣保護区名", None)),
-  ("A15_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A15_002", ("都道府県コード", None)),
   ("A15_003", ("指定機関：指定機関コード", Some(CodelistId::authority_type))),
   ("A15_004", ("保護区分：保護区分コード", Some(CodelistId::protection_area_type))),
   ("A15_005", ("指定日", None)),
@@ -2392,11 +2392,11 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// A27 /////
 
-  ("A27_001", ("市区町村コード", Some(CodelistId::AdminAreaCd))),
+  ("A27_001", ("市区町村コード", None)),
   ("A27_002", ("設置主体", None)),
   ("A27_003", ("名称", None)),
   ("A27_004", ("所在地", None)),
-  ("A27_005", ("市区町村コード", Some(CodelistId::AdminAreaCd))),
+  ("A27_005", ("市区町村コード", None)),
   ("A27_006", ("設置主体", None)),
   ("A27_007", ("名称", None)),
   ("A27_008", ("所在地", None)),
@@ -2407,10 +2407,10 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// A29 /////
 
-  ("A29_001", ("行政区域コード", Some(CodelistId::AdminAreaCd_R105))),
+  ("A29_001", ("行政区域コード", None)),
   ("A29_002", ("都道府県名", None)),
   ("A29_003", ("市区町村名", None)),
-  ("A29_004", ("用途地域コード", Some(CodelistId::UseDistrictCd))),
+  ("A29_004", ("用途地域コード", None)),
   ("A29_005", ("用途地域名", None)),
   ("A29_006", ("建蔽率", None)),
   ("A29_007", ("容積率", None)),
@@ -2487,12 +2487,12 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// A32 /////
 
-  ("A32_001", ("市区町村コード", Some(CodelistId::AdminAreaCd))),
+  ("A32_001", ("市区町村コード", None)),
   ("A32_002", ("設置主体", None)),
   ("A32_003", ("名称", None)),
   ("A32_004", ("所在地", None)),
   ("A32_005", ("通学区域ファイル名", None)),
-  ("A32_006", ("市区町村コード", Some(CodelistId::AdminAreaCd))),
+  ("A32_006", ("市区町村コード", None)),
   ("A32_007", ("設置主体", None)),
   ("A32_008", ("名称", None)),
   ("A32_009", ("所在地", None)),
@@ -2502,7 +2502,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("A33_001", ("現象の種類", Some(CodelistId::CodeOfPhenomenon))),
   ("A33_002", ("区域区分", Some(CodelistId::CodeOfZone_h27))),
-  ("A33_003", ("都道府県コード", Some(CodelistId::PrefCdA33))),
+  ("A33_003", ("都道府県コード", None)),
   ("A33_004", ("区域番号", None)),
   ("A33_005", ("区域名", None)),
   ("A33_006", ("所在地", None)),
@@ -2565,49 +2565,49 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// A35a /////
 
   ("A35a_001", ("景観計画区域ID", None)),
-  ("A35a_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35a_002", ("都道府県コード", None)),
   ("A35a_003", ("団体名", None)),
-  ("A35a_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35a_004", ("行政コード", None)),
   ("A35a_005", ("策定年月日", None)),
   ("A35a_006", ("面積", None)),
   ("A35a_007", ("景観計画未策定フラグ", None)),
   ("A35b_001", ("景観計画区域ID", None)),
-  ("A35b_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35b_002", ("都道府県コード", None)),
   ("A35b_003", ("団体名", None)),
-  ("A35b_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35b_004", ("行政コード", None)),
   ("A35b_005", ("策定年月日", None)),
   ("A35b_006", ("面積", None)),
   ("A35b_007", ("景観計画未策定フラグ", None)),
   ("A35c_001", ("景観計画区域ID", None)),
-  ("A35c_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35c_002", ("都道府県コード", None)),
   ("A35c_003", ("団体名", None)),
-  ("A35c_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35c_004", ("行政コード", None)),
   ("A35c_005", ("地区名称", None)),
 
   ///// A35b /////
 
   ("A35d_001", ("景観地区ID", None)),
-  ("A35d_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35d_002", ("都道府県コード", None)),
   ("A35d_003", ("団体名", None)),
-  ("A35d_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35d_004", ("行政コード", None)),
   ("A35d_005", ("名称", None)),
   ("A35d_006", ("位置", None)),
   ("A35d_007", ("面積", None)),
   ("A35d_008", ("決定年月日", None)),
   ("A35d_009", ("種別コード", Some(CodelistId::landscape_district_type))),
   ("A35e_001", ("景観地区ID", None)),
-  ("A35e_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35e_002", ("都道府県コード", None)),
   ("A35e_003", ("団体名", None)),
-  ("A35e_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35e_004", ("行政コード", None)),
   ("A35e_005", ("名称", None)),
   ("A35e_006", ("位置", None)),
   ("A35e_007", ("面積", None)),
   ("A35e_008", ("決定年月日", None)),
   ("A35e_009", ("種別コード", Some(CodelistId::landscape_district_type))),
   ("A35f_001", ("景観地区ゾーンID", None)),
-  ("A35f_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35f_002", ("都道府県コード", None)),
   ("A35f_003", ("団体名", None)),
-  ("A35f_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35f_004", ("行政コード", None)),
   ("A35f_005", ("景観地区・準景観地区名称", None)),
   ("A35f_006", ("ゾーン名称", None)),
   ("A35f_007", ("種別", Some(CodelistId::landscape_district_type))),
@@ -2615,18 +2615,18 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// A35c /////
 
   ("A35g_001", ("景観重要建造物ID", None)),
-  ("A35g_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35g_002", ("都道府県コード", None)),
   ("A35g_003", ("団体名", None)),
-  ("A35g_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35g_004", ("行政コード", None)),
   ("A35g_005", ("指定番号", None)),
   ("A35g_006", ("指定年月日", None)),
   ("A35g_007", ("名称", None)),
   ("A35g_008", ("所在地", None)),
   ("A35g_009", ("外観の特徴", None)),
   ("A35h_001", ("景観重要樹木ID", None)),
-  ("A35h_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("A35h_002", ("都道府県コード", None)),
   ("A35h_003", ("団体名", None)),
-  ("A35h_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A35h_004", ("行政コード", None)),
   ("A35h_005", ("指定番号", None)),
   ("A35h_006", ("指定年月日", None)),
   ("A35h_007", ("樹種", None)),
@@ -2656,7 +2656,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("A37_300003", ("市町村名", None)),
   ("A37_300004", ("地域指定当時の市町村名", None)),
   ("A37_300005", ("集計単位となる団体名（救急搬送）", None)),
-  ("A37_300006", ("データ整備時の行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A37_300006", ("データ整備時の行政コード", None)),
   ("A37_300007", ("集計単位フラグ（救急搬送）", Some(CodelistId::AggUnitFlagEmerTransCd))),
   ("A37_310001", ("年平均日射量", None)),
   ("A37_310002", ("平均風速（標高30m）", None)),
@@ -2737,7 +2737,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("A43_001", ("都道府県名", None)),
   ("A43_002", ("市町村名", None)),
-  ("A43_003", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A43_003", ("行政コード", None)),
   ("A43_004", ("地区名称", None)),
   ("A43_005", ("指定", None)),
   ("A43_006", ("所在地", None)),
@@ -2752,7 +2752,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("A44_001", ("都道府県名", None)),
   ("A44_002", ("市町村名", None)),
-  ("A44_003", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("A44_003", ("行政コード", None)),
   ("A44_004", ("計画名称", None)),
   ("A44_005", ("認定日", None)),
   ("A44_006", ("計画期間開始日", None)),
@@ -2801,7 +2801,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("C02_001", ("種別（１）", Some(CodelistId::ClassHarbor1Cd))),
   ("C02_002", ("種別（２）", Some(CodelistId::ClassHarbor2Cd))),
-  ("C02_003", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("C02_003", ("行政区域コード", None)),
   ("C02_004", ("港湾コード", None)),
   ("C02_005", ("港湾名", None)),
   ("C02_006", ("管理者区分", Some(CodelistId::AdminHarborCd))),
@@ -2812,9 +2812,9 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("C02_011", ("外郭施設延長", None)),
   ("C02_012", ("係留施設延長", None)),
   ("C02_013", ("フェリー便有無", None)),
-  ("C02_014", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("C02_014", ("都道府県コード", None)),
   ("C02_015", ("港湾コード", None)),
-  ("C02_016", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("C02_016", ("都道府県コード", None)),
   ("C02_017", ("港湾・漁港コード_港湾コード", None)),
   ("C02_018", ("港湾・漁港コード_漁港コード", None)),
 
@@ -2822,7 +2822,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("C09_001", ("漁港コード", None)),
   ("C09_002", ("漁港名", None)),
-  ("C09_003", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("C09_003", ("行政区域コード", None)),
   ("C09_004", ("種別", Some(CodelistId::ClassFishPortCd))),
   ("C09_005", ("管理者区分", Some(CodelistId::FishPortAdminCd))),
   ("C09_006", ("管理者名", None)),
@@ -2830,12 +2830,12 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("C09_008", ("関係漁業共同組合", None)),
   ("C09_009", ("外郭施設延長", None)),
   ("C09_010", ("係留施設延長", None)),
-  ("C09_011", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("C09_011", ("都道府県コード", None)),
   ("C09_012", ("漁港コード", None)),
 
   ///// C23 /////
 
-  ("C23_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("C23_001", ("行政区域コード", None)),
   ("C23_002", ("所管官庁", Some(CodelistId::AdminSeaLineCd))),
   ("C23_003", ("海岸保全区域番号", None)),
   ("C23_004", ("海岸保全区域・海岸名", None)),
@@ -2845,7 +2845,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// C28 /////
 
-  ("C28_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("C28_001", ("行政区域コード", None)),
   ("C28_003", ("種別", Some(CodelistId::InstallAirPortCd_v2_3))),
   ("C28_004", ("供用中・建設中の区別", None)),
   ("C28_005", ("名称", None)),
@@ -3009,7 +3009,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("L05_001", ("工業用地ID", None)),
   ("L05_002", ("工業用地名", None)),
-  ("L05_003", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("L05_003", ("行政コード", None)),
   ("L05_004", ("市区町村名", None)),
   ("L05_005", ("臨海・内陸区分コード", None)),
   ("L05_006", ("特記事項", None)),
@@ -3037,7 +3037,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("N03_002", ("支庁・振興局名", None)),
   ("N03_003", ("郡・政令都市名", None)),
   ("N03_004", ("市区町村名", None)),
-  ("N03_007", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("N03_007", ("行政区域コード", None)),
 
   ///// N05 /////
 
@@ -3088,7 +3088,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// N08 /////
 
-  ("N08_001", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("N08_001", ("行政区域", None)),
   ("N08_002", ("空港種別", Some(CodelistId::AirportCatCd__html))),
   ("N08_003", ("空港名称", None)),
   ("N08_004", ("設置者", Some(CodelistId::InstallAdminCd_v2_3))),
@@ -3149,7 +3149,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// N10 /////
 
-  ("N10_001", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("N10_001", ("都道府県コード", None)),
   ("N10_002", ("区分", Some(CodelistId::UrgentRoadCd))),
   ("N10_003", ("道路種別", Some(CodelistId::RoadCategoryCd))),
   ("N10_004", ("路線名称", None)),
@@ -3163,7 +3163,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("N11_001", ("名称", None)),
   ("N11_002", ("航空法分類", Some(CodelistId::AviationActCd))),
   ("N11_003", ("地域防災計画分類", None)),
-  ("N11_004", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("N11_004", ("都道府県コード", None)),
   ("N11_005", ("所在地", None)),
   ("N11_006", ("管理者名", None)),
   ("N11_007", ("滑走路面積", None)),
@@ -3228,7 +3228,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P05 /////
 
-  ("NA", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("NA", ("行政区域コード", None)),
   ("NA", ("施設分類", Some(CodelistId::PubOfficeCd))),
   ("NA", ("名称", None)),
   ("NA", ("所在地", None)),
@@ -3302,8 +3302,8 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("P12_001", ("観光資源_ID", None)),
   ("P12_002", ("観光資源名", None)),
-  ("P12_003", ("都道府県コード", Some(CodelistId::PrefCd))),
-  ("P12_004", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("P12_003", ("都道府県コード", None)),
+  ("P12_004", ("行政コード", None)),
   ("P12_005", ("種別名称", None)),
   ("P12_006", ("所在地住所", None)),
   ("P12_007", ("観光資源分類コード", Some(CodelistId::tourismResourceCategoryCd))),
@@ -3403,7 +3403,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// P17 /////
 
   ("P17_001", ("名称", None)),
-  ("P17_002", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("P17_002", ("行政コード", None)),
   ("P17_003", ("種別コード", Some(CodelistId::firehouse_type))),
   ("P17_004", ("所在地", None)),
   ("P17_005", ("名称", None)),
@@ -3411,7 +3411,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// P18 /////
 
   ("P18_001", ("名称", None)),
-  ("P18_002", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("P18_002", ("行政コード", None)),
   ("P18_003", ("種別コード", Some(CodelistId::PoliceStationCd))),
   ("P18_004", ("所在地", None)),
   ("P18_005", ("名称", None)),
@@ -3419,7 +3419,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// P19 /////
 
   ("P19_001", ("地域資源ID", None)),
-  ("P19_002", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("P19_002", ("都道府県コード", None)),
   ("P19_003", ("都道府県名", None)),
   ("P19_004", ("類型コード", Some(CodelistId::NaturalsceneCd))),
   ("P19_005", ("類型名", None)),
@@ -3429,7 +3429,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P20 /////
 
-  ("P20_001", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("P20_001", ("行政区域", None)),
   ("P20_002", ("名称", None)),
   ("P20_003", ("住所", None)),
   ("P20_004", ("施設の種類", None)),
@@ -3456,7 +3456,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P22 /////
 
-  ("P22a_001", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("P22a_001", ("行政区域", None)),
   ("P22a_002", ("施設名称", None)),
   ("P22a_003", ("所在地", None)),
   ("P22a_004", ("市町村等団体名", None)),
@@ -3484,7 +3484,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("P22a_026", ("現有排水能力_汚水揚水量（晴天時最大）", None)),
   ("P22a_027", ("現有排水能力_汚水揚水量（雨天時最大）", None)),
   ("P22a_028", ("現有排水能力_雨水揚水量", None)),
-  ("P22b_001", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("P22b_001", ("行政区域", None)),
   ("P22b_002", ("施設名称", None)),
   ("P22b_003", ("所在地", None)),
   ("P22b_004", ("市町村等団体名", None)),
@@ -3521,7 +3521,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P23 /////
 
-  ("P23a_001", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("P23a_001", ("行政区域", None)),
   ("P23a_002", ("所管省庁", None)),
   ("P23a_003", ("管理者", None)),
   ("P23a_004", ("堤防", None)),
@@ -3537,7 +3537,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("P23a_014", ("天端高最大（計画）", None)),
   ("P23a_015", ("天端高最小（計画）", None)),
   ("P23a_016", ("基準面", None)),
-  ("P23b_001", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("P23b_001", ("行政区域", None)),
   ("P23b_002", ("所管省庁", None)),
   ("P23b_003", ("管理者", None)),
   ("P23b_004", ("堤防", None)),
@@ -3557,7 +3557,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// P24 /////
 
   ("P24_001", ("地場産業関連施設ID", None)),
-  ("P24_002", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("P24_002", ("行政コード", None)),
   ("P24_003", ("都道府県名", None)),
   ("P24_004", ("市区町村名", None)),
   ("P24_005", ("施設名", None)),
@@ -3573,7 +3573,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ("P26_001", ("都道府県名", None)),
   ("P26_002", ("市区町村名", None)),
-  ("P26_003", ("地方公共団体コード", Some(CodelistId::AdminAreaCd))),
+  ("P26_003", ("地方公共団体コード", None)),
   ("P26_004", ("地区名", None)),
   ("P26_005", ("愛称名", None)),
   ("P26_006", ("連たんニュータウン名称", None)),
@@ -3587,7 +3587,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P27 /////
 
-  ("P27_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("P27_001", ("行政区域コード", None)),
   ("P27_002", ("公共施設大分類", Some(CodelistId::PubFacMaclassCd))),
   ("P27_003", ("公共施設小分類", Some(CodelistId::PubFacMinclassCd))),
   ("P27_004", ("文化施設分類", Some(CodelistId::CultureFacCd))),
@@ -3599,17 +3599,17 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P28 /////
 
-  ("P28_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("P28_001", ("行政区域コード", None)),
   ("P28_002", ("公共施設大分類", Some(CodelistId::PubFacMaclassCd))),
   ("P28_003", ("公共施設小分類", Some(CodelistId::PubFacMinclassCd))),
-  ("P28_004", ("国・都道府県の機関分類", Some(CodelistId::FacClassCd))),
+  ("P28_004", ("国・都道府県の機関分類", None)),
   ("P28_005", ("名称", None)),
   ("P28_006", ("所在地", None)),
   ("P28_007", ("管理者コード", Some(CodelistId::AdminCd))),
 
   ///// P29 /////
 
-  ("P29_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("P29_001", ("行政区域コード", None)),
   ("P29_002", ("公共施設大分類", Some(CodelistId::PubFacMaclassCd))),
   ("P29_003", ("公共施設小分類", Some(CodelistId::PubFacMinclassCd))),
   ("P29_004", ("学校分類", Some(CodelistId::SchoolClassCd))),
@@ -3619,7 +3619,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P30 /////
 
-  ("P30_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("P30_001", ("行政区域コード", None)),
   ("P30_002", ("公共施設大分類", Some(CodelistId::PubFacMaclassCd))),
   ("P30_003", ("公共施設小分類", Some(CodelistId::PubFacMinclassCd))),
   ("P30_004", ("郵便局分類", Some(CodelistId::postOfficeCd))),
@@ -3632,7 +3632,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("P31_001", ("名称", None)),
   ("P31_002", ("種別", Some(CodelistId::DistributionCenterCd))),
   ("P31_003", ("分類", Some(CodelistId::DistributionCd))),
-  ("P31_004", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("P31_004", ("都道府県コード", None)),
   ("P31_005", ("所在地", None)),
   ("P31_006", ("事業者分類", Some(CodelistId::EntrepreneurCd))),
   ("P31_007", ("整備年", None)),
@@ -3642,8 +3642,8 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// P32 /////
 
   ("P32_001", ("文化財ID", None)),
-  ("P32_002", ("都道府県コード", Some(CodelistId::PrefCd))),
-  ("P32_003", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("P32_002", ("都道府県コード", None)),
+  ("P32_003", ("行政コード", None)),
   ("P32_004", ("種別大区分コード", Some(CodelistId::LargeClassificationCd))),
   ("P32_005", ("種別小区分コード", Some(CodelistId::SmallClassificationCd))),
   ("P32_006", ("名称", None)),
@@ -3654,8 +3654,8 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// P33 /////
 
   ("P33_001", ("施設ID", None)),
-  ("P33_002", ("行政コード", Some(CodelistId::AdminAreaCd))),
-  ("P33_003", ("都道府県コード", Some(CodelistId::PrefCd))),
+  ("P33_002", ("行政コード", None)),
+  ("P33_003", ("都道府県コード", None)),
   ("P33_004", ("施設区分コード", Some(CodelistId::facilityTypeCode))),
   ("P33_005", ("施設名称", None)),
   ("P33_006", ("郵便番号", None)),
@@ -3681,7 +3681,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// P34 /////
 
-  ("P34_001", ("行政区域コード", Some(CodelistId::AdminAreaCd))),
+  ("P34_001", ("行政区域コード", None)),
   ("P34_002", ("施設分類", Some(CodelistId::PubOfficeClassCd))),
   ("P34_003", ("名称", None)),
   ("P34_004", ("所在地", None)),
@@ -3692,7 +3692,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("P35_002", ("経度", None)),
   ("P35_003", ("都道府県名", None)),
   ("P35_004", ("市町村名", None)),
-  ("P35_005", ("行政コード", Some(CodelistId::AdminAreaCd))),
+  ("P35_005", ("行政コード", None)),
   ("P35_006", ("道の駅名", None)),
   ("P35_007", ("ホームページアドレス1", None)),
   ("P35_008", ("ホームページアドレス2", None)),
@@ -4041,7 +4041,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
 
   ///// W05 /////
 
-  ("W05_001", ("水系域", Some(CodelistId::WaterSystemCodeCd))),
+  ("W05_001", ("水系域コード", Some(CodelistId::WaterSystemCodeCd))),
   ("W05_002", ("河川コード", None)),
   ("W05_003", ("区間種別", Some(CodelistId::section_type))),
   ("W05_004", ("河川名", None)),
@@ -4065,7 +4065,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ///// W09 /////
 
   ("W09_001", ("湖沼名", None)),
-  ("W09_002", ("行政区域", Some(CodelistId::AdminAreaCd))),
+  ("W09_002", ("行政区域", None)),
   ("W09_003", ("最大水深", None)),
   ("W09_004", ("水面標高", None)),
 
@@ -4095,7 +4095,7 @@ pub(crate) const L01_COLNAMES_1983: [(&str, Option<CodelistId>); 31] = [
     ("属性移動_法規制", None),
     ("属性移動_建ぺい率", None),
     ("属性移動_容積率", None),
-    ("標準地行政区域コード", Some(CodelistId::AdminAreaCd)),
+    ("標準地行政区域コード", None),
     ("標準地市区町村名称", None),
     ("住居表示", None),
     ("地積", None),
@@ -4136,7 +4136,7 @@ pub(crate) const L01_COLNAMES_2014: [(&str, Option<CodelistId>); 47] = [
     ("属性移動_法規制", None),
     ("属性移動_建ぺい率", None),
     ("属性移動_容積率", None),
-    ("標準地行政区域コード", Some(CodelistId::AdminAreaCd)),
+    ("標準地行政区域コード", None),
     ("標準地市区町村名称", None),
     ("住居表示", None),
     ("地積", None),
@@ -4198,7 +4198,7 @@ pub(crate) const L01_COLNAMES_2018: [(&str, Option<CodelistId>); 55] = [
     ("属性移動_法規制", None),
     ("属性移動_建ぺい率", None),
     ("属性移動_容積率", None),
-    ("標準地行政区域コード", Some(CodelistId::AdminAreaCd)),
+    ("標準地行政区域コード", None),
     ("標準地市区町村名称", None),
     ("住居表示", None),
     ("地積", None),
@@ -4265,7 +4265,7 @@ pub(crate) const L01_COLNAMES_2022: [(&str, Option<CodelistId>); 60] = [
     ("属性移動_公園区分", None),
     ("属性移動_建ぺい率", None),
     ("属性移動_容積率", None),
-    ("標準地行政区域コード", Some(CodelistId::AdminAreaCd)),
+    ("標準地行政区域コード", None),
     ("標準地市区町村名称", None),
     ("所在並びに地番", None),
     ("住居表示", None),
@@ -4399,7 +4399,7 @@ pub(crate) const L02_COLNAMES: &[(&str, Option<CodelistId>)] = &[
     ("属性移動_公園区分", None),
     ("属性移動_建ぺい率", None),
     ("属性移動_容積率", None),
-    ("基準地行政区域コード", Some(CodelistId::AdminAreaCd)),
+    ("基準地行政区域コード", None),
     ("基準地市区町村名称", None),
     ("住居表示", None),
     ("地積", None),
