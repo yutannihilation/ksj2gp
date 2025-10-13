@@ -248,8 +248,7 @@
 		id="translate_contents"
 		name="translate_contents"
 		bind:checked={translateContents}
-		label="データの中身を変換する（準備中）"
-		disabled
+		label="データの中身を変換する"
 		switchClass="disabled:opacity-10"
 		thumbClass="disabled:opacity-0"
 	/>

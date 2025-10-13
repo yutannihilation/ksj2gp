@@ -37,7 +37,7 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
 
             properties.insert(
                 translated_field_name,
-                dbase_field_to_json_value(value, field_name),
+                dbase_field_to_json_value(value, field_name, translate_options.translate_contents),
             );
         }
 
@@ -68,17 +68,20 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     Ok(())
 }
 
-fn dbase_field_to_json_value(x: dbase::FieldValue, field_name: &str) -> geojson::JsonValue {
-    if let Some(codelist_map) = CODELISTS_MAP.get(field_name) {
+fn dbase_field_to_json_value(
+    x: dbase::FieldValue,
+    field_name: &str,
+    translate_contents: bool,
+) -> geojson::JsonValue {
+    if translate_contents && let Some(codelist_map) = CODELISTS_MAP.get(field_name) {
         let code: String = match x {
             // String
             dbase::FieldValue::Character(Some(x)) => x.into(),
             dbase::FieldValue::Memo(x) => x.into(),
             // Number
-            dbase::FieldValue::Numeric(Some(x)) => format!("{x:.0}"),
+            dbase::FieldValue::Numeric(Some(x)) | dbase::FieldValue::Double(x) => format!("{x:.0}"),
             dbase::FieldValue::Float(Some(x)) => format!("{x:.0}"),
             dbase::FieldValue::Integer(x) => format!("{x:.0}"),
-            dbase::FieldValue::Double(x) => format!("{x:.0}"),
             // TODO: raise error for unexpected type
             _ => return geojson::JsonValue::Null,
         };
