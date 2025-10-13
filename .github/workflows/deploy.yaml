@@ -20,6 +20,9 @@ concurrency:
   group: 'pages'
   cancel-in-progress: true
 
+env:
+  BINARYEN_VERSION: 124
+
 jobs:
   # Single deploy job since we're just deploying
   deploy:
@@ -57,10 +60,12 @@ jobs:
           curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
           cargo binstall --force -y wasm-bindgen-cli
 
+      # It seems Ubuntu's APT version doesn't work... (cf. #92)
       - name: Install binaryen
         run: |
-          sudo apt update
-          sudo apt install -y binaryen
+          curl -L --proto '=https' --tlsv1.2 -sSf \
+            "https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-x86_64-linux.tar.gz" | \
+            tar xvz -C ./binaryen binaryen-version_${BINARYEN_VERSION} --strip=1
 
       - name: Compile Rust crate into WebAssembly
         run: |
@@ -76,11 +81,11 @@ jobs:
             --target bundler \
             ./rust/target/wasm32-unknown-unknown/release/ksj2gp_web.wasm
 
-          # # Optimize the binary
-          # wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
-          # # Compare sizes
-          # ls -lh ./npm/ksj2gp_web_bg.wasm tmp.wasm
-          # mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
+          # Optimize the binary
+          ./binaryen/bin/wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
+          # Compare sizes
+          ls -lh ./npm/ksj2gp_web_bg.wasm tmp.wasm
+          mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 
       - name: Install dependencies
         run: pnpm install
