@@ -23,6 +23,7 @@ pub(crate) struct FieldsWithGeo {
     pub(crate) schema_ref: arrow_schema::SchemaRef,
     pub(crate) non_geo_fields: Vec<Arc<arrow_schema::Field>>,
     pub(crate) geoarrow_type: geoarrow_schema::GeoArrowType,
+    pub(crate) codelist_maps: Vec<Option<&'static LazyLock<HashMap<&'static str, &'static str>>>>,
 }
 
 #[derive(Debug)]
@@ -194,25 +195,15 @@ pub(crate) struct ArrayBuilderWithGeo {
 
 impl FieldsWithGeo {
     // TODO: return errors
-    pub(crate) fn create_builders(
-        &self,
-        capacity: usize,
-        translate_contents: bool,
-    ) -> ArrayBuilderWithGeo {
-        let builders: Vec<NonGeoArrayBuilder> = self
-            .non_geo_fields
-            .iter()
-            .map(|f| {
-                if translate_contents {
-                    if let Some(codelist_map) = CODELISTS_MAP.get(f.name().as_str()) {
-                        return NonGeoArrayBuilder::TranslatedCode(
-                            arrow_array::builder::StringBuilder::with_capacity(
-                                capacity,
-                                capacity * 8,
-                            ),
-                            codelist_map,
-                        );
-                    }
+    pub(crate) fn create_builders(&self, capacity: usize) -> ArrayBuilderWithGeo {
+        let iter = self.non_geo_fields.iter().zip(self.codelist_maps.iter());
+        let builders: Vec<NonGeoArrayBuilder> = iter
+            .map(|(f, codelist_map)| {
+                if let Some(codelist_map) = codelist_map {
+                    return NonGeoArrayBuilder::TranslatedCode(
+                        arrow_array::builder::StringBuilder::with_capacity(capacity, capacity * 8),
+                        codelist_map,
+                    );
                 }
 
                 match f.data_type() {
@@ -272,26 +263,45 @@ pub(crate) fn construct_schema(
     translate_options: &TranslateOptions,
 ) -> Result<FieldsWithGeo, Ksj2GpError> {
     let mut non_geo_fields = Vec::with_capacity(fields.len());
+    let mut codelist_maps = Vec::with_capacity(fields.len());
 
     for field in fields {
-        let name = translate_colnames(field.name(), translate_options)?;
+        let field_name = field.name();
+        let translated_name = translate_colnames(field_name, translate_options)?;
+
+        if translate_options.translate_contents
+            && let Some(codelist_map) = CODELISTS_MAP.get(field_name)
+        {
+            codelist_maps.push(Some(codelist_map));
+            non_geo_fields.push(Arc::new(arrow_schema::Field::new(
+                translated_name,
+                arrow_schema::DataType::Utf8,
+                true,
+            )));
+            continue;
+        } else {
+            codelist_maps.push(None);
+        }
+
         let field = match field.field_type() {
             FieldType::Numeric | FieldType::Double | FieldType::Currency => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Float64, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Float64, true)
             }
             FieldType::Character | FieldType::Memo => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Utf8, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Utf8, true)
             }
             FieldType::Float => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Float32, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Float32, true)
             }
             FieldType::Integer => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Int32, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Int32, true)
             }
             FieldType::Logical => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Boolean, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Boolean, true)
             }
-            FieldType::Date => arrow_schema::Field::new(name, arrow_schema::DataType::Date32, true),
+            FieldType::Date => {
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Date32, true)
+            }
             // TODO
             FieldType::DateTime => unimplemented!(),
             // FieldType::DateTime => arrow_schema::Field::new(
@@ -317,5 +327,6 @@ pub(crate) fn construct_schema(
         schema_ref,
         non_geo_fields,
         geoarrow_type,
+        codelist_maps,
     })
 }

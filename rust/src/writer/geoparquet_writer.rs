@@ -43,8 +43,7 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     let mut parquet_writer = ArrowWriter::try_new(writer, gpq_encoder.target_schema(), None)?;
 
     for chunk in &reader.iter_shapes_and_records().chunks(CHUNK_SIZE) {
-        let mut builders =
-            fields_info.create_builders(CHUNK_SIZE, translate_options.translate_contents);
+        let mut builders = fields_info.create_builders(CHUNK_SIZE);
 
         for result in chunk {
             let (shape, mut record) = result.unwrap();
