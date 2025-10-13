@@ -11,7 +11,7 @@ pub(crate) const COLNAMES: &[(&str, (&str, Option<CodelistId>))] = &[
   ("A03_004", ("区町村名", None)),
   ("A03_005", ("陸水等区分", None)),
   ("A03_006", ("区域区分", None)),
-  ("A03_007", ("区域コード", None)),
+  ("A03_007", ("区域コード", Some(CodelistId::A03SectionCd))),
   ("A03_008", ("備考", None)),
 
   ///// A09 /////

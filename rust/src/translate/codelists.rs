@@ -47,10 +47,16 @@ pub(crate) fn get_codelist_map(
             }
         }
         ("A03_006", _) => {
-            // TODO
-        }
-        ("A03_007", _) => {
-            // TODO
+            if target_shp.contains("KINKI") {
+                return CODELISTS_MAP.get("A03SectionTypeCdKinki");
+            }
+            if target_shp.contains("CHUBU") {
+                // コード一覧のリンクは cyubu だけどファイル名は CHUBU...
+                return CODELISTS_MAP.get("A03SectionTypeCdCyubu");
+            }
+            if target_shp.contains("SYUTO") {
+                return CODELISTS_MAP.get("A03SectionTypeCdSyuto");
+            }
         }
         _ => {}
     }
@@ -216,7 +222,10 @@ static CODELISTS_MAP: LazyLock<
             TourismResourceCategoryCd,
             TripGenerationCd,
             LandUseCd09Tweaked,
-            SectionCdTweaked,
+            A03SectionCd,
+            A03SectionTypeCdKinki,
+            A03SectionTypeCdCyubu,
+            A03SectionTypeCdSyuto,
             UnderConstruction,
             Undersea,
             UrbanPlanningDecided,

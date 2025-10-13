@@ -142,7 +142,10 @@ pub(crate) enum CodelistId {
     TourismResourceCategoryCd,
     TripGenerationCd,
     LandUseCd09Tweaked,
-    SectionCdTweaked,
+    A03SectionCd,
+    A03SectionTypeCdKinki,
+    A03SectionTypeCdCyubu,
+    A03SectionTypeCdSyuto,
     UnderConstruction,
     Undersea,
     UrbanPlanningDecided,
@@ -2205,8 +2208,9 @@ pub(crate) const LandUseCd09Tweaked: &[(&str, &str)] = &[
   ("1600", "ゴルフ場"),
 ];
 
+// 首都圏、中部圏、近畿圏でコードが異なるが、これはかぶらないので統合する
 #[rustfmt::skip]
-pub(crate) const SectionCdTweaked: &[(&str, &str)] = &[
+pub(crate) const A03SectionCd: &[(&str, &str)] = &[
   ("C01", "都市整備区域"),
   ("C02B", "都市開発区域.琵琶湖東北部区域"),
   ("C02E", "都市開発区域.遠州区域"),
@@ -2346,6 +2350,36 @@ pub(crate) const SectionCdTweaked: &[(&str, &str)] = &[
   ("S05SO", "近郊緑地特別保全地区.三ヶ岡山近郊緑地特別保全地区"),
   ("S05SS", "近郊緑地特別保全地区.相模横山・相模川近郊緑地特別保全地区"),
   ("S05T", "近郊緑地特別保全地区.武山近郊緑地特別保全地区"),
+];
+
+#[rustfmt::skip]
+pub(crate) const A03SectionTypeCdKinki: &[(&str, &str)] = &[
+  ("0",	"無指定"),
+  ("1",	"既成都市区域"),
+  ("2",	"近郊整備区域"),
+  ("3",	"都市開発区域"),
+  ("4",	"保全区域（［近郊緑地保全区域］との重複無し）"),
+  ("5",	"近郊緑地保全区域（全て［保全区域］内）"),
+  ("6",	"近郊緑地特別保全地区（全て［近郊緑地保全区域］）"),
+];
+
+#[rustfmt::skip]
+pub(crate) const A03SectionTypeCdCyubu: &[(&str, &str)] = &[
+  ("0",	"無指定"),
+  ("1",	"都市整備区域(［保全区域］との重複無し"),
+  ("2",	"都市開発区域"),
+  ("3",	"保全区域（［都市整備区域］との重複無し"),
+  ("4",	"保全区域、都市整備区域との重複区域"),
+];
+
+#[rustfmt::skip]
+pub(crate) const A03SectionTypeCdSyuto: &[(&str, &str)] = &[
+  ("0",	"無指定"),
+  ("1",	"既成市街地"),
+  ("2",	"近郊整備地帯（[近郊緑地保全区域]との複合無し）"),
+  ("3",	"都市開発区域"),
+  ("4",	"近郊緑地保全区域（全て［近郊整備地内］内）"),
+  ("5",	"近郊緑地特別保全地域(全て［近郊緑地保全区域］内)"),
 ];
 
 #[rustfmt::skip]
