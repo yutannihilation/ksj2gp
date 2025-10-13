@@ -60,7 +60,7 @@ pub(crate) enum CodelistId {
     HoanrinCd,
     HogorinCd,
     HydroelectricPowerPlantType,
-    IndexNumL01V1_1,
+    IndexNumL01,
     IndexNumL02V2_4,
     IndustrialWasteDisposal,
     IndustrialWasteSpecialTreatment,
@@ -129,8 +129,8 @@ pub(crate) enum CodelistId {
     SectionTypeCdKinki,
     SectionTypeCdSyuto,
     SedimentDisastersProneAreaCd,
-    SelectLandStatusV1_1,
-    SelectLandStatusV2_4,
+    SelectLandStatusL01V1,
+    SelectLandStatusL01V2,
     SettingFlag,
     ShouhanshubanCd,
     SmallClassificationCd,
@@ -798,8 +798,11 @@ pub(crate) const HydroelectricPowerPlantType: &[(&str, &str)] = &[
   ("3", "ダム水路"),
 ];
 
+// https://nlftp.mlit.go.jp/ksj/gml/codelist/IndexNumCd.html
+// https://nlftp.mlit.go.jp/ksj/gml/codelist/IndexNumL01-v1_1.html
+// https://nlftp.mlit.go.jp/ksj/gml/codelist/L01_v3_2_IndexNumberCodeType.html
 #[rustfmt::skip]
-pub(crate) const IndexNumL01V1_1: &[(&str, &str)] = &[
+pub(crate) const IndexNumL01: &[(&str, &str)] = &[
   ("000", "住宅地"),
   ("003", "宅地見込地"),
   ("005", "商業地"),
@@ -807,6 +810,7 @@ pub(crate) const IndexNumL01V1_1: &[(&str, &str)] = &[
   ("009", "工業地"),
   ("010", "市街化調整区域内の現況宅地"),
   ("013", "市街化調整区域内の現況林地"),
+  ("020", "市街化調整区域内の現況林地（都道府県地価調査の場合）"),
 ];
 
 #[rustfmt::skip]
@@ -1980,7 +1984,7 @@ pub(crate) const SedimentDisastersProneAreaCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SelectLandStatusV1_1: &[(&str, &str)] = &[
+pub(crate) const SelectLandStatusL01V1: &[(&str, &str)] = &[
   ("1", "継続"),
   ("2", "標準地・基準地番号変更"),
   ("4", "選定替えで当該年追加"),
@@ -1988,7 +1992,7 @@ pub(crate) const SelectLandStatusV1_1: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const SelectLandStatusV2_4: &[(&str, &str)] = &[
+pub(crate) const SelectLandStatusL01V2: &[(&str, &str)] = &[
   ("1", "継続"),
   ("2", "標準地・基準地番号変更"),
   ("4", "新設・選定替えで当該年追加"),

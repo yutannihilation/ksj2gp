@@ -5,7 +5,7 @@ use geojson::JsonObject;
 use crate::{
     error::Ksj2GpError,
     transform_coord::CoordTransformer,
-    translate::{CODELISTS_MAP, TranslateOptions, translate_colnames},
+    translate::{TranslateOptions, get_codelist_map, translate_colnames},
     writer::get_fields_except_geometry,
 };
 
@@ -37,7 +37,13 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
 
             properties.insert(
                 translated_field_name,
-                dbase_field_to_json_value(value, field_name, translate_options.translate_contents),
+                dbase_field_to_json_value(
+                    value,
+                    field_name,
+                    translate_options.translate_contents,
+                    translate_options.year,
+                    &translate_options.target_shp,
+                ),
             );
         }
 
@@ -72,8 +78,11 @@ fn dbase_field_to_json_value(
     x: dbase::FieldValue,
     field_name: &str,
     translate_contents: bool,
+    year: u16,
+    target_shp: &str,
 ) -> geojson::JsonValue {
-    if translate_contents && let Some(codelist_map) = CODELISTS_MAP.get(field_name) {
+    if translate_contents && let Some(codelist_map) = get_codelist_map(field_name, year, target_shp)
+    {
         let code: String = match x {
             // String
             dbase::FieldValue::Character(Some(x)) => x.into(),

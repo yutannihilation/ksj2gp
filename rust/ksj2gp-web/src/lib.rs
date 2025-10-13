@@ -69,6 +69,7 @@ pub fn convert_shp(
             ignore_translation_errors,
             ksj_id,
             year,
+            target_shp: target_shp.to_string(),
         },
     )?;
 

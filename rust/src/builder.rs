@@ -15,8 +15,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::LazyLock;
 
-use crate::translate::CODELISTS_MAP;
 use crate::translate::TranslateOptions;
+use crate::translate::get_codelist_map;
 use crate::{error::Ksj2GpError, translate::translate_colnames};
 
 pub(crate) struct FieldsWithGeo {
@@ -270,7 +270,11 @@ pub(crate) fn construct_schema(
         let translated_name = translate_colnames(field_name, translate_options)?;
 
         if translate_options.translate_contents
-            && let Some(codelist_map) = CODELISTS_MAP.get(field_name)
+            && let Some(codelist_map) = get_codelist_map(
+                field_name,
+                translate_options.year,
+                &translate_options.target_shp,
+            )
         {
             codelist_maps.push(Some(codelist_map));
             non_geo_fields.push(Arc::new(arrow_schema::Field::new(
