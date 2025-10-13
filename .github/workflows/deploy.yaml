@@ -57,21 +57,30 @@ jobs:
           curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
           cargo binstall --force -y wasm-bindgen-cli
 
+      - name: Install binaryen
+        run: |
+          sudo apt update
+          sudo apt install -y binaryen
+
       - name: Compile Rust crate into WebAssembly
         run: |
+          # Compile Rust code
           cd rust
           cargo build --target wasm32-unknown-unknown --release -p ksj2gp-web
           cd ..
 
+          # Generate bindings
           wasm-bindgen \
             --out-dir ./npm \
             --typescript \
             --target bundler \
             ./rust/target/wasm32-unknown-unknown/release/ksj2gp_web.wasm
 
-          # TODO
-          # wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
-          # mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
+          # Optimize the binary
+          wasm-opt ./npm/ksj2gp_web_bg.wasm -O -o tmp.wasm
+          # Compare sizes
+          ls -lh ./npm/ksj2gp_web_bg.wasm tmp.wasm
+          mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 
       - name: Install dependencies
         run: pnpm install
