@@ -110,7 +110,7 @@ pub fn decode_cp437cp932_to_utf8(input: &str) -> Result<String, Ksj2GpError> {
     let (out, _, error) = encoding_rs::SHIFT_JIS.decode(&cp932_bytes);
 
     if error {
-        return Err(format!("Failed to decode from CP932").into());
+        return Err("Failed to decode from CP932".into());
     }
 
     Ok(out.to_string())
@@ -120,7 +120,7 @@ pub fn decode_cp437cp932_to_utf8(input: &str) -> Result<String, Ksj2GpError> {
 pub fn encode_utf8_to_cp437cp932(input: &str) -> Result<String, Ksj2GpError> {
     let (cp932_bytes, _, error) = encoding_rs::SHIFT_JIS.encode(input);
     if error {
-        return Err(format!("Failed to encode to CP932").into());
+        return Err("Failed to encode to CP932".into());
     }
 
     let map = cp437_revmap();
@@ -130,7 +130,7 @@ pub fn encode_utf8_to_cp437cp932(input: &str) -> Result<String, Ksj2GpError> {
         if let Some(&byte) = map.get(b) {
             cp437_chars.push(byte);
         } else {
-            return Err(format!("Failed to encode to CP437").into());
+            return Err("Failed to encode to CP437".into());
         }
     }
 

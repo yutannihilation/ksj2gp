@@ -34,6 +34,7 @@ pub fn list_shp_files<R: Read + Seek>(reader: R) -> Result<Vec<String>, Ksj2GpEr
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Send>(
     zip: R,
     target_shp: &str,

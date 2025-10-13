@@ -37,8 +37,8 @@ impl CoordTransformer {
                     .rings()
                     .iter()
                     .map(|ring| {
-                        let mut points = ring.points();
-                        self.transform_points(&mut points)
+                        let points = ring.points();
+                        self.transform_points(points)
                     })
                     .collect::<Result<Vec<Vec<geojson::Position>>, _>>()?;
 
@@ -50,8 +50,8 @@ impl CoordTransformer {
                     .rings()
                     .iter()
                     .map(|ring| {
-                        let mut points = ring.points();
-                        self.transform_points_z(&mut points)
+                        let points = ring.points();
+                        self.transform_points_z(points)
                     })
                     .collect::<Result<Vec<Vec<geojson::Position>>, _>>()?;
 

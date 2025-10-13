@@ -48,7 +48,7 @@ pub fn convert_shp_fs(
         tmp_dbf_file_path,
         tmp_shx_file_path,
         output_file,
-        &output_format,
+        output_format,
         &TranslateOptions {
             // TODO: pass this option from outside
             translate_colnames: true,

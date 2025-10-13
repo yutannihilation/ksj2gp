@@ -37,6 +37,7 @@ pub fn list_shp_files(zip_file: web_sys::File) -> Result<Vec<String>, String> {
     ksj2gp::list_shp_files(reader).map_err(|e| format!("{e}"))
 }
 
+#[allow(clippy::too_many_arguments)]
 #[wasm_bindgen]
 pub fn convert_shp(
     zip_file: web_sys::File,

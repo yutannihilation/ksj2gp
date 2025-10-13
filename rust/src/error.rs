@@ -17,43 +17,43 @@ impl From<Ksj2GpError> for String {
 
 impl From<zip::result::ZipError> for Ksj2GpError {
     fn from(value: zip::result::ZipError) -> Self {
-        Self(format!("zip error: {value:?}").into())
+        Self(format!("zip error: {value:?}"))
     }
 }
 
 impl From<std::io::Error> for Ksj2GpError {
     fn from(value: std::io::Error) -> Self {
-        Self(format!("IO error: {value:?}").into())
+        Self(format!("IO error: {value:?}"))
     }
 }
 
 impl From<shapefile::Error> for Ksj2GpError {
     fn from(value: shapefile::Error) -> Self {
-        Self(format!("shapefile error: {value:?}").into())
+        Self(format!("shapefile error: {value:?}"))
     }
 }
 
 impl From<dbase::Error> for Ksj2GpError {
     fn from(value: dbase::Error) -> Self {
-        Self(format!("dbase error: {value:?}").into())
+        Self(format!("dbase error: {value:?}"))
     }
 }
 
 impl From<geoarrow_schema::error::GeoArrowError> for Ksj2GpError {
     fn from(value: geoarrow_schema::error::GeoArrowError) -> Self {
-        Self(format!("geoarrow error: {value:?}").into())
+        Self(format!("geoarrow error: {value:?}"))
     }
 }
 
 impl From<arrow_schema::ArrowError> for Ksj2GpError {
     fn from(value: arrow_schema::ArrowError) -> Self {
-        Self(format!("arrow error: {value:?}").into())
+        Self(format!("arrow error: {value:?}"))
     }
 }
 
 impl From<parquet::errors::ParquetError> for Ksj2GpError {
     fn from(value: parquet::errors::ParquetError) -> Self {
-        Self(format!("parquet error: {value:?}").into())
+        Self(format!("parquet error: {value:?}"))
     }
 }
 
@@ -65,6 +65,6 @@ impl From<&str> for Ksj2GpError {
 
 impl From<String> for Ksj2GpError {
     fn from(value: String) -> Self {
-        Self(value.into())
+        Self(value)
     }
 }
