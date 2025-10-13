@@ -2,6 +2,7 @@
 pub(crate) enum CodelistId {
     A10AreaCode,
     A10LayerNo,
+    A10InsideDiv,
     A42HistoricalDistrictType,
     // 全国地方公共団体コードはたぶんそのままの方がいい
     // AdminAreaCd_R105,
@@ -17,7 +18,7 @@ pub(crate) enum CodelistId {
     AirportCatCdHtml,
     AirportTransitionCd,
     AirportUseCd,
-    authority_type,
+    AuthorityType,
     AviationActCd,
     BiomassType,
     BusClassCd,
@@ -69,7 +70,7 @@ pub(crate) enum CodelistId {
     InstitutionTypeCd,
     KasoCd,
     KinouruikeiCd,
-    landscape_district_type,
+    LandscapeDistrictType,
     LandUseCd09U,
     LandUseCd09,
     LandUseCd77,
@@ -197,6 +198,13 @@ pub(crate) const A10LayerNo: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
+pub(crate) const A10InsideDiv: &[(&str, &str)] = &[
+  ("0", "毛羽無し"),
+  ("1", "内向き"),
+  ("2", "外向き"),
+];
+
+#[rustfmt::skip]
 pub(crate) const A42HistoricalDistrictType: &[(&str, &str)] = &[
   ("1", "歴史的風土特別保存地区"),
   ("2", "第１種歴史的風土保存地区（明日香村のみ）"),
@@ -306,7 +314,7 @@ pub(crate) const AirportUseCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const authority_type: &[(&str, &str)] = &[
+pub(crate) const AuthorityType: &[(&str, &str)] = &[
   ("1", "国指定"),
   ("2", "県指定"),
 ];
@@ -885,7 +893,7 @@ pub(crate) const KinouruikeiCd: &[(&str, &str)] = &[
 ];
 
 #[rustfmt::skip]
-pub(crate) const landscape_district_type: &[(&str, &str)] = &[
+pub(crate) const LandscapeDistrictType: &[(&str, &str)] = &[
   ("1", "景観地区"),
   ("2", "準景観地区"),
 ];
