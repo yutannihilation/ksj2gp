@@ -11,8 +11,11 @@ use dbase::FieldValue;
 
 use geoarrow_schema::GeoArrowType;
 
+use std::collections::HashMap;
 use std::sync::Arc;
+use std::sync::LazyLock;
 
+use crate::translate::CODELISTS_MAP;
 use crate::translate::TranslateOptions;
 use crate::{error::Ksj2GpError, translate::translate_colnames};
 
@@ -20,6 +23,7 @@ pub(crate) struct FieldsWithGeo {
     pub(crate) schema_ref: arrow_schema::SchemaRef,
     pub(crate) non_geo_fields: Vec<Arc<arrow_schema::Field>>,
     pub(crate) geoarrow_type: geoarrow_schema::GeoArrowType,
+    pub(crate) codelist_maps: Vec<Option<&'static LazyLock<HashMap<&'static str, &'static str>>>>,
 }
 
 #[derive(Debug)]
@@ -34,6 +38,10 @@ pub(crate) enum NonGeoArrayBuilder {
     Date32(arrow_array::builder::Date32Builder),
     // TODO
     // Timestamp(arrow_array::builder::TimestampMillisecondBuilder)
+    TranslatedCode(
+        arrow_array::builder::StringBuilder,
+        &'static LazyLock<HashMap<&'static str, &'static str>>,
+    ),
 }
 
 impl NonGeoArrayBuilder {
@@ -87,6 +95,64 @@ impl NonGeoArrayBuilder {
                     primitive_builder.append_null();
                 }
             }
+
+            // translated codes
+            (
+                NonGeoArrayBuilder::TranslatedCode(primitive_builder, codelist_map),
+                FieldValue::Character(Some(v)) | FieldValue::Memo(v),
+            ) => match codelist_map.get(v.as_str()) {
+                Some(label) => {
+                    primitive_builder.append_value(label.to_string());
+                }
+                None => primitive_builder.append_value(v),
+            },
+            (
+                NonGeoArrayBuilder::TranslatedCode(primitive_builder, codelist_map),
+                dbase::FieldValue::Numeric(Some(v)) | dbase::FieldValue::Double(v),
+            ) => {
+                let code = format!("{v:.0}");
+                match codelist_map.get(code.as_str()) {
+                    Some(label) => {
+                        primitive_builder.append_value(label.to_string());
+                    }
+                    None => primitive_builder.append_value(code),
+                }
+            }
+            (
+                NonGeoArrayBuilder::TranslatedCode(primitive_builder, codelist_map),
+                dbase::FieldValue::Float(Some(v)),
+            ) => {
+                let code = format!("{v:.0}");
+                match codelist_map.get(code.as_str()) {
+                    Some(label) => {
+                        primitive_builder.append_value(label.to_string());
+                    }
+                    None => primitive_builder.append_value(code),
+                }
+            }
+            (
+                NonGeoArrayBuilder::TranslatedCode(primitive_builder, codelist_map),
+                dbase::FieldValue::Integer(v),
+            ) => {
+                let code = format!("{v:.0}");
+                match codelist_map.get(code.as_str()) {
+                    Some(label) => {
+                        primitive_builder.append_value(label.to_string());
+                    }
+                    None => primitive_builder.append_value(code),
+                }
+            }
+            (
+                NonGeoArrayBuilder::TranslatedCode(primitive_builder, _),
+                FieldValue::Character(None) | FieldValue::Numeric(None) | FieldValue::Float(None),
+            ) => {
+                primitive_builder.append_null();
+            }
+
+            (NonGeoArrayBuilder::TranslatedCode(primitive_builder, _), _) => {
+                // TODO: handle errors
+                primitive_builder.append_value("Unexpected value".to_string());
+            }
             // type mismatch means something is wrong...
             (_, _) => unreachable!(),
         }
@@ -115,6 +181,9 @@ impl NonGeoArrayBuilder {
             NonGeoArrayBuilder::Date32(primitive_builder) => {
                 arrow_array::builder::ArrayBuilder::finish(primitive_builder)
             }
+            NonGeoArrayBuilder::TranslatedCode(primitive_builder, _) => {
+                arrow_array::builder::ArrayBuilder::finish(primitive_builder)
+            }
         }
     }
 }
@@ -125,33 +194,42 @@ pub(crate) struct ArrayBuilderWithGeo {
 }
 
 impl FieldsWithGeo {
+    // TODO: return errors
     pub(crate) fn create_builders(&self, capacity: usize) -> ArrayBuilderWithGeo {
-        let builders: Vec<NonGeoArrayBuilder> = self
-            .non_geo_fields
-            .iter()
-            .map(|f| match f.data_type() {
-                arrow_schema::DataType::Float64 => NonGeoArrayBuilder::Float64(
-                    arrow_array::builder::Float64Builder::with_capacity(capacity),
-                ),
-                arrow_schema::DataType::Float32 => NonGeoArrayBuilder::Float32(
-                    arrow_array::builder::Float32Builder::with_capacity(capacity),
-                ),
-                arrow_schema::DataType::Int32 => NonGeoArrayBuilder::Int32(
-                    arrow_array::builder::Int32Builder::with_capacity(capacity),
-                ),
+        let iter = self.non_geo_fields.iter().zip(self.codelist_maps.iter());
+        let builders: Vec<NonGeoArrayBuilder> = iter
+            .map(|(f, codelist_map)| {
+                if let Some(codelist_map) = codelist_map {
+                    return NonGeoArrayBuilder::TranslatedCode(
+                        arrow_array::builder::StringBuilder::with_capacity(capacity, capacity * 8),
+                        codelist_map,
+                    );
+                }
 
-                arrow_schema::DataType::Boolean => NonGeoArrayBuilder::Boolean(
-                    arrow_array::builder::BooleanBuilder::with_capacity(capacity),
-                ),
-                arrow_schema::DataType::Utf8 => NonGeoArrayBuilder::Utf8(
-                    // TODO: not sure what's the best value to multiply for data_capacity
-                    arrow_array::builder::StringBuilder::with_capacity(capacity, capacity * 8),
-                ),
-                arrow_schema::DataType::Date32 => NonGeoArrayBuilder::Date32(
-                    arrow_array::builder::Date32Builder::with_capacity(capacity),
-                ),
-                // arrow_schema::DataType::Timestamp(time_unit, _) => todo!(),
-                _ => unreachable!(),
+                match f.data_type() {
+                    arrow_schema::DataType::Float64 => NonGeoArrayBuilder::Float64(
+                        arrow_array::builder::Float64Builder::with_capacity(capacity),
+                    ),
+                    arrow_schema::DataType::Float32 => NonGeoArrayBuilder::Float32(
+                        arrow_array::builder::Float32Builder::with_capacity(capacity),
+                    ),
+                    arrow_schema::DataType::Int32 => NonGeoArrayBuilder::Int32(
+                        arrow_array::builder::Int32Builder::with_capacity(capacity),
+                    ),
+
+                    arrow_schema::DataType::Boolean => NonGeoArrayBuilder::Boolean(
+                        arrow_array::builder::BooleanBuilder::with_capacity(capacity),
+                    ),
+                    arrow_schema::DataType::Utf8 => NonGeoArrayBuilder::Utf8(
+                        // TODO: not sure what's the best value to multiply for data_capacity
+                        arrow_array::builder::StringBuilder::with_capacity(capacity, capacity * 8),
+                    ),
+                    arrow_schema::DataType::Date32 => NonGeoArrayBuilder::Date32(
+                        arrow_array::builder::Date32Builder::with_capacity(capacity),
+                    ),
+                    // arrow_schema::DataType::Timestamp(time_unit, _) => todo!(),
+                    _ => unreachable!(),
+                }
             })
             .collect();
 
@@ -185,26 +263,45 @@ pub(crate) fn construct_schema(
     translate_options: &TranslateOptions,
 ) -> Result<FieldsWithGeo, Ksj2GpError> {
     let mut non_geo_fields = Vec::with_capacity(fields.len());
+    let mut codelist_maps = Vec::with_capacity(fields.len());
 
     for field in fields {
-        let name = translate_colnames(field.name(), translate_options)?;
+        let field_name = field.name();
+        let translated_name = translate_colnames(field_name, translate_options)?;
+
+        if translate_options.translate_contents
+            && let Some(codelist_map) = CODELISTS_MAP.get(field_name)
+        {
+            codelist_maps.push(Some(codelist_map));
+            non_geo_fields.push(Arc::new(arrow_schema::Field::new(
+                translated_name,
+                arrow_schema::DataType::Utf8,
+                true,
+            )));
+            continue;
+        } else {
+            codelist_maps.push(None);
+        }
+
         let field = match field.field_type() {
             FieldType::Numeric | FieldType::Double | FieldType::Currency => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Float64, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Float64, true)
             }
             FieldType::Character | FieldType::Memo => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Utf8, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Utf8, true)
             }
             FieldType::Float => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Float32, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Float32, true)
             }
             FieldType::Integer => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Int32, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Int32, true)
             }
             FieldType::Logical => {
-                arrow_schema::Field::new(name, arrow_schema::DataType::Boolean, true)
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Boolean, true)
             }
-            FieldType::Date => arrow_schema::Field::new(name, arrow_schema::DataType::Date32, true),
+            FieldType::Date => {
+                arrow_schema::Field::new(translated_name, arrow_schema::DataType::Date32, true)
+            }
             // TODO
             FieldType::DateTime => unimplemented!(),
             // FieldType::DateTime => arrow_schema::Field::new(
@@ -230,5 +327,6 @@ pub(crate) fn construct_schema(
         schema_ref,
         non_geo_fields,
         geoarrow_type,
+        codelist_maps,
     })
 }

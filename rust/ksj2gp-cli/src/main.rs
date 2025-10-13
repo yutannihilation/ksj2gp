@@ -49,7 +49,7 @@ pub fn convert_shp_fs(
         tmp_shx_file_path,
         output_file,
         output_format,
-        &TranslateOptions {
+        TranslateOptions {
             // TODO: pass this option from outside
             translate_colnames: true,
             translate_contents: true,

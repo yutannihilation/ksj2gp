@@ -11,35 +11,36 @@ use crate::{
 
 static COLNAMES_MAP: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| {
     let mut map: HashMap<&'static str, &'static str> = HashMap::with_capacity(COLNAMES.len());
-    for &(code, name) in COLNAMES {
-        map.insert(code, name);
+    for (col_id, name) in COLNAMES {
+        map.insert(col_id, name.0);
     }
     map
 });
 
+// TODO: return &str to avoid unnecessary allocation
 pub(crate) fn translate_colnames(
-    code: &str,
+    col_id: &str,
     translate_options: &TranslateOptions,
 ) -> Result<String, Ksj2GpError> {
     // No translation
     if !translate_options.translate_colnames {
-        return Ok(code.to_string());
+        return Ok(col_id.to_string());
     }
 
     // 特殊な処理が必要な ID のものは専用の関数をつくる
     match translate_options.ksj_id.as_str() {
-        "L01" => return translate_colnames_l01(code, translate_options.year),
+        "L01" => return translate_colnames_l01(col_id, translate_options.year),
         "L02" => unimplemented!(),
         _ => {}
     }
 
-    match COLNAMES_MAP.get(code) {
+    match COLNAMES_MAP.get(col_id) {
         Some(name) => Ok(name.to_string()),
         None => {
             if translate_options.ignore_translation_errors {
-                Ok(code.to_string())
+                Ok(col_id.to_string())
             } else {
-                Err(format!("Unknown column name translation: {code}").into())
+                Err(format!("Unknown column name translation: {col_id}").into())
             }
         }
     }
@@ -56,8 +57,8 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
 
     match (year, idx) {
         (_, 0) => panic!("Something is wrong"),
-        (..=2013, _) => Ok(L01_COLNAMES_1983[idx - 1].to_string()),
-        (2014..=2017, 1..=47) => Ok(L01_COLNAMES_2014[idx - 1].to_string()),
+        (..=2013, _) => Ok(L01_COLNAMES_1983[idx - 1].0.to_string()),
+        (2014..=2017, 1..=47) => Ok(L01_COLNAMES_2014[idx - 1].0.to_string()),
         (2014..=2017, 48..) => {
             let y = (idx - 48) + 1983;
             if y <= year as _ {
@@ -69,7 +70,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
                 ))
             }
         }
-        (2018..=2021, 1..=55) => Ok(L01_COLNAMES_2018[idx - 1].to_string()),
+        (2018..=2021, 1..=55) => Ok(L01_COLNAMES_2018[idx - 1].0.to_string()),
         (2018..=2021, 56..) => {
             let y = (idx - 56) + 1983;
             if y <= year as _ {
@@ -81,7 +82,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
                 ))
             }
         }
-        (2022..=2023, 1..=60) => Ok(L01_COLNAMES_2022[idx - 1].to_string()),
+        (2022..=2023, 1..=60) => Ok(L01_COLNAMES_2022[idx - 1].0.to_string()),
         (2022..=2023, 61..) => {
             let y = (idx - 61) + 1983;
             if y <= year as _ {
@@ -93,7 +94,7 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
                 ))
             }
         }
-        (2024.., 1..=61) => Ok(L01_COLNAMES_2024[idx - 1].to_string()),
+        (2024.., 1..=61) => Ok(L01_COLNAMES_2024[idx - 1].0.to_string()),
         (2024.., 62..) => {
             let y = (idx - 62) + 1983;
             if y <= year as _ {

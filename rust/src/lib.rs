@@ -45,7 +45,7 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Sen
     output_format: &str,
     // Since `zip` is a file handle, it doesn't contain the filename. So, it
     // needs to be extracted outside of this function.
-    translate_options: &TranslateOptions,
+    translate_options: TranslateOptions,
 ) -> Result<(), Ksj2GpError> {
     let mut zip = match zip::ZipArchive::new(zip) {
         Ok(zip) => ZippedShapefileReader::new(zip, target_shp),
@@ -69,9 +69,9 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Sen
 
     match output_format {
         "GeoParquet" => {
-            write_geoparquet(&mut reader, &mut out, &dbf_fields, &wkt, translate_options)
+            write_geoparquet(&mut reader, &mut out, &dbf_fields, &wkt, &translate_options)
         }
-        "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields, translate_options),
+        "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields, &translate_options),
         _ => Err(format!("Unsupported format: {output_format}").into()),
     }
 }
