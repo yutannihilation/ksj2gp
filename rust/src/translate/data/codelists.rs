@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub(crate) enum CodelistId {
     A10_area_code,
     A10_layer_no,

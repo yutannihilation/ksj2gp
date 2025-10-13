@@ -5,7 +5,7 @@ use geojson::JsonObject;
 use crate::{
     error::Ksj2GpError,
     transform_coord::CoordTransformer,
-    translate::{TranslateOptions, translate_colnames},
+    translate::{TranslateOptions, translate_codelists, translate_colnames},
     writer::get_fields_except_geometry,
 };
 
@@ -35,7 +35,10 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
 
             let translated_field_name = translate_colnames(field_name, translate_options)?;
 
-            properties.insert(translated_field_name, dbase_field_to_json_value(value));
+            properties.insert(
+                translated_field_name,
+                dbase_field_to_json_value(value, field_name),
+            );
         }
 
         let geometry = geojson::Geometry::new(transformer.transform_to_geojson(&shape)?);
@@ -65,11 +68,15 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     Ok(())
 }
 
-fn dbase_field_to_json_value(x: dbase::FieldValue) -> geojson::JsonValue {
+fn dbase_field_to_json_value(x: dbase::FieldValue, field_name: &str) -> geojson::JsonValue {
     match x {
+        // TODO: I'm assuming all fields to translate is string, not number.
+        // TODO: Is this too costly to always try to get() on the HashMap? Should I place some filter before actually calling translate_codelists()?
+
         // String
-        dbase::FieldValue::Character(x) => x.into(),
-        dbase::FieldValue::Memo(x) => x.into(),
+        dbase::FieldValue::Character(Some(x)) => translate_codelists(field_name, &x).into(),
+        dbase::FieldValue::Character(None) => geojson::JsonValue::Null,
+        dbase::FieldValue::Memo(x) => translate_codelists(field_name, &x).into(),
         // Number
         dbase::FieldValue::Numeric(x) => x.into(),
         dbase::FieldValue::Float(x) => x.into(),

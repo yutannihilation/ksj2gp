@@ -11,35 +11,36 @@ use crate::{
 
 static COLNAMES_MAP: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| {
     let mut map: HashMap<&'static str, &'static str> = HashMap::with_capacity(COLNAMES.len());
-    for (code, name) in COLNAMES {
-        map.insert(code, name.0);
+    for (col_id, name) in COLNAMES {
+        map.insert(col_id, name.0);
     }
     map
 });
 
+// TODO: return &str to avoid unnecessary allocation
 pub(crate) fn translate_colnames(
-    code: &str,
+    col_id: &str,
     translate_options: &TranslateOptions,
 ) -> Result<String, Ksj2GpError> {
     // No translation
     if !translate_options.translate_colnames {
-        return Ok(code.to_string());
+        return Ok(col_id.to_string());
     }
 
     // 特殊な処理が必要な ID のものは専用の関数をつくる
     match translate_options.ksj_id.as_str() {
-        "L01" => return translate_colnames_l01(code, translate_options.year),
+        "L01" => return translate_colnames_l01(col_id, translate_options.year),
         "L02" => unimplemented!(),
         _ => {}
     }
 
-    match COLNAMES_MAP.get(code) {
+    match COLNAMES_MAP.get(col_id) {
         Some(name) => Ok(name.to_string()),
         None => {
             if translate_options.ignore_translation_errors {
-                Ok(code.to_string())
+                Ok(col_id.to_string())
             } else {
-                Err(format!("Unknown column name translation: {code}").into())
+                Err(format!("Unknown column name translation: {col_id}").into())
             }
         }
     }

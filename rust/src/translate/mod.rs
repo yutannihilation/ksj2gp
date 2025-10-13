@@ -1,7 +1,9 @@
+mod codelists;
 mod colnames;
 mod data;
 mod ksj_id;
 
+pub(crate) use codelists::translate_codelists;
 pub(crate) use colnames::translate_colnames;
 pub use ksj_id::extract_ksj_id;
 
