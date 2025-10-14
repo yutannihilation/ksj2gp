@@ -284,4 +284,15 @@ mod tests {
             assert_codelist_label("A03_006", 2024, target_shp, "1", expected_label);
         }
     }
+
+    #[test]
+    fn test_a42_special_shapefile() {
+        assert_codelist_label(
+            "A42_005",
+            2024,
+            "Spacial_Preservation_Area_of_Historic_Landscape.shp",
+            "2",
+            "第１種歴史的風土保存地区（明日香村のみ）",
+        );
+    }
 }
