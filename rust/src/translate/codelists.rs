@@ -79,6 +79,9 @@ static CODELISTS_MAP: LazyLock<
 
     // cases that cannot be determined by the column name (e.g. L01_001 is different before and after 2023)
     let special_cases = [
+        ("A03SectionTypeCdKinki", CodelistId::A03SectionTypeCdKinki),
+        ("A03SectionTypeCdCyubu", CodelistId::A03SectionTypeCdCyubu),
+        ("A03SectionTypeCdSyuto", CodelistId::A03SectionTypeCdSyuto),
         ("IndexNumL01", CodelistId::IndexNumL01),
         ("SelectLandStatusL01V1", CodelistId::SelectLandStatusL01V1),
         ("SelectLandStatusL01V2", CodelistId::SelectLandStatusL01V2),
@@ -91,6 +94,10 @@ static CODELISTS_MAP: LazyLock<
     for (col_id, codelist_id) in normal_cases.chain(special_cases.into_iter()) {
         register_codelists!(
             map, col_id, codelist_id;
+            A03SectionCd,
+            A03SectionTypeCdKinki,
+            A03SectionTypeCdCyubu,
+            A03SectionTypeCdSyuto,
             A10AreaCode,
             A10LayerNo,
             A10InsideDiv,
@@ -222,10 +229,6 @@ static CODELISTS_MAP: LazyLock<
             TourismResourceCategoryCd,
             TripGenerationCd,
             LandUseCd09Tweaked,
-            A03SectionCd,
-            A03SectionTypeCdKinki,
-            A03SectionTypeCdCyubu,
-            A03SectionTypeCdSyuto,
             UnderConstruction,
             Undersea,
             UrbanPlanningDecided,
@@ -243,3 +246,42 @@ static CODELISTS_MAP: LazyLock<
     }
     map
 });
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::ops::Deref;
+
+    fn assert_codelist_label(
+        col_id: &str,
+        year: u16,
+        target_shp: &str,
+        code: &str,
+        expected_label: &str,
+    ) {
+        let map = get_codelist_map(col_id, year, target_shp)
+            .unwrap_or_else(|| panic!("missing map for {target_shp}"));
+        let map = map.deref();
+        let actual = map
+            .get(code)
+            .copied()
+            .unwrap_or_else(|| panic!("missing code {code} for {target_shp}"));
+        assert_eq!(actual, expected_label);
+    }
+
+    #[test]
+    fn test_a03() {
+        let cases = [
+            ("A03-03_KINKI-g_ThreeMajorMetroPlanArea.shp", "既成都市区域"),
+            (
+                "A03-03_CHUBU-g_ThreeMajorMetroPlanArea.shp",
+                "都市整備区域(［保全区域］との重複無し",
+            ),
+            ("A03-03_SYUTO-g_ThreeMajorMetroPlanArea.shp", "既成市街地"),
+        ];
+
+        for (target_shp, expected_label) in cases {
+            assert_codelist_label("A03_006", 2024, target_shp, "1", expected_label);
+        }
+    }
+}
