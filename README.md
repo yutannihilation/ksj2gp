@@ -13,15 +13,29 @@
 
 ## やりたいこと
 
-- [x] GeoParquet ファイルの出力
-- [x] `.prj` ファイルを扱う
-  - [x] GeoParquet の `crs` メタデータに入れる
-  - [ ] `.prj` ファイルがない場合の対応
-- [x] Shift_JIS 以外の文字コード
-- [x] 複数の `.shp` ファイルを含む場合に選べるようにする
-- [ ] メタデータをいい感じに紐づける（[過去のデータ](https://github.com/yutannihilation/kokudosuuchi-metadata)）
-- [ ] GeoPackage ファイルの出力（turso 待ち？）
-- [ ] PatchJGDの実装
+### 出力
+
+- [x] GeoParquet
+- [ ] GeoPackage
+- [x] GeoJSON
+
+## 入力
+
+- 文字コード
+  - [x] Shift_JIS
+  - [x] UTF-8
+- 座標系（緯度経度座標系のみ）
+  - [x] JGD2011
+  - [x] JGD2000
+  - [ ] 旧日本測地系
+- [ ] `.prj` ファイルがない場合
+
+### 変換
+
+※機能はあるけど、カバー率はまだまだです
+
+- [x] 属性名を人間が読めるラベルにする
+- [x] データの中身を人間が読めるラベルにする
 
 ## ビルド
 
