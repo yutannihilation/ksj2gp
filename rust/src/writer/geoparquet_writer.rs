@@ -5,8 +5,8 @@ use itertools::Itertools;
 use parquet::arrow::ArrowWriter;
 
 use crate::{
-    builder::construct_schema, crs::wild_guess_from_esri_wkt_to_projjson, error::Ksj2GpError,
-    translate::TranslateOptions, writer::get_fields_except_geometry,
+    builder::construct_schema, crs::JapanCrs, error::Ksj2GpError, translate::TranslateOptions,
+    writer::get_fields_except_geometry,
 };
 
 // Number of rows to process at once
@@ -16,15 +16,11 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
     writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
-    wkt: &Option<String>,
+    crs: JapanCrs,
     translate_options: &TranslateOptions,
 ) -> Result<(), Ksj2GpError> {
-    let projjson = match wkt {
-        Some(wkt) => wild_guess_from_esri_wkt_to_projjson(wkt)?,
-        // TODO: if .prj is not found, guess from other information
-        None => return Err(".prj not found".into()),
-    };
-    let crs = geoarrow_schema::Crs::from_projjson(projjson);
+    let projjson = crs.to_projjson();
+    let crs = geoarrow_schema::Crs::from_projjson(projjson.into());
 
     let fields_info = construct_schema(dbf_fields, crs, translate_options)?;
     let schema_ref = fields_info.schema_ref.clone();

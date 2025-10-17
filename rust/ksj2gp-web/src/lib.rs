@@ -1,4 +1,6 @@
-use ksj2gp::{TranslateOptions, convert_shp_inner, encode_utf8_to_cp437cp932, extract_ksj_id};
+use ksj2gp::{
+    TranslateOptions, convert_shp_inner, encode_utf8_to_cp437cp932, extract_ksj_id, find_meta_xml,
+};
 use wasm_bindgen::prelude::*;
 use web_sys::FileReaderSync;
 
@@ -52,12 +54,18 @@ pub fn convert_shp(
     let filename = zip_file.name();
     let (ksj_id, year) = extract_ksj_id(&filename)?;
 
+    let meta_xml_filename = {
+        let tmp_reader = UserLocalFile::new(zip_file.clone());
+        find_meta_xml(tmp_reader)?
+    };
+
     let zip = UserLocalFile::new(zip_file);
     let output_file_opfs = std::io::BufWriter::new(OpfsFile::new(output_file)?);
 
     convert_shp_inner(
         zip,
         &encode_utf8_to_cp437cp932(target_shp)?,
+        meta_xml_filename,
         OpfsFile::new(intermediate_files.shp)?,
         OpfsFile::new(intermediate_files.dbf)?,
         OpfsFile::new(intermediate_files.shx)?,

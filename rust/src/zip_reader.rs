@@ -3,7 +3,10 @@ use std::io::{Read, Seek, Write};
 use dbase::encoding::EncodingRs;
 use zip::ZipArchive;
 
-use crate::error::Ksj2GpError;
+use crate::{
+    crs::{JapanCrs, guess_crs_from_esri_wkt, guess_crs_from_meta_xml},
+    error::Ksj2GpError,
+};
 
 pub struct ZippedShapefileReader<R: Read + Seek> {
     zip: ZipArchive<R>,
@@ -12,10 +15,15 @@ pub struct ZippedShapefileReader<R: Read + Seek> {
     shx_filename: String,
     prj_filename: String,
     cpg_filename: String,
+    meta_xml_filename: Option<String>,
 }
 
 impl<R: Read + Seek> ZippedShapefileReader<R> {
-    pub fn new(zip: ZipArchive<R>, target_shp: &str) -> Result<Self, Ksj2GpError> {
+    pub fn new(
+        zip: ZipArchive<R>,
+        target_shp: &str,
+        meta_xml_filename: Option<String>,
+    ) -> Result<Self, Ksj2GpError> {
         // Sanity checks
         if !target_shp.ends_with(".shp") {
             return Err(format!("Not a Shapefile: {target_shp}").into());
@@ -49,6 +57,7 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
             shx_filename,
             prj_filename,
             cpg_filename,
+            meta_xml_filename,
         })
     }
 
@@ -91,16 +100,30 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
         self.copy_to(dst, &self.shx_filename.clone())
     }
 
-    pub fn read_prj(&mut self) -> Result<Option<String>, Ksj2GpError> {
-        let mut reader = match self.zip.by_name(&self.prj_filename) {
-            Ok(reader) => reader,
-            Err(zip::result::ZipError::FileNotFound) => return Ok(None),
-            Err(e) => return Err(e.into()),
-        };
-        let mut wkt = String::new();
-        reader.read_to_string(&mut wkt)?;
+    pub fn guess_crs(&mut self) -> Result<JapanCrs, Ksj2GpError> {
+        if let Ok(mut prj_reader) = self.zip.by_name(&self.prj_filename) {
+            let mut wkt = String::new();
+            prj_reader.read_to_string(&mut wkt)?;
 
-        Ok(Some(wkt))
+            match guess_crs_from_esri_wkt(&wkt) {
+                Ok(crs) => return Ok(crs),
+                Err(_) => {}
+            }
+        }
+
+        if let Some(meta_xml_filename) = &self.meta_xml_filename
+            && let Ok(mut meta_xml_reader) = self.zip.by_name(&meta_xml_filename)
+        {
+            let mut meta_xml_content = String::new();
+            meta_xml_reader.read_to_string(&mut meta_xml_content)?;
+
+            match guess_crs_from_meta_xml(&meta_xml_content) {
+                Ok(crs) => return Ok(crs),
+                Err(_) => {}
+            }
+        }
+
+        Err("Failed to detect CRS from .prj or KS-META-".into())
     }
 
     // cf. https://github.com/EsriJapan/shapefile_info
