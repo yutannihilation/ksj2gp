@@ -1,5 +1,6 @@
 use std::sync::LazyLock;
 
+use proj4rs::Proj;
 use regex::Regex;
 
 use crate::Ksj2GpError;
@@ -7,6 +8,16 @@ use crate::Ksj2GpError;
 const EPSG4301: &str = include_str!("epsg4301.json");
 const EPSG4612: &str = include_str!("epsg4612.json");
 const EPSG6668: &str = include_str!("epsg6668.json");
+
+pub static PROJ4STRING_WGS84: LazyLock<Proj> = LazyLock::new(|| {
+    Proj::from_proj_string("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs").unwrap()
+});
+pub static PROJ4STRING_TOKYO: LazyLock<Proj> = LazyLock::new(|| {
+    Proj::from_proj_string(
+        "+proj=longlat +ellps=bessel +towgs84=-146.414,507.337,680.507,0,0,0,0 +no_defs +type=crs",
+    )
+    .unwrap()
+});
 
 pub enum JapanCrs {
     Tokyo,
