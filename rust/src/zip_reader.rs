@@ -101,25 +101,31 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
     }
 
     pub fn guess_crs(&mut self) -> Result<JapanCrs, Ksj2GpError> {
-        if let Ok(mut prj_reader) = self.zip.by_name(&self.prj_filename) {
-            let mut wkt = String::new();
-            prj_reader.read_to_string(&mut wkt)?;
+        match self.zip.by_name(&self.prj_filename) {
+            Ok(mut prj_reader) => {
+                let mut wkt = String::new();
+                prj_reader.read_to_string(&mut wkt)?;
 
-            match guess_crs_from_esri_wkt(&wkt) {
-                Ok(crs) => return Ok(crs),
-                Err(_) => {}
+                if let Ok(crs) = guess_crs_from_esri_wkt(&wkt) {
+                    return Ok(crs);
+                }
             }
+            Err(zip::result::ZipError::FileNotFound) => { /* fall back */ }
+            Err(e) => return Err(e.into()),
         }
 
-        if let Some(meta_xml_filename) = &self.meta_xml_filename
-            && let Ok(mut meta_xml_reader) = self.zip.by_name(&meta_xml_filename)
-        {
-            let mut meta_xml_content = String::new();
-            meta_xml_reader.read_to_string(&mut meta_xml_content)?;
+        if let Some(meta_xml_filename) = &self.meta_xml_filename {
+            match self.zip.by_name(meta_xml_filename) {
+                Ok(mut meta_xml_reader) => {
+                    let mut meta_xml_content = String::new();
+                    meta_xml_reader.read_to_string(&mut meta_xml_content)?;
 
-            match guess_crs_from_meta_xml(&meta_xml_content) {
-                Ok(crs) => return Ok(crs),
-                Err(_) => {}
+                    if let Ok(crs) = guess_crs_from_meta_xml(&meta_xml_content) {
+                        return Ok(crs);
+                    }
+                }
+                Err(zip::result::ZipError::FileNotFound) => { /* nothing to do */ }
+                Err(e) => return Err(e.into()),
             }
         }
 

@@ -1,4 +1,4 @@
-use std::{str::FromStr, sync::LazyLock};
+use std::sync::LazyLock;
 
 use regex::Regex;
 
@@ -43,9 +43,13 @@ pub fn guess_crs_from_esri_wkt(wkt: &str) -> Result<JapanCrs, Ksj2GpError> {
 }
 
 static RE: LazyLock<Regex> = LazyLock::new(|| {
-    // (?m): enable multiline mode
-    Regex::new(r"(?m)<extentReferenceSystem>.*(JGD2011|JGD2000|TD).*</extentReferenceSystem>")
-        .unwrap()
+    // (?flags) is to enable flags
+    // m: multiline mode
+    // s: allow . to match linebreak
+    Regex::new(
+        r"(?ms)<referenceSystemIdentifier>.*<code>.*(JGD2011|JGD2000|TD).*</code>.*</referenceSystemIdentifier>",
+    )
+    .unwrap()
 });
 
 pub fn guess_crs_from_meta_xml(meta_xml_content: &str) -> Result<JapanCrs, Ksj2GpError> {
@@ -59,5 +63,45 @@ pub fn guess_crs_from_meta_xml(meta_xml_content: &str) -> Result<JapanCrs, Ksj2G
         }
     } else {
         Err("Failed to identify CRS from Meta XML".into())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn build_meta_xml(code: &str) -> String {
+        format!(
+            r#"
+<referenceSystemInfo>
+<MD_ReferenceSystem>
+<referenceSystemIdentifier>
+<code>{code} / (B, L)</code>
+</referenceSystemIdentifier>
+</MD_ReferenceSystem>
+</referenceSystemInfo>
+"#
+        )
+    }
+
+    #[test]
+    fn detects_tokyo_from_meta_xml() {
+        let xml = build_meta_xml("TD");
+        let crs = guess_crs_from_meta_xml(&xml).unwrap();
+        assert!(matches!(crs, JapanCrs::Tokyo));
+    }
+
+    #[test]
+    fn detects_jgd2000_from_meta_xml() {
+        let xml = build_meta_xml("JGD2000");
+        let crs = guess_crs_from_meta_xml(&xml).unwrap();
+        assert!(matches!(crs, JapanCrs::JGD2000));
+    }
+
+    #[test]
+    fn detects_jgd2011_from_meta_xml() {
+        let xml = build_meta_xml("JGD2011");
+        let crs = guess_crs_from_meta_xml(&xml).unwrap();
+        assert!(matches!(crs, JapanCrs::JGD2011));
     }
 }
