@@ -101,6 +101,7 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
     }
 
     pub fn guess_crs(&mut self) -> Result<JapanCrs, Ksj2GpError> {
+        // First, if .prj file exists, try to acquire the CRS from it
         match self.zip.by_name(&self.prj_filename) {
             Ok(mut prj_reader) => {
                 let mut wkt = String::new();
@@ -110,26 +111,24 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
                     return Ok(crs);
                 }
             }
-            Err(zip::result::ZipError::FileNotFound) => { /* fall back */ }
+            Err(zip::result::ZipError::FileNotFound) => {} // it's not a rara case when we find no .prj file...
             Err(e) => return Err(e.into()),
         }
 
+        // If no .prj file found, use KS-META file.
         if let Some(meta_xml_filename) = &self.meta_xml_filename {
             match self.zip.by_name(meta_xml_filename) {
                 Ok(mut meta_xml_reader) => {
                     let mut meta_xml_content = String::new();
                     meta_xml_reader.read_to_string(&mut meta_xml_content)?;
 
-                    if let Ok(crs) = guess_crs_from_meta_xml(&meta_xml_content) {
-                        return Ok(crs);
-                    }
+                    guess_crs_from_meta_xml(&meta_xml_content)
                 }
-                Err(zip::result::ZipError::FileNotFound) => { /* nothing to do */ }
-                Err(e) => return Err(e.into()),
+                Err(e) => Err(e.into()),
             }
+        } else {
+            Err("Failed to detect CRS from .prj or KS-META-".into())
         }
-
-        Err("Failed to detect CRS from .prj or KS-META-".into())
     }
 
     // cf. https://github.com/EsriJapan/shapefile_info
