@@ -42,6 +42,8 @@ pub fn guess_crs_from_esri_wkt(wkt: &str) -> Result<JapanCrs, Ksj2GpError> {
     Err(format!("Failed to identify CRS from ESRI WKT in the .prj file: {wkt}").into())
 }
 
+// TODO: JMP 2.0 をちゃんとパースできるようにする。
+// https://www.gsi.go.jp/common/000259951.pdf の 5.1.2
 static RE: LazyLock<Regex> = LazyLock::new(|| {
     // (?flags) is to enable flags
     // m: multiline mode
