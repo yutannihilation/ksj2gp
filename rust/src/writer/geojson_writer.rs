@@ -3,6 +3,7 @@ use std::io::{Read, Seek, Write};
 use geojson::JsonObject;
 
 use crate::{
+    crs::JapanCrs,
     error::Ksj2GpError,
     transform_coord::CoordTransformer,
     translate::{TranslateOptions, get_codelist_map, translate_colnames},
@@ -13,9 +14,10 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     reader: &mut shapefile::Reader<T, D>,
     writer: &mut W,
     dbf_fields: &[dbase::FieldInfo],
+    crs: JapanCrs,
     translate_options: &TranslateOptions,
 ) -> Result<(), Ksj2GpError> {
-    let transformer = CoordTransformer::new();
+    let transformer = CoordTransformer::new(crs);
 
     // Since shapefile::Record is a HashMap, the iterator of it doesn't maintain
     // the order. So, this column names vector is needed to ensure the consistent
