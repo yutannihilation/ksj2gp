@@ -119,8 +119,15 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
         if let Some(meta_xml_filename) = &self.meta_xml_filename {
             match self.zip.by_name(meta_xml_filename) {
                 Ok(mut meta_xml_reader) => {
-                    let mut meta_xml_content = String::new();
-                    meta_xml_reader.read_to_string(&mut meta_xml_content)?;
+                    let mut meta_xml_content_sjis: Vec<u8> = Vec::new();
+                    meta_xml_reader.read_to_end(&mut meta_xml_content_sjis)?;
+
+                    // KS-META XML ファイルは Shift_JIS のはず...
+                    let (meta_xml_content, _, error) =
+                        encoding_rs::SHIFT_JIS.decode(&meta_xml_content_sjis);
+                    if error {
+                        return Err("Failed to decode KS-META XML file from CP932".into());
+                    }
 
                     guess_crs_from_meta_xml(&meta_xml_content)
                 }
