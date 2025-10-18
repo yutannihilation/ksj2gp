@@ -128,6 +128,7 @@ static CODELISTS_MAP: LazyLock<HashMap<&'static str, &'static Codelist>> = LazyL
     map.entry("C09_005").or_insert(&FISH_PORT_ADMIN_CD);
 
     map.entry("C23_002").or_insert(&ADMIN_SEA_LINE_CD);
+    map.entry("C23_005").or_insert(&ADMIN_CON_AREA_CD);
 
     map.entry("C28_003").or_insert(&INSTALL_AIRPORT_CD_V2_3);
     map.entry("C28_006").or_insert(&INSTALL_ADMIN_CD_V2_3);

@@ -88,7 +88,7 @@ pub(crate) static ADMIN_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static AdminConAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ADMIN_CON_AREA_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "都道府県知事"),
@@ -157,17 +157,6 @@ pub(crate) static AGG_UNIT_FLAG_EMER_TRANS_CD: LazyLock<HashMap<&'static str, &'
             ("3", "集計単位が現消防本部単位の場合、代表市町村（※）に付与"),
             ("9", "現／旧市町村／消防局単位の資料が混在する資料から入力したデータに付与"),
             ("0", "集計単位が現市町村単位または消防局単位の場合で、代表市町村でない場合に付与。これを付与した市町村で、かつ代表市町村に値が入っている年の集計値には「-3」を付与する（収集した資料に値がない「-1」と区別する）。"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static AgriculturalAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("1", "農業地域"),
-            ("2", "農用地区域"),
         ]
         .into_iter()
         .collect()
@@ -740,19 +729,6 @@ pub(crate) static FLOOD_DURATION_CODE: LazyLock<HashMap<&'static str, &'static s
             ("5", "168時間以上336時間未満（2週間）"),
             ("6", "336時間以上672時間未満（4週間）"),
             ("7", "672時間以上（4週間以上）"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static ForestAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("1", "森林地域"),
-            ("2", "国有林"),
-            ("3", "地域森林計画対象民有林"),
-            ("4", "保安林"),
         ]
         .into_iter()
         .collect()
