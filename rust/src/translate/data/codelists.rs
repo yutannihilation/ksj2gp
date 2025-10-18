@@ -1,7 +1,7 @@
 use std::{collections::HashMap, sync::LazyLock};
 
 #[rustfmt::skip]
-pub(crate) static A10AreaCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A10_AREA_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "北海道以外の都府県"),
@@ -25,7 +25,7 @@ pub(crate) static A10AreaCode: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static A10LayerNo: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A10_LAYER_NO: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "都市地域"),
@@ -50,7 +50,7 @@ pub(crate) static A10LayerNo: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static A10InsideDiv: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A10_INSIDE_DIV: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "毛羽無し"),
@@ -62,7 +62,7 @@ pub(crate) static A10InsideDiv: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static A42HistoricalDistrictType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A42_HISTORICAL_DISTRICT_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "歴史的風土特別保存地区"),
@@ -74,7 +74,7 @@ pub(crate) static A42HistoricalDistrictType: LazyLock<HashMap<&'static str, &'st
     });
 
 #[rustfmt::skip]
-pub(crate) static AdminCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ADMIN_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国"),
@@ -103,7 +103,7 @@ pub(crate) static AdminConAreaCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static AdminHarborCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ADMIN_HARBOR_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "都道府県"),
@@ -118,7 +118,7 @@ pub(crate) static AdminHarborCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static AdminSeaLineCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ADMIN_SEA_LINE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国土交通省河川局"),
@@ -135,7 +135,7 @@ pub(crate) static AdminSeaLineCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static AggregateUnitFlag: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AGGREGATE_UNIT_FLAG: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "集計単位が旧市町村単位の資料から入力する場合に付与"),
@@ -149,7 +149,7 @@ pub(crate) static AggregateUnitFlag: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static AggUnitFlagEmerTransCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AGG_UNIT_FLAG_EMER_TRANS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "集計単位が旧市町村単位の資料から入力する場合に付与"),
@@ -174,7 +174,7 @@ pub(crate) static AgriculturalAreaCd: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static AirJetCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AIR_JET_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "ジェット化"),
@@ -185,7 +185,7 @@ pub(crate) static AirJetCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static AirportCatCdHtml: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AIRPORT_CAT_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "旧空港法に基づく第一種空港"),
@@ -205,7 +205,7 @@ pub(crate) static AirportCatCdHtml: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static AirportTransitionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AIRPORT_TRANSITION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "空港名称"),
@@ -218,7 +218,7 @@ pub(crate) static AirportTransitionCd: LazyLock<HashMap<&'static str, &'static s
     });
 
 #[rustfmt::skip]
-pub(crate) static AirportUseCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AIRPORT_USE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "供用中"),
@@ -231,7 +231,7 @@ pub(crate) static AirportUseCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static AuthorityType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AUTHORITY_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国指定"),
@@ -242,7 +242,7 @@ pub(crate) static AuthorityType: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static AviationActCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static AVIATION_ACT_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "公共用へリポート"),
@@ -254,7 +254,7 @@ pub(crate) static AviationActCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static BiomassType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static BIOMASS_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "家畜糞尿バイオガス化"),
@@ -270,7 +270,7 @@ pub(crate) static BiomassType: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static BusClassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static BUS_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "路線バス（民間）"),
@@ -284,7 +284,7 @@ pub(crate) static BusClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static BusinessTechCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static BUSINESS_TECH_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "新住宅市街地開発事業"),
@@ -301,7 +301,7 @@ pub(crate) static BusinessTechCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static CityParkCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CITY_PARK_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "街区公園"),
@@ -324,7 +324,7 @@ pub(crate) static CityParkCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static ClassFishPortCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CLASS_FISH_PORT_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "第1種"),
@@ -339,7 +339,7 @@ pub(crate) static ClassFishPortCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static ClassHarbor1Cd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CLASS_HARBOR1_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "甲種"),
@@ -351,7 +351,7 @@ pub(crate) static ClassHarbor1Cd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static ClassHarbor2Cd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CLASS_HARBOR2_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("11", "国際戦略港湾"),
@@ -366,7 +366,7 @@ pub(crate) static ClassHarbor2Cd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static CodeDesignationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CODE_DESIGNATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "概ね重複指定"),
@@ -379,7 +379,7 @@ pub(crate) static CodeDesignationCd: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static CodeNoncombustibleCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CODE_NONCOMBUSTIBLE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "旧建設省方式"),
@@ -394,7 +394,7 @@ pub(crate) static CodeNoncombustibleCd: LazyLock<HashMap<&'static str, &'static 
     });
 
 #[rustfmt::skip]
-pub(crate) static CodeOfPhenomenon: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CODE_OF_PHENOMENON: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "急傾斜地の崩壊"),
@@ -406,7 +406,7 @@ pub(crate) static CodeOfPhenomenon: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static CodeOfUnSpecification: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CODE_OF_UN_SPECIFICATION: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "特別警戒区域指定済み"),
@@ -417,7 +417,7 @@ pub(crate) static CodeOfUnSpecification: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static CodeOfZoneH27: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CODE_OF_ZONE_H27: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "土砂災害警戒区域(指定済)"),
@@ -430,7 +430,7 @@ pub(crate) static CodeOfZoneH27: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static CommunityCenterType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static COMMUNITY_CENTER_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "中央"),
@@ -444,7 +444,7 @@ pub(crate) static CommunityCenterType: LazyLock<HashMap<&'static str, &'static s
     });
 
 #[rustfmt::skip]
-pub(crate) static CultureFacCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static CULTURE_FAC_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("03001", "美術館"),
@@ -508,7 +508,7 @@ pub(crate) static CultureFacCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static DamInstitutionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static DAM_INSTITUTION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国土交通省（各地方整備局、北海道開発局含む）"),
@@ -530,7 +530,7 @@ pub(crate) static DamInstitutionCd: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static DamPurposeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static DAMP_URPOSE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "洪水調節、農地防災"),
@@ -547,7 +547,7 @@ pub(crate) static DamPurposeCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static DamTypeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static DAM_TYPE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "アーチダム"),
@@ -569,7 +569,7 @@ pub(crate) static DamTypeCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static Direction: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static DIRECTION: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "方向なし"),
@@ -588,7 +588,7 @@ pub(crate) static Direction: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static DistributionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static DISTRIBUTION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("11", "コンテナターミナル_国際戦略港湾"),
@@ -629,7 +629,7 @@ pub(crate) static DistributionCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static DistributionCenterCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static DISTRIBUTION_CENTER_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "コンテナターミナル"),
@@ -644,7 +644,7 @@ pub(crate) static DistributionCenterCd: LazyLock<HashMap<&'static str, &'static 
     });
 
 #[rustfmt::skip]
-pub(crate) static EntrepreneurCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ENTREPRENEUR_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "公営"),
@@ -656,7 +656,7 @@ pub(crate) static EntrepreneurCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static EstClassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static EST_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国"),
@@ -672,7 +672,7 @@ pub(crate) static EstClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static FacilitiesClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FACILITIES_CLASSIFICATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "焼却施設"),
@@ -691,7 +691,7 @@ pub(crate) static FacilitiesClassificationCd: LazyLock<HashMap<&'static str, &'s
     });
 
 #[rustfmt::skip]
-pub(crate) static FacilityTypeCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FACILITY_TYPE_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "映画館"),
@@ -706,7 +706,7 @@ pub(crate) static FacilityTypeCode: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static FirehouseType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FIREHOUSE_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "消防本部"),
@@ -718,7 +718,7 @@ pub(crate) static FirehouseType: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static FishPortAdminCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FISH_PORT_ADMIN_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "都道府県"),
@@ -730,7 +730,7 @@ pub(crate) static FishPortAdminCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static FloodDurationCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FLOOD_DURATION_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "12時間未満"),
@@ -759,7 +759,7 @@ pub(crate) static ForestAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static FuelStoreCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FUEL_STORE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "SS（ガソリンスタンド）"),
@@ -771,7 +771,7 @@ pub(crate) static FuelStoreCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static FurnaceType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static FURNACE_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "GCR（ガス冷却炉）"),
@@ -787,7 +787,7 @@ pub(crate) static FurnaceType: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static HazardousAreaClassificationCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HAZARDOUS_AREA_CLASSIFICATION_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "氾濫流"),
@@ -799,7 +799,7 @@ pub(crate) static HazardousAreaClassificationCode: LazyLock<HashMap<&'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static HeavySnowTypeCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HEAVY_SNOW_TYPE_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "豪雪地帯"),
@@ -810,7 +810,7 @@ pub(crate) static HeavySnowTypeCode: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static HighwayCatCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HIGHWAY_CAT_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "高速自動車国道"),
@@ -825,7 +825,7 @@ pub(crate) static HighwayCatCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static HighwayConCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HIGHWAY_CON_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "一般インターチェンジ"),
@@ -838,7 +838,7 @@ pub(crate) static HighwayConCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static HighwayTransitionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HIGHWAY_TRANSITION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "路線名"),
@@ -850,7 +850,7 @@ pub(crate) static HighwayTransitionCd: LazyLock<HashMap<&'static str, &'static s
     });
 
 #[rustfmt::skip]
-pub(crate) static HighwayUseCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HIGHWAY_USE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "完成供用"),
@@ -864,7 +864,7 @@ pub(crate) static HighwayUseCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static HoanrinCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HOANRIN_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("水涵保", "水源かん養保安林"),
@@ -907,7 +907,7 @@ pub(crate) static HoanrinCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static HogorinCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HOGORIN_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("保護林", "保護林に設定されているもの"),
@@ -917,7 +917,7 @@ pub(crate) static HogorinCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static HydroelectricPowerPlantType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static HYDROELECTRIC_POWER_PLANT_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "ダム式"),
@@ -932,7 +932,7 @@ pub(crate) static HydroelectricPowerPlantType: LazyLock<HashMap<&'static str, &'
 // https://nlftp.mlit.go.jp/ksj/gml/codelist/IndexNumL01-v1_1.html
 // https://nlftp.mlit.go.jp/ksj/gml/codelist/L01_v3_2_IndexNumberCodeType.html
 #[rustfmt::skip]
-pub(crate) static IndexNumL01: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static INDEX_NUM_L01: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("000", "住宅地"),
@@ -964,7 +964,7 @@ pub(crate) static IndexNumL02V2_4: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static IndustrialWasteDisposal: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static INDUSTRIAL_WASTE_DISPOSAL: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "中間処理施設"),
@@ -975,7 +975,7 @@ pub(crate) static IndustrialWasteDisposal: LazyLock<HashMap<&'static str, &'stat
     });
 
 #[rustfmt::skip]
-pub(crate) static IndustrialWasteSpecialTreatment: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static INDUSTRIAL_WASTE_SPECIAL_TREATMENT: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "特別管理産業廃棄物処理以外"),
@@ -986,7 +986,7 @@ pub(crate) static IndustrialWasteSpecialTreatment: LazyLock<HashMap<&'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static InstallAdminCdV2_3: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static INSTALL_ADMIN_CD_V2_3: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国土交通大臣"),
@@ -1004,7 +1004,7 @@ pub(crate) static InstallAdminCdV2_3: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static InstallAirPortCdV2_3: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static INSTALL_AIRPORT_CD_V2_3: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "拠点空港（会社管理）"),
@@ -1019,7 +1019,7 @@ pub(crate) static InstallAirPortCdV2_3: LazyLock<HashMap<&'static str, &'static 
     });
 
 #[rustfmt::skip]
-pub(crate) static InstitutionTypeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static INSTITUTION_TYPE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "JRの新幹線"),
@@ -1033,7 +1033,7 @@ pub(crate) static InstitutionTypeCd: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static KasoCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static KASO_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("01", "過疎市町村"),
@@ -1045,7 +1045,7 @@ pub(crate) static KasoCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static KinouruikeiCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static KINOURUIKEI_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("山地災害防止（土砂）", "山地災害防止タイプ（土砂流出崩壊防備）"),
@@ -1060,7 +1060,7 @@ pub(crate) static KinouruikeiCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static LandscapeDistrictType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static LANDSCAPE_DISTRICT_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "景観地区"),
@@ -1201,7 +1201,7 @@ pub(crate) static LandUseCdYY: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static LargeClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static LARGE_CLASSIFICATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "有形文化財"),
@@ -1217,7 +1217,7 @@ pub(crate) static LargeClassificationCd: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static LocationAccuracyCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static LOCATION_ACCURACY_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "レベル１（位置精度最高）
@@ -1235,7 +1235,7 @@ pub(crate) static LocationAccuracyCd: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static MaritimeOrgCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static MARITIME_ORG_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "海上保安部"),
@@ -1252,7 +1252,7 @@ pub(crate) static MaritimeOrgCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static MedClassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static MED_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "病院"),
@@ -1264,7 +1264,7 @@ pub(crate) static MedClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static midorinokairoCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static MIDORINOKAIRO_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("知床回", "知床半島緑の回廊"),
@@ -1331,7 +1331,7 @@ pub(crate) static N04FukuinH22: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static NaturalfeatureCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static NATURALFEATURE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("101", "火山群"),
@@ -1432,7 +1432,7 @@ pub(crate) static NaturalParkAreaCd: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static NaturalsceneCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static NATURALSCENE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "火山景観"),
@@ -1463,7 +1463,7 @@ pub(crate) static NatureConservationAreaCd: LazyLock<HashMap<&'static str, &'sta
     });
 
 #[rustfmt::skip]
-pub(crate) static OriginalDataCodeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ORIGINAL_DATA_CODE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "河川基盤地図2500"),
@@ -1480,7 +1480,7 @@ pub(crate) static OriginalDataCodeCd: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static PointClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static POINT_CLASSIFICATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "敷地・号・建物レベル"),
@@ -1495,7 +1495,7 @@ pub(crate) static PointClassificationCd: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static PointClassificationCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static POINT_CLASSIFICATION_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "敷地・号・建物レベル"),
@@ -1508,7 +1508,7 @@ pub(crate) static PointClassificationCode: LazyLock<HashMap<&'static str, &'stat
     });
 
 #[rustfmt::skip]
-pub(crate) static PoliceStationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static POLICE_STATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "警察本部"),
@@ -1525,7 +1525,7 @@ pub(crate) static PoliceStationCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static PosSpecificLevel: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static POS_SPECIFIC_LEVEL: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "位置特定"),
@@ -1541,7 +1541,7 @@ pub(crate) static PosSpecificLevel: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static PostOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static POST_OFFICE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("18004", "簡易郵便局"),
@@ -1552,7 +1552,7 @@ pub(crate) static PostOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static ProtectionAreaType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PROTECTION_AREA_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "鳥獣保護区"),
@@ -1577,7 +1577,7 @@ pub(crate) static PTAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static PubFacAdminCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUB_FAC_ADMIN_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("001", "国"),
@@ -1607,7 +1607,7 @@ pub(crate) static PubFacAdminCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static PubFacMaclassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUB_FAC_MACLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("3", "建物"),
@@ -1627,7 +1627,7 @@ pub(crate) static PubFacMaclassCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static PubFacMiclassCd_wf: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUB_FAC_MICLASS_CD_WF: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("3001", "美術館"),
@@ -1853,7 +1853,7 @@ pub(crate) static PubFacMiclassCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static PubFacMinclassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUB_FAC_MINCLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("03001", "美術館"),
@@ -1934,7 +1934,7 @@ pub(crate) static PubFacMinclassCd: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static PubOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUB_OFFICE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "本庁（市役所、区役所、町役場、村役場）"),
@@ -1948,7 +1948,7 @@ pub(crate) static PubOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static PubOfficeClassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUB_OFFICE_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "本庁（市役所、区役所、町役場、村役場）"),
@@ -1959,7 +1959,7 @@ pub(crate) static PubOfficeClassCd: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static PumpingupType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static PUMPINGUP_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "混合揚水式水力"),
@@ -1970,7 +1970,7 @@ pub(crate) static PumpingupType: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static RailwayClass2Cd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RAILWAY_CLASS2_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "新幹線（旧国鉄）"),
@@ -1984,7 +1984,7 @@ pub(crate) static RailwayClass2Cd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static RailwayClassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RAILWAY_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("11", "普通鉄道JR"),
@@ -2005,7 +2005,7 @@ pub(crate) static RailwayClassCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static RailwayDuplicateCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RAILWAY_DUPLICATE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "当該路線駅に記載"),
@@ -2017,7 +2017,7 @@ pub(crate) static RailwayDuplicateCd: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static RailwayExistenceCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RAILWAY_EXISTENCE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "データ有"),
@@ -2030,7 +2030,7 @@ pub(crate) static RailwayExistenceCd: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static RailwayTransitionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RAILWAY_TRANSITION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "事業者種別"),
@@ -2043,7 +2043,7 @@ pub(crate) static RailwayTransitionCd: LazyLock<HashMap<&'static str, &'static s
     });
 
 #[rustfmt::skip]
-pub(crate) static ReferecedFromAgri: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static REFERECED_FROM_AGRI: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "グリーン・ツーリズムデータベース"),
@@ -2055,7 +2055,7 @@ pub(crate) static ReferecedFromAgri: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static ReferenceDataCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static REFERENCE_DATA_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "10mDEM"),
@@ -2070,7 +2070,7 @@ pub(crate) static ReferenceDataCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static RegularFlightCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static REGULAR_FLIGHT_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "ジェット定期便が就航している場合"),
@@ -2082,7 +2082,7 @@ pub(crate) static RegularFlightCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static ResearchInstitutionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RESEARCH_INSTITUTION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "国立研究機関
@@ -2101,7 +2101,7 @@ pub(crate) static ResearchInstitutionCd: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static RinshunosaibunCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RINSHUNOSAIBUN_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("単", "単層林"),
@@ -2124,7 +2124,7 @@ pub(crate) static RinshunosaibunCd: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static RitoCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static RITO_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "類型区分なし"),
@@ -2140,7 +2140,7 @@ pub(crate) static RitoCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static RoadCategoryCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static ROAD_CATEGORY_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "高速自動車国道"),
@@ -2157,7 +2157,7 @@ pub(crate) static RoadCategoryCd: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static SchoolClassCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SCHOOL_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("16001", "小学校"),
@@ -2185,7 +2185,7 @@ pub(crate) static SeasideType: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static SectionType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SECTION_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "1級直轄区間"),
@@ -2414,7 +2414,7 @@ pub(crate) static SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static SedimentDisastersProneAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SEDIMENT_DISASTERS_PRONE_AREA_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "土石流危険渓流"),
@@ -2434,7 +2434,7 @@ pub(crate) static SedimentDisastersProneAreaCd: LazyLock<HashMap<&'static str, &
     });
 
 #[rustfmt::skip]
-pub(crate) static SelectLandStatusL01V1: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SELECT_LAND_STATUS_L01V1: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "継続"),
@@ -2447,7 +2447,7 @@ pub(crate) static SelectLandStatusL01V1: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static SelectLandStatusL01V2: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SELECT_LAND_STATUS_L01V2: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "継続"),
@@ -2459,7 +2459,7 @@ pub(crate) static SelectLandStatusL01V2: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static SettingFlag: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SETTING_FLAG: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "設定あり"),
@@ -2470,7 +2470,7 @@ pub(crate) static SettingFlag: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static ShouhanshubanCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SHOUHANSHUBAN_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "い"),
@@ -2567,7 +2567,7 @@ pub(crate) static ShouhanshubanCd: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
-pub(crate) static SmallClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SMALL_CLASSIFICATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("11", "有形文化財"),
@@ -2586,7 +2586,7 @@ pub(crate) static SmallClassificationCd: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static SpecificAirPortSpecifiedSituationCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static SPECIFIC_AIRPORT_SPECIFIED_SITUATION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "「公共用飛行場周辺における航空機騒音による障害の防止等に関する法律」に基づく特定飛行場で、かつ周辺整備空港に指定されている場合"),
@@ -2624,7 +2624,7 @@ pub(crate) static SubprefectureNameCd: LazyLock<HashMap<&'static str, &'static s
     });
 
 #[rustfmt::skip]
-pub(crate) static ThermalPowerEngine: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static THERMAL_POWER_ENGINE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("3", "石炭火力"),
@@ -2637,7 +2637,7 @@ pub(crate) static ThermalPowerEngine: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static TokusyudojyoCdV3_0: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static TOKUSYUDOJYO_CD_V3_0: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("01", "シラス・ボラ・コラ・赤ホヤ・花崗岩風化土"),
@@ -2654,7 +2654,7 @@ pub(crate) static TokusyudojyoCdV3_0: LazyLock<HashMap<&'static str, &'static st
     });
 
 #[rustfmt::skip]
-pub(crate) static TourismResourceCategoryCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static TOURISM_RESOURCE_CATEGORY_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "自然（行催事・イベント）"),
@@ -2680,7 +2680,7 @@ pub(crate) static TripGenerationCd: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
-pub(crate) static LandUseCd09Tweaked: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static LAND_USE_CD_09: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0100", "田"),
@@ -2709,7 +2709,7 @@ pub(crate) static LandUseCd09Tweaked: LazyLock<HashMap<&'static str, &'static st
 
 // 首都圏、中部圏、近畿圏でコードが異なるが、これはかぶらないので統合する
 #[rustfmt::skip]
-pub(crate) static A03SectionCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A03_SECTION_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("C01", "都市整備区域"),
@@ -2857,7 +2857,7 @@ pub(crate) static A03SectionCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static A03SectionTypeCdKinki: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A03_SECTION_TYPE_CD_KINKI: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0",	"無指定"),
@@ -2873,7 +2873,7 @@ pub(crate) static A03SectionTypeCdKinki: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static A03SectionTypeCdCyubu: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A03_SECTION_TYPE_CD_CYUBU: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0",	"無指定"),
@@ -2887,7 +2887,7 @@ pub(crate) static A03SectionTypeCdCyubu: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static A03SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static A03_SECTION_TYPE_CD_SYUTO: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0",	"無指定"),
@@ -2902,7 +2902,7 @@ pub(crate) static A03SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static
     });
 
 #[rustfmt::skip]
-pub(crate) static UnderConstruction: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static UNDER_CONSTRUCTION: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "既設"),
@@ -2915,7 +2915,7 @@ pub(crate) static UnderConstruction: LazyLock<HashMap<&'static str, &'static str
     });
 
 #[rustfmt::skip]
-pub(crate) static Undersea: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static UNDERSEA: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "その他"),
@@ -2927,7 +2927,7 @@ pub(crate) static Undersea: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static UrbanPlanningDecided: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static URBAN_PLANNING_DECIDED: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0", "未確認"),
@@ -2952,7 +2952,7 @@ pub(crate) static UrbanPlanningAreaCd_2019: LazyLock<HashMap<&'static str, &'sta
     });
 
 #[rustfmt::skip]
-pub(crate) static UrgentRoadCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static URGENT_ROAD_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "第１次緊急輸送道路"),
@@ -2965,7 +2965,7 @@ pub(crate) static UrgentRoadCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static UseDistrict: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static USE_DISTRICT: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "工業専用地域"),
@@ -3002,7 +3002,7 @@ pub(crate) static UseDistrictCd: LazyLock<HashMap<&'static str, &'static str>> =
     });
 
 #[rustfmt::skip]
-pub(crate) static WaterDepthCode: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static WATER_DEPTH_CODE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "0m以上0.5m未満"),
@@ -3017,7 +3017,7 @@ pub(crate) static WaterDepthCode: LazyLock<HashMap<&'static str, &'static str>> 
     });
 
 #[rustfmt::skip]
-pub(crate) static WaterSupplyType: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static WATER_SUPPLY_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("1", "上水道"),
@@ -3031,7 +3031,7 @@ pub(crate) static WaterSupplyType: LazyLock<HashMap<&'static str, &'static str>>
 // 水域系コードは、IDなのでそのまま残したいが、一方で日本語のラベルも欲しい。
 // 河川コードなどと違ってこれは別カラムに日本語名が入っていないので、:で両方入れておくことにする
 #[rustfmt::skip]
-pub(crate) static WaterSystemCodeCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static WATER_SYSTEM_CODE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("010002", "010002:声問川"),
@@ -9065,7 +9065,7 @@ pub(crate) static WelfareFacMiclassCdH27: LazyLock<HashMap<&'static str, &'stati
     });
 
 #[rustfmt::skip]
-pub(crate) static WorldHeritageCd: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static WORLD_HERITAGE_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("01", "知床"),
