@@ -12,7 +12,7 @@ use crate::{
 static COLNAMES_MAP: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| {
     let mut map: HashMap<&'static str, &'static str> = HashMap::with_capacity(COLNAMES.len());
     for (col_id, name) in COLNAMES {
-        map.insert(col_id, name.0);
+        map.insert(col_id, name);
     }
     map
 });
