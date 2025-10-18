@@ -36,6 +36,25 @@ pub(crate) fn get_codelist_map(
         ("L01_007", 2020..=2021) => return CODELISTS_MAP.get("SelectLandStatusL01V2").copied(),
         ("L01_008", 2022..=2023) => return CODELISTS_MAP.get("SelectLandStatusL01V2").copied(),
         ("L01_010", 2024..) => return CODELISTS_MAP.get("SelectLandStatusL01V2").copied(),
+
+        // L03-b: 土地利用種
+        ("土地利用種", 1976) => return CODELISTS_MAP.get("LandUseCd77").copied(),
+        ("土地利用種", 1987) => return CODELISTS_MAP.get("LandUseCd88").copied(),
+        ("土地利用種", 1991 | 1997 | 2006) => {
+            return CODELISTS_MAP.get("LandUseCdYY").copied();
+        }
+        ("土地利用種", 2009..) => return CODELISTS_MAP.get("LandUseCd09").copied(),
+        ("土地利用種", _) => return None, // これらの年以外はないはず
+
+        // L03-b-c: 土地利用種
+        ("L03b_c_002", _) => {
+            // TODO: L03b_c_004（都市地域範囲）の値によって代わるが、今のやり方では他のカラムの値にアクセスできない
+            //
+            // return CODELISTS_MAP.get("LandUseCd09").copied();
+            // return CODELISTS_MAP.get("LandUseCd09-u").copied(),
+            return None;
+        }
+
         _ => {}
     }
 
@@ -154,7 +173,12 @@ static CODELISTS_MAP: LazyLock<HashMap<&'static str, &'static Codelist>> = LazyL
     map.entry("SelectLandStatusL01V1").or_insert(&SELECT_LAND_STATUS_L01V1);
     map.entry("SelectLandStatusL01V2").or_insert(&SELECT_LAND_STATUS_L01V2);
 
-    map.entry("L03b_c_002").or_insert(&LAND_USE_CD_09);
+    // L03-b
+    map.entry("LandUseCd77").or_insert(&LAND_USE_CD_77);
+    map.entry("LandUseCd88").or_insert(&LAND_USE_CD_88);
+    map.entry("LandUseCdYY").or_insert(&LAND_USE_CD_YY);
+    map.entry("LandUseCd09").or_insert(&LAND_USE_CD_09);
+    map.entry("LandUseCd09-u").or_insert(&LAND_USE_CD_09_U);
 
     map.entry("L05_013").or_insert(&USE_DISTRICT);
 

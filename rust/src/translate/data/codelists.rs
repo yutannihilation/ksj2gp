@@ -1046,8 +1046,109 @@ pub(crate) static LANDSCAPE_DISTRICT_TYPE: LazyLock<HashMap<&'static str, &'stat
         .collect()
     });
 
+// 土地利用種別（昭和51年度） 〈ファイル名称：LandUseCd-77〉
 #[rustfmt::skip]
-pub(crate) static LandUseCd09U: LazyLock<HashMap<&'static str, &'static str>> =
+pub(crate) static LAND_USE_CD_77: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "田"),
+            ("2", "畑"),
+            ("3", "果樹園"),
+            ("4", "その他の樹木畑"),
+            ("5", "森林"),
+            ("6", "荒地"),
+            ("7", "建物用地A"),
+            ("8", "建物用地B"),
+            ("9", "幹線交通用地"),
+            ("A", "その他の用地"),
+            ("B", "湖沼"),
+            ("C", "河川地A"),
+            ("D", "河川地B"),
+            ("E", "海浜"),
+            ("F", "海水域"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+// 土地利用種別（昭和62年度） 〈ファイル名称：LandUseCd-88〉
+#[rustfmt::skip]
+pub(crate) static LAND_USE_CD_88: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "田"),
+            ("2", "畑"),
+            ("3", "果樹園"),
+            ("4", "その他の樹木畑"),
+            ("5", "森林"),
+            ("6", "荒地"),
+            ("7", "建物用地"),
+            ("9", "幹線交通用地"),
+            ("A", "その他の用地"),
+            ("B", "内水地"),
+            ("E", "海浜"),
+            ("F", "海水域"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+// 土地利用種別（平成3年度，9年度，18年度） 〈ファイル名称：LandUseCd-YY〉※ YYは西暦下2桁
+#[rustfmt::skip]
+pub(crate) static LAND_USE_CD_YY: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "田"),
+            ("2", "その他の農用地"),
+            ("3", "-"),
+            ("4", "-"),
+            ("5", "森林"),
+            ("6", "荒地"),
+            ("7", "建物用地"),
+            ("8", "-"),
+            ("9", "幹線交通用地"),
+            ("A", "その他の用地"),
+            ("B", "河川地及び湖沼"),
+            ("C", "-"),
+            ("D", "-"),
+            ("E", "海浜"),
+            ("F", "海水域"),
+            ("G", "ゴルフ場"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+// 土地利用種別（平成21、26、28年度、令和3年） 〈ファイル名称：LandUseCd-09.html〉
+#[rustfmt::skip]
+pub(crate) static LAND_USE_CD_09: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("0100", "田"),
+            ("0200", "その他の農用地"),
+            ("0300", "-"),
+            ("0400", "-"),
+            ("0500", "森林"),
+            ("0600", "荒地"),
+            ("0700", "建物用地"),
+            ("0800", "-"),
+            ("0901", "道路"),
+            ("0902", "鉄道"),
+            ("1000", "その他の用地"),
+            ("1100", "河川地及び湖沼"),
+            ("1200", "-"),
+            ("1300", "-"),
+            ("1400", "海浜"),
+            ("1500", "海水域"),
+            ("1600", "ゴルフ場"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+// 土地利用種別（平成21、26、28年度、令和3年度） 〈ファイル名称：LandUseCd-09-u.html〉
+#[rustfmt::skip]
+pub(crate) static LAND_USE_CD_09_U: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
             ("0100", "田"),
@@ -1075,102 +1176,6 @@ pub(crate) static LandUseCd09U: LazyLock<HashMap<&'static str, &'static str>> =
             ("1400", "海浜"),
             ("1500", "海水域"),
             ("1600", "ゴルフ場"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static LandUseCd09: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("0100", "田"),
-            ("0200", "その他の農用地"),
-            ("0300", "-"),
-            ("0400", "-"),
-            ("0500", "森林"),
-            ("0600", "荒地"),
-            ("0700", "建物用地"),
-            ("0800", "-"),
-            ("0901", "道路"),
-            ("0902", "鉄道"),
-            ("1000", "その他の用地"),
-            ("1100", "河川地及び湖沼"),
-            ("1200", "-"),
-            ("1300", "-"),
-            ("1400", "海浜"),
-            ("1500", "海水域"),
-            ("1600", "ゴルフ場"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static LandUseCd77: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("1", "田"),
-            ("2", "畑"),
-            ("3", "果樹園"),
-            ("4", "その他の樹木畑"),
-            ("5", "森林"),
-            ("6", "荒地"),
-            ("7", "建物用地A"),
-            ("8", "建物用地B"),
-            ("9", "幹線交通用地"),
-            ("A", "その他の用地"),
-            ("B", "湖沼"),
-            ("C", "河川地A"),
-            ("D", "河川地B"),
-            ("E", "海浜"),
-            ("F", "海水域"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static LandUseCd88: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("1", "田"),
-            ("2", "畑"),
-            ("3", "果樹園"),
-            ("4", "その他の樹木畑"),
-            ("5", "森林"),
-            ("6", "荒地"),
-            ("7", "建物用地"),
-            ("9", "幹線交通用地"),
-            ("A", "その他の用地"),
-            ("B", "内水地"),
-            ("E", "海浜"),
-            ("F", "海水域"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static LandUseCdYY: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("1", "田"),
-            ("2", "その他の農用地"),
-            ("3", "-"),
-            ("4", "-"),
-            ("5", "森林"),
-            ("6", "荒地"),
-            ("7", "建物用地"),
-            ("8", "-"),
-            ("9", "幹線交通用地"),
-            ("A", "その他の用地"),
-            ("B", "河川地及び湖沼"),
-            ("C", "-"),
-            ("D", "-"),
-            ("E", "海浜"),
-            ("F", "海水域"),
-            ("G", "ゴルフ場"),
         ]
         .into_iter()
         .collect()
@@ -2650,34 +2655,6 @@ pub(crate) static TripGenerationCd: LazyLock<HashMap<&'static str, &'static str>
         [
             ("1", "発生"),
             ("2", "集中"),
-        ]
-        .into_iter()
-        .collect()
-    });
-
-#[rustfmt::skip]
-pub(crate) static LAND_USE_CD_09: LazyLock<HashMap<&'static str, &'static str>> =
-    LazyLock::new(|| {
-        [
-            ("0100", "田"),
-            ("0200", "その他の農用地"),
-            ("0500", "森林"),
-            ("0600", "荒地"),
-            ("0700", "建物用地"),
-            ("0701", "高層建物"),
-            ("0702", "工場"),
-            ("0703", "低層建物"),
-            ("0704", "低層建物（密集地）"),
-            ("0901", "道路"),
-            ("0902", "鉄道"),
-            ("1000", "その他の用地"),
-            ("1001", "公共施設等用地"),
-            ("1002", "空地"),
-            ("1003", "公園・緑地"),
-            ("1100", "河川地及び湖沼"),
-            ("1400", "海浜"),
-            ("1500", "海水域"),
-            ("1600", "ゴルフ場"),
         ]
         .into_iter()
         .collect()
