@@ -1,168 +1,5 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-#[derive(Clone, Copy)]
-pub(crate) enum CodelistId {
-    A10AreaCode,
-    A10LayerNo,
-    A10InsideDiv,
-    A42HistoricalDistrictType,
-    // 全国地方公共団体コードはたぶんそのままの方がいい
-    // AdminAreaCd_R105,
-    // AdminAreaCd,
-    AdminCd,
-    AdminConAreaCd,
-    AdminHarborCd,
-    AdminSeaLineCd,
-    AggregateUnitFlag,
-    AggUnitFlagEmerTransCd,
-    AgriculturalAreaCd,
-    AirJetCd,
-    AirportCatCdHtml,
-    AirportTransitionCd,
-    AirportUseCd,
-    AuthorityType,
-    AviationActCd,
-    BiomassType,
-    BusClassCd,
-    BusinessTechCd,
-    CityParkCd,
-    ClassFishPortCd,
-    ClassHarbor1Cd,
-    ClassHarbor2Cd,
-    CodeDesignationCd,
-    CodeNoncombustibleCd,
-    CodeOfPhenomenon,
-    CodeOfUnSpecification,
-    CodeOfZoneH27,
-    CommunityCenterType,
-    CultureFacCd,
-    DamInstitutionCd,
-    DamPurposeCd,
-    DamTypeCd,
-    Direction,
-    DistributionCd,
-    DistributionCenterCd,
-    EntrepreneurCd,
-    EstClassCd,
-    // 機関分類コードはたぶんそのままの方がいい
-    // FacClassCd,
-    FacilitiesClassificationCd,
-    FacilityTypeCode,
-    FirehouseType,
-    FishPortAdminCd,
-    FloodDurationCode,
-    ForestAreaCd,
-    FuelStoreCd,
-    FurnaceType,
-    HazardousAreaClassificationCode,
-    HeavySnowTypeCode,
-    HighwayCatCd,
-    HighwayConCd,
-    HighwayTransitionCd,
-    HighwayUseCd,
-    HoanrinCd,
-    HogorinCd,
-    HydroelectricPowerPlantType,
-    IndexNumL01,
-    IndexNumL02V2_4,
-    IndustrialWasteDisposal,
-    IndustrialWasteSpecialTreatment,
-    InstallAdminCdV2_3,
-    InstallAirPortCdV2_3,
-    InstitutionTypeCd,
-    KasoCd,
-    KinouruikeiCd,
-    LandscapeDistrictType,
-    LandUseCd09U,
-    LandUseCd09,
-    LandUseCd77,
-    LandUseCd88,
-    LandUseCdYY,
-    LargeClassificationCd,
-    LocationAccuracyCd,
-    MaritimeOrgCd,
-    MedClassCd,
-    midorinokairoCd,
-    N04FukuinH16,
-    N04FukuinH22,
-    NaturalfeatureCd,
-    NaturalParkAreaCd,
-    NaturalsceneCd,
-    NatureConservationAreaCd,
-    OriginalDataCodeCd,
-    PointClassificationCd,
-    PointClassificationCode,
-    PoliceStationCd,
-    PosSpecificLevel,
-    PostOfficeCd,
-    // 全国地方公共団体コードはたぶんそのままの方がいい
-    // PrefCd,
-    // PrefCdA33,
-    ProtectionAreaType,
-    PTAreaCd,
-    PubFacAdminCd,
-    PubFacMaclassCd,
-    PubFacMiclassCd_wf,
-    PubFacMiclassCd,
-    PubFacMinclassCd,
-    PubOfficeCd,
-    PubOfficeClassCd,
-    PumpingupType,
-    RailwayClass2Cd,
-    RailwayClassCd,
-    RailwayDuplicateCd,
-    RailwayExistenceCd,
-    RailwayTransitionCd,
-    ReferecedFromAgri,
-    ReferenceDataCd,
-    RegularFlightCd,
-    ResearchInstitutionCd,
-    RinshunosaibunCd,
-    RitoCd,
-    // 河川コードは、河川名とかぶっているのでたぶんそのままの方がいい
-    // RiverCodeCd,
-    RoadCategoryCd,
-    SchoolClassCd,
-    SeasideType,
-    SectionType,
-    SectionCdCyubu,
-    SectionCdKinki,
-    SectionCdSyuto,
-    SectionTypeCdCyubu,
-    SectionTypeCdKinki,
-    SectionTypeCdSyuto,
-    SedimentDisastersProneAreaCd,
-    SelectLandStatusL01V1,
-    SelectLandStatusL01V2,
-    SettingFlag,
-    ShouhanshubanCd,
-    SmallClassificationCd,
-    SpecificAirPortSpecifiedSituationCd,
-    SubprefectureNameCd,
-    ThermalPowerEngine,
-    TokusyudojyoCdV3_0,
-    TourismResourceCategoryCd,
-    TripGenerationCd,
-    LandUseCd09Tweaked,
-    A03SectionCd,
-    A03SectionTypeCdKinki,
-    A03SectionTypeCdCyubu,
-    A03SectionTypeCdSyuto,
-    UnderConstruction,
-    Undersea,
-    UrbanPlanningDecided,
-    UrbanPlanningAreaCd_2019,
-    UrgentRoadCd,
-    UseDistrict,
-    UseDistrictCd,
-    WaterDepthCode,
-    WaterSupplyType,
-    WaterSystemCodeCd,
-    WelfareFacMiclassCdH23,
-    WelfareFacMiclassCdH27,
-    WorldHeritageCd,
-}
-
 #[rustfmt::skip]
 pub(crate) static A10AreaCode: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -186,7 +23,6 @@ pub(crate) static A10AreaCode: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static A10LayerNo: LazyLock<HashMap<&'static str, &'static str>> =
@@ -213,7 +49,6 @@ pub(crate) static A10LayerNo: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static A10InsideDiv: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -226,7 +61,6 @@ pub(crate) static A10InsideDiv: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static A42HistoricalDistrictType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -238,7 +72,6 @@ pub(crate) static A42HistoricalDistrictType: LazyLock<HashMap<&'static str, &'st
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AdminCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -253,7 +86,6 @@ pub(crate) static AdminCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AdminConAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -270,7 +102,6 @@ pub(crate) static AdminConAreaCd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static AdminHarborCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -285,7 +116,6 @@ pub(crate) static AdminHarborCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AdminSeaLineCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -304,7 +134,6 @@ pub(crate) static AdminSeaLineCd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static AggregateUnitFlag: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -318,7 +147,6 @@ pub(crate) static AggregateUnitFlag: LazyLock<HashMap<&'static str, &'static str
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AggUnitFlagEmerTransCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -334,7 +162,6 @@ pub(crate) static AggUnitFlagEmerTransCd: LazyLock<HashMap<&'static str, &'stati
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static AgriculturalAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -346,7 +173,6 @@ pub(crate) static AgriculturalAreaCd: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static AirJetCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -357,7 +183,6 @@ pub(crate) static AirJetCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AirportCatCdHtml: LazyLock<HashMap<&'static str, &'static str>> =
@@ -379,7 +204,6 @@ pub(crate) static AirportCatCdHtml: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static AirportTransitionCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -392,7 +216,6 @@ pub(crate) static AirportTransitionCd: LazyLock<HashMap<&'static str, &'static s
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AirportUseCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -407,7 +230,6 @@ pub(crate) static AirportUseCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static AuthorityType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -418,7 +240,6 @@ pub(crate) static AuthorityType: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static AviationActCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -431,7 +252,6 @@ pub(crate) static AviationActCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static BiomassType: LazyLock<HashMap<&'static str, &'static str>> =
@@ -449,7 +269,6 @@ pub(crate) static BiomassType: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static BusClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -463,7 +282,6 @@ pub(crate) static BusClassCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static BusinessTechCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -481,7 +299,6 @@ pub(crate) static BusinessTechCd: LazyLock<HashMap<&'static str, &'static str>> 
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static CityParkCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -506,7 +323,6 @@ pub(crate) static CityParkCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static ClassFishPortCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -522,7 +338,6 @@ pub(crate) static ClassFishPortCd: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static ClassHarbor1Cd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -534,7 +349,6 @@ pub(crate) static ClassHarbor1Cd: LazyLock<HashMap<&'static str, &'static str>> 
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static ClassHarbor2Cd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -551,7 +365,6 @@ pub(crate) static ClassHarbor2Cd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static CodeDesignationCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -564,7 +377,6 @@ pub(crate) static CodeDesignationCd: LazyLock<HashMap<&'static str, &'static str
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static CodeNoncombustibleCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -581,7 +393,6 @@ pub(crate) static CodeNoncombustibleCd: LazyLock<HashMap<&'static str, &'static 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static CodeOfPhenomenon: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -594,7 +405,6 @@ pub(crate) static CodeOfPhenomenon: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static CodeOfUnSpecification: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -605,7 +415,6 @@ pub(crate) static CodeOfUnSpecification: LazyLock<HashMap<&'static str, &'static
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static CodeOfZoneH27: LazyLock<HashMap<&'static str, &'static str>> =
@@ -620,7 +429,6 @@ pub(crate) static CodeOfZoneH27: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static CommunityCenterType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -634,7 +442,6 @@ pub(crate) static CommunityCenterType: LazyLock<HashMap<&'static str, &'static s
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static CultureFacCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -700,7 +507,6 @@ pub(crate) static CultureFacCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static DamInstitutionCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -723,7 +529,6 @@ pub(crate) static DamInstitutionCd: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static DamPurposeCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -740,7 +545,6 @@ pub(crate) static DamPurposeCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static DamTypeCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -764,7 +568,6 @@ pub(crate) static DamTypeCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static Direction: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -783,7 +586,6 @@ pub(crate) static Direction: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static DistributionCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -826,7 +628,6 @@ pub(crate) static DistributionCd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static DistributionCenterCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -842,7 +643,6 @@ pub(crate) static DistributionCenterCd: LazyLock<HashMap<&'static str, &'static 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static EntrepreneurCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -854,7 +654,6 @@ pub(crate) static EntrepreneurCd: LazyLock<HashMap<&'static str, &'static str>> 
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static EstClassCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -871,7 +670,6 @@ pub(crate) static EstClassCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static FacilitiesClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -892,7 +690,6 @@ pub(crate) static FacilitiesClassificationCd: LazyLock<HashMap<&'static str, &'s
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static FacilityTypeCode: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -908,7 +705,6 @@ pub(crate) static FacilityTypeCode: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static FirehouseType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -921,7 +717,6 @@ pub(crate) static FirehouseType: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static FishPortAdminCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -933,7 +728,6 @@ pub(crate) static FishPortAdminCd: LazyLock<HashMap<&'static str, &'static str>>
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static FloodDurationCode: LazyLock<HashMap<&'static str, &'static str>> =
@@ -951,7 +745,6 @@ pub(crate) static FloodDurationCode: LazyLock<HashMap<&'static str, &'static str
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static ForestAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -965,7 +758,6 @@ pub(crate) static ForestAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static FuelStoreCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -977,7 +769,6 @@ pub(crate) static FuelStoreCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static FurnaceType: LazyLock<HashMap<&'static str, &'static str>> =
@@ -995,7 +786,6 @@ pub(crate) static FurnaceType: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static HazardousAreaClassificationCode: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1008,7 +798,6 @@ pub(crate) static HazardousAreaClassificationCode: LazyLock<HashMap<&'static str
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static HeavySnowTypeCode: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1019,7 +808,6 @@ pub(crate) static HeavySnowTypeCode: LazyLock<HashMap<&'static str, &'static str
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static HighwayCatCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1036,7 +824,6 @@ pub(crate) static HighwayCatCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static HighwayConCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1050,7 +837,6 @@ pub(crate) static HighwayConCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static HighwayTransitionCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1062,7 +848,6 @@ pub(crate) static HighwayTransitionCd: LazyLock<HashMap<&'static str, &'static s
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static HighwayUseCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1077,7 +862,6 @@ pub(crate) static HighwayUseCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static HoanrinCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1122,7 +906,6 @@ pub(crate) static HoanrinCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static HogorinCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1132,7 +915,6 @@ pub(crate) static HogorinCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static HydroelectricPowerPlantType: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1145,7 +927,6 @@ pub(crate) static HydroelectricPowerPlantType: LazyLock<HashMap<&'static str, &'
         .into_iter()
         .collect()
     });
-
 
 // https://nlftp.mlit.go.jp/ksj/gml/codelist/IndexNumCd.html
 // https://nlftp.mlit.go.jp/ksj/gml/codelist/IndexNumL01-v1_1.html
@@ -1167,7 +948,6 @@ pub(crate) static IndexNumL01: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static IndexNumL02V2_4: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1183,7 +963,6 @@ pub(crate) static IndexNumL02V2_4: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static IndustrialWasteDisposal: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1195,7 +974,6 @@ pub(crate) static IndustrialWasteDisposal: LazyLock<HashMap<&'static str, &'stat
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static IndustrialWasteSpecialTreatment: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1206,7 +984,6 @@ pub(crate) static IndustrialWasteSpecialTreatment: LazyLock<HashMap<&'static str
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static InstallAdminCdV2_3: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1226,7 +1003,6 @@ pub(crate) static InstallAdminCdV2_3: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static InstallAirPortCdV2_3: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1242,7 +1018,6 @@ pub(crate) static InstallAirPortCdV2_3: LazyLock<HashMap<&'static str, &'static 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static InstitutionTypeCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1257,7 +1032,6 @@ pub(crate) static InstitutionTypeCd: LazyLock<HashMap<&'static str, &'static str
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static KasoCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1269,7 +1043,6 @@ pub(crate) static KasoCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static KinouruikeiCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1286,7 +1059,6 @@ pub(crate) static KinouruikeiCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static LandscapeDistrictType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1297,7 +1069,6 @@ pub(crate) static LandscapeDistrictType: LazyLock<HashMap<&'static str, &'static
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static LandUseCd09U: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1333,7 +1104,6 @@ pub(crate) static LandUseCd09U: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static LandUseCd09: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1360,7 +1130,6 @@ pub(crate) static LandUseCd09: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static LandUseCd77: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1385,7 +1154,6 @@ pub(crate) static LandUseCd77: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static LandUseCd88: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1406,7 +1174,6 @@ pub(crate) static LandUseCd88: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static LandUseCdYY: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1433,7 +1200,6 @@ pub(crate) static LandUseCdYY: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static LargeClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1449,7 +1215,6 @@ pub(crate) static LargeClassificationCd: LazyLock<HashMap<&'static str, &'static
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static LocationAccuracyCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1469,7 +1234,6 @@ pub(crate) static LocationAccuracyCd: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static MaritimeOrgCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1487,7 +1251,6 @@ pub(crate) static MaritimeOrgCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static MedClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1499,7 +1262,6 @@ pub(crate) static MedClassCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static midorinokairoCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1535,7 +1297,6 @@ pub(crate) static midorinokairoCd: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static N04FukuinH16: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1550,7 +1311,6 @@ pub(crate) static N04FukuinH16: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static N04FukuinH22: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1569,7 +1329,6 @@ pub(crate) static N04FukuinH22: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static NaturalfeatureCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1660,7 +1419,6 @@ pub(crate) static NaturalfeatureCd: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static NaturalParkAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1672,7 +1430,6 @@ pub(crate) static NaturalParkAreaCd: LazyLock<HashMap<&'static str, &'static str
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static NaturalsceneCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1693,7 +1450,6 @@ pub(crate) static NaturalsceneCd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static NatureConservationAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1705,7 +1461,6 @@ pub(crate) static NatureConservationAreaCd: LazyLock<HashMap<&'static str, &'sta
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static OriginalDataCodeCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1724,7 +1479,6 @@ pub(crate) static OriginalDataCodeCd: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PointClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1740,7 +1494,6 @@ pub(crate) static PointClassificationCd: LazyLock<HashMap<&'static str, &'static
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PointClassificationCode: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1753,7 +1506,6 @@ pub(crate) static PointClassificationCode: LazyLock<HashMap<&'static str, &'stat
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static PoliceStationCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1772,7 +1524,6 @@ pub(crate) static PoliceStationCd: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PosSpecificLevel: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1789,7 +1540,6 @@ pub(crate) static PosSpecificLevel: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PostOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1800,7 +1550,6 @@ pub(crate) static PostOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static ProtectionAreaType: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1815,7 +1564,6 @@ pub(crate) static ProtectionAreaType: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PTAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1827,7 +1575,6 @@ pub(crate) static PTAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static PubFacAdminCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1859,7 +1606,6 @@ pub(crate) static PubFacAdminCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PubFacMaclassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -1879,7 +1625,6 @@ pub(crate) static PubFacMaclassCd: LazyLock<HashMap<&'static str, &'static str>>
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static PubFacMiclassCd_wf: LazyLock<HashMap<&'static str, &'static str>> =
@@ -1998,7 +1743,6 @@ pub(crate) static PubFacMiclassCd_wf: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PubFacMiclassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2108,7 +1852,6 @@ pub(crate) static PubFacMiclassCd: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PubFacMinclassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2190,7 +1933,6 @@ pub(crate) static PubFacMinclassCd: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PubOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2205,7 +1947,6 @@ pub(crate) static PubOfficeCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PubOfficeClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2217,7 +1958,6 @@ pub(crate) static PubOfficeClassCd: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static PumpingupType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2228,7 +1968,6 @@ pub(crate) static PumpingupType: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static RailwayClass2Cd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2243,7 +1982,6 @@ pub(crate) static RailwayClass2Cd: LazyLock<HashMap<&'static str, &'static str>>
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static RailwayClassCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2266,7 +2004,6 @@ pub(crate) static RailwayClassCd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static RailwayDuplicateCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2278,7 +2015,6 @@ pub(crate) static RailwayDuplicateCd: LazyLock<HashMap<&'static str, &'static st
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static RailwayExistenceCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2293,7 +2029,6 @@ pub(crate) static RailwayExistenceCd: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static RailwayTransitionCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2307,7 +2042,6 @@ pub(crate) static RailwayTransitionCd: LazyLock<HashMap<&'static str, &'static s
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static ReferecedFromAgri: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2319,7 +2053,6 @@ pub(crate) static ReferecedFromAgri: LazyLock<HashMap<&'static str, &'static str
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static ReferenceDataCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2336,7 +2069,6 @@ pub(crate) static ReferenceDataCd: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static RegularFlightCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2348,7 +2080,6 @@ pub(crate) static RegularFlightCd: LazyLock<HashMap<&'static str, &'static str>>
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static ResearchInstitutionCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2368,7 +2099,6 @@ pub(crate) static ResearchInstitutionCd: LazyLock<HashMap<&'static str, &'static
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static RinshunosaibunCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2393,7 +2123,6 @@ pub(crate) static RinshunosaibunCd: LazyLock<HashMap<&'static str, &'static str>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static RitoCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2409,7 +2138,6 @@ pub(crate) static RitoCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static RoadCategoryCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2428,7 +2156,6 @@ pub(crate) static RoadCategoryCd: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SchoolClassCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2446,7 +2173,6 @@ pub(crate) static SchoolClassCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SeasideType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2457,7 +2183,6 @@ pub(crate) static SeasideType: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static SectionType: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2476,7 +2201,6 @@ pub(crate) static SectionType: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static SectionCdCyubu: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2518,7 +2242,6 @@ pub(crate) static SectionCdCyubu: LazyLock<HashMap<&'static str, &'static str>> 
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static SectionCdKinki: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2584,7 +2307,6 @@ pub(crate) static SectionCdKinki: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SectionCdSyuto: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2646,7 +2368,6 @@ pub(crate) static SectionCdSyuto: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SectionTypeCdCyubu: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2660,7 +2381,6 @@ pub(crate) static SectionTypeCdCyubu: LazyLock<HashMap<&'static str, &'static st
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static SectionTypeCdKinki: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2678,7 +2398,6 @@ pub(crate) static SectionTypeCdKinki: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2693,7 +2412,6 @@ pub(crate) static SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static st
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static SedimentDisastersProneAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2715,7 +2433,6 @@ pub(crate) static SedimentDisastersProneAreaCd: LazyLock<HashMap<&'static str, &
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SelectLandStatusL01V1: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2729,7 +2446,6 @@ pub(crate) static SelectLandStatusL01V1: LazyLock<HashMap<&'static str, &'static
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SelectLandStatusL01V2: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2742,7 +2458,6 @@ pub(crate) static SelectLandStatusL01V2: LazyLock<HashMap<&'static str, &'static
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SettingFlag: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2753,7 +2468,6 @@ pub(crate) static SettingFlag: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static ShouhanshubanCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2852,7 +2566,6 @@ pub(crate) static ShouhanshubanCd: LazyLock<HashMap<&'static str, &'static str>>
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SmallClassificationCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2872,7 +2585,6 @@ pub(crate) static SmallClassificationCd: LazyLock<HashMap<&'static str, &'static
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static SpecificAirPortSpecifiedSituationCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2886,7 +2598,6 @@ pub(crate) static SpecificAirPortSpecifiedSituationCd: LazyLock<HashMap<&'static
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static SubprefectureNameCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2912,7 +2623,6 @@ pub(crate) static SubprefectureNameCd: LazyLock<HashMap<&'static str, &'static s
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static ThermalPowerEngine: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2925,7 +2635,6 @@ pub(crate) static ThermalPowerEngine: LazyLock<HashMap<&'static str, &'static st
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static TokusyudojyoCdV3_0: LazyLock<HashMap<&'static str, &'static str>> =
@@ -2944,7 +2653,6 @@ pub(crate) static TokusyudojyoCdV3_0: LazyLock<HashMap<&'static str, &'static st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static TourismResourceCategoryCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2960,7 +2668,6 @@ pub(crate) static TourismResourceCategoryCd: LazyLock<HashMap<&'static str, &'st
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static TripGenerationCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -2971,7 +2678,6 @@ pub(crate) static TripGenerationCd: LazyLock<HashMap<&'static str, &'static str>
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static LandUseCd09Tweaked: LazyLock<HashMap<&'static str, &'static str>> =
@@ -3000,7 +2706,6 @@ pub(crate) static LandUseCd09Tweaked: LazyLock<HashMap<&'static str, &'static st
         .into_iter()
         .collect()
     });
-
 
 // 首都圏、中部圏、近畿圏でコードが異なるが、これはかぶらないので統合する
 #[rustfmt::skip]
@@ -3151,7 +2856,6 @@ pub(crate) static A03SectionCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static A03SectionTypeCdKinki: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3168,7 +2872,6 @@ pub(crate) static A03SectionTypeCdKinki: LazyLock<HashMap<&'static str, &'static
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static A03SectionTypeCdCyubu: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3182,7 +2885,6 @@ pub(crate) static A03SectionTypeCdCyubu: LazyLock<HashMap<&'static str, &'static
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static A03SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static str>> =
@@ -3199,7 +2901,6 @@ pub(crate) static A03SectionTypeCdSyuto: LazyLock<HashMap<&'static str, &'static
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static UnderConstruction: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3213,7 +2914,6 @@ pub(crate) static UnderConstruction: LazyLock<HashMap<&'static str, &'static str
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static Undersea: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3226,7 +2926,6 @@ pub(crate) static Undersea: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static UrbanPlanningDecided: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3238,7 +2937,6 @@ pub(crate) static UrbanPlanningDecided: LazyLock<HashMap<&'static str, &'static 
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static UrbanPlanningAreaCd_2019: LazyLock<HashMap<&'static str, &'static str>> =
@@ -3253,7 +2951,6 @@ pub(crate) static UrbanPlanningAreaCd_2019: LazyLock<HashMap<&'static str, &'sta
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static UrgentRoadCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3266,7 +2963,6 @@ pub(crate) static UrgentRoadCd: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static UseDistrict: LazyLock<HashMap<&'static str, &'static str>> =
@@ -3281,7 +2977,6 @@ pub(crate) static UseDistrict: LazyLock<HashMap<&'static str, &'static str>> =
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static UseDistrictCd: LazyLock<HashMap<&'static str, &'static str>> =
@@ -3306,7 +3001,6 @@ pub(crate) static UseDistrictCd: LazyLock<HashMap<&'static str, &'static str>> =
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static WaterDepthCode: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3322,7 +3016,6 @@ pub(crate) static WaterDepthCode: LazyLock<HashMap<&'static str, &'static str>> 
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static WaterSupplyType: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -3334,7 +3027,6 @@ pub(crate) static WaterSupplyType: LazyLock<HashMap<&'static str, &'static str>>
         .into_iter()
         .collect()
     });
-
 
 // 水域系コードは、IDなのでそのまま残したいが、一方で日本語のラベルも欲しい。
 // 河川コードなどと違ってこれは別カラムに日本語名が入っていないので、:で両方入れておくことにする
@@ -8822,7 +8514,6 @@ pub(crate) static WaterSystemCodeCd: LazyLock<HashMap<&'static str, &'static str
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static WelfareFacMiclassCdH23: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -8923,7 +8614,6 @@ pub(crate) static WelfareFacMiclassCdH23: LazyLock<HashMap<&'static str, &'stati
         .into_iter()
         .collect()
     });
-
 
 #[rustfmt::skip]
 pub(crate) static WelfareFacMiclassCdH27: LazyLock<HashMap<&'static str, &'static str>> =
@@ -9374,7 +9064,6 @@ pub(crate) static WelfareFacMiclassCdH27: LazyLock<HashMap<&'static str, &'stati
         .collect()
     });
 
-
 #[rustfmt::skip]
 pub(crate) static WorldHeritageCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
@@ -9387,4 +9076,3 @@ pub(crate) static WorldHeritageCd: LazyLock<HashMap<&'static str, &'static str>>
         .into_iter()
         .collect()
     });
-
