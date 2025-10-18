@@ -3,20 +3,14 @@ use std::{collections::HashMap, sync::LazyLock};
 
 use crate::translate::data::colnames::COLNAMES;
 
+type Codelist = LazyLock<HashMap<&'static str, &'static str>>;
+
 macro_rules! register_codelists {
     ($map:ident, $col_id:ident, $id:ident; $($name:ident),+ $(,)?) => {
         match $id {
             $(
                 CodelistId::$name => {
-                    $map.entry($col_id).or_insert_with(|| {
-                        LazyLock::new(|| {
-                            let mut inner = HashMap::with_capacity($name.len());
-                            for &(code, label) in $name {
-                                inner.insert(code, label);
-                            }
-                            inner
-                        })
-                    });
+                    $map.entry($col_id).or_insert(&$name);
                 }
             )+
             _ => {}
@@ -28,47 +22,44 @@ pub(crate) fn get_codelist_map(
     col_id: &str,
     year: u16,
     target_shp: &str, // This is needed to distinguish A42
-) -> Option<&'static LazyLock<HashMap<&'static str, &'static str>>> {
+) -> Option<&'static Codelist> {
     // Handle special cases
     match (col_id, year) {
         ("A03_006", _) => {
             if target_shp.contains("KINKI") {
-                return CODELISTS_MAP.get("A03SectionTypeCdKinki");
+                return CODELISTS_MAP.get("A03SectionTypeCdKinki").copied();
             }
             if target_shp.contains("CHUBU") {
                 // コード一覧のリンクは cyubu だけどファイル名は CHUBU...
-                return CODELISTS_MAP.get("A03SectionTypeCdCyubu");
+                return CODELISTS_MAP.get("A03SectionTypeCdCyubu").copied();
             }
             if target_shp.contains("SYUTO") {
-                return CODELISTS_MAP.get("A03SectionTypeCdSyuto");
+                return CODELISTS_MAP.get("A03SectionTypeCdSyuto").copied();
             }
         }
         // A42: shapefile が複数入っていて、片方にしかない
         ("A42_005", _) => {
             if target_shp.ends_with("Spacial_Preservation_Area_of_Historic_Landscape.shp") {
-                return CODELISTS_MAP.get("A42HistoricalDistrictType");
+                return CODELISTS_MAP.get("A42HistoricalDistrictType").copied();
             }
         }
         // L01: 用途区分
         ("L01_001" | "L01_003", ..=2023) | ("L01_002" | "L01_005", 2024..) => {
-            return CODELISTS_MAP.get("IndexNumL01");
+            return CODELISTS_MAP.get("IndexNumL01").copied();
         }
         // L01: 選定状況
-        ("L01_007", ..=2019) => return CODELISTS_MAP.get("SelectLandStatusL01V1"),
-        ("L01_007", 2020..=2021) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
-        ("L01_008", 2022..=2023) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
-        ("L01_010", 2024..) => return CODELISTS_MAP.get("SelectLandStatusL01V2"),
+        ("L01_007", ..=2019) => return CODELISTS_MAP.get("SelectLandStatusL01V1").copied(),
+        ("L01_007", 2020..=2021) => return CODELISTS_MAP.get("SelectLandStatusL01V2").copied(),
+        ("L01_008", 2022..=2023) => return CODELISTS_MAP.get("SelectLandStatusL01V2").copied(),
+        ("L01_010", 2024..) => return CODELISTS_MAP.get("SelectLandStatusL01V2").copied(),
         _ => {}
     }
 
-    CODELISTS_MAP.get(col_id)
+    CODELISTS_MAP.get(col_id).copied()
 }
 
-static CODELISTS_MAP: LazyLock<
-    HashMap<&'static str, LazyLock<HashMap<&'static str, &'static str>>>,
-> = LazyLock::new(|| {
-    let mut map: HashMap<&'static str, LazyLock<HashMap<&'static str, &'static str>>> =
-        HashMap::with_capacity(150);
+static CODELISTS_MAP: LazyLock<HashMap<&'static str, &'static Codelist>> = LazyLock::new(|| {
+    let mut map: HashMap<&'static str, &'static Codelist> = HashMap::with_capacity(150);
     let normal_cases =
         COLNAMES.iter().flat_map(
             |&(col_id, (_, maybe_codelist_id))| match maybe_codelist_id {
@@ -154,6 +145,7 @@ static CODELISTS_MAP: LazyLock<
             HoanrinCd,
             HogorinCd,
             HydroelectricPowerPlantType,
+            IndexNumL01,
             IndexNumL02V2_4,
             IndustrialWasteDisposal,
             IndustrialWasteSpecialTreatment,
