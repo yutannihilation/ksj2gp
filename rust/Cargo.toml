@@ -30,7 +30,6 @@ shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.
     "geo-traits",
     "geo-types",
 ] }
-# since WASM build is broken with the crates.io version, use Git version: https://github.com/tmontaigu/dbase-rs/issues/100
 dbase = { version = "0.6.1", features = ["encoding_rs"] }
 
 # Read Zip file
@@ -52,3 +51,6 @@ members = [
 
 [workspace.dependencies]
 zip = { version = "5.1.1", default-features = false, features = ["deflate"] }
+
+[patch.crates-io]
+dbase = { git = "https://github.com/yutannihilation/dbase-rs", branch = "feat/encoding-fields" }

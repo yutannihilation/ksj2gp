@@ -262,6 +262,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34efbcccd345379ca2868b2b2c9d3782e9cc58ba87bc7d79d5b53d9c9ae6f25d"
 
 [[package]]
+name = "bufrw"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "394c22b416e3981206df472c3bcbbf9ae130883619aefc2199e6087517af1bba"
+
+[[package]]
 name = "bumpalo"
 version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -451,9 +457,9 @@ dependencies = [
 [[package]]
 name = "dbase"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b2ee10366b9a0956358110073ea66ab06d77169ee9955d32c9ba7b7b8d4e1c3"
+source = "git+https://github.com/yutannihilation/dbase-rs?branch=feat%2Fencoding-fields#7d99cac3cad086da91bba0a824610edb05b50790"
 dependencies = [
+ "bufrw",
  "byteorder",
  "codepage",
  "encoding_rs",
