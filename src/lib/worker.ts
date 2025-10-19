@@ -72,13 +72,13 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const dbf = await newSyncAccessHandle(opfsRoot, 'tmp.dbf');
 	const shx = await newSyncAccessHandle(opfsRoot, 'tmp.shx');
 
-	const intermediate_files = new IntermediateFiles(shp, dbf, shx);
+	const intermediateFiles = new IntermediateFiles(shp, dbf, shx);
 
 	try {
 		convert_shp(
 			file,
 			targetShp,
-			intermediate_files,
+			intermediateFiles,
 			outputFile,
 			outputFormat,
 			translateColumns,
