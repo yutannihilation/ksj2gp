@@ -111,7 +111,7 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
                     return Ok(crs);
                 }
             }
-            Err(zip::result::ZipError::FileNotFound) => {} // it's not a rara case when we find no .prj file...
+            Err(zip::result::ZipError::FileNotFound) => {} // it's not a rare case when we find no .prj file...
             Err(e) => return Err(e.into()),
         }
 
@@ -123,6 +123,7 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
                     meta_xml_reader.read_to_end(&mut meta_xml_content_sjis)?;
 
                     // KS-META XML ファイルは Shift_JIS のはず...
+                    // （最近のデータだと UTF-8 もあるかもしれないが、最近のデータの場合は .prj ファイルがあるのでここに到達しないはず）
                     let (meta_xml_content, _, error) =
                         encoding_rs::SHIFT_JIS.decode(&meta_xml_content_sjis);
                     if error {
