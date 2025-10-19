@@ -14,6 +14,23 @@ ksj2gp を支える技術
 
 そこから、せっかく Rust を使うならブラウザで動くものにしてみよう、ということで今のかたちになっています。
 
+## 入出力
+
+ksj2gp は GDAL を使っていません。入力も出力も Rust crate でやっています。それぞれ以下の crate を使っています。
+
+- 入力
+  - [shapefile crate](https://crates.io/crates/shapefile)
+  - [dbase crate](https://crates.io/crates/dbase)
+- 出力
+  - [geojson crate](https://crates.io/crates/geojson)
+  - [geoparquet crate](https://crates.io/crates/geoparquet)
+
+GeoPackage の出力もサポートしたいんですが、今のところ使える crate がなさそうなので断念しています。
+[Turso](https://github.com/tursodatabase/turso) で SQLite 拡張が動くようになれば（GeoPackage は rtree 拡張が必要）やってみたいなと思っています。
+
+ちなみに、こうした GIS データ形式の変換としては [geozero crate](https://crates.io/crates/geozero) が有名だと思いますが、なぜ使わなかったのかは...、忘れました。
+たしか、文字コードの対応とかで geozero の API よりも細かい部分を操作する必要があったのと、単純に使い方わからなかったとかだった気がします。
+
 ## 文字コード
 
 `.dbf` ファイルの文字コードの推定方法はいくつかあります。
@@ -310,12 +327,10 @@ let dbase_reader =
 
 ### 4. 出力（GeoParquet、GeoJSON）をファイルを書き出す
 
-ここも、writer が `Write` + `Seek` を実装したものであれば対応しているので、先ほどの `OpfsFile` を渡すだけです。
+writer が `Write` + `Seek` を実装したものであれば対応しているので、先ほどの `OpfsFile` を渡すだけです。
 
-GeoParquet は [geoparquet crate](https://crates.io/crates/geoparquet) を、GeoJSON は [geojson crate](https://crates.io/crates/geojson) を使っています。
-
-ちなみに、GeoPackage の出力もサポートしたいんですが、今のところ使える crate がなさそうなので断念しています。
-[Turso](https://github.com/tursodatabase/turso) で SQLite 拡張が動くようになれば（GeoPackage は rtree 拡張が必要）やってみたいなと思っています。
+ここも、一時ファイルを使わずにメモリ上に出力するという手もありますが、（特に GeoJSON の場合は）サイズがそこそこ大きいのでいったんファイルに書き出すのが効率的だと判断しました。
+ただ、OPFS は OPFS で[ブラウザのストレージ容量制限](https://developer.mozilla.org/ja/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria)があるので、万能ではありません。環境によっては制限に引っ掛かるかもしれません。
 
 ### 5. 出力ファイルをユーザーにダウンロードさせる
 
