@@ -172,6 +172,11 @@ let dbase_reader =
 
 ここも、writer が `Write` + `Seek` を実装したものであれば対応しているので、先ほどの `OpfsFile` を渡すだけです。
 
+GeoParquet は [geoparquet crate](https://crates.io/crates/geoparquet) を、GeoJSON は [geojson crate](https://crates.io/crates/geojson) を使っています。
+
+ちなみに、GeoPackage の出力もサポートしたいんですが、今のところ使える crate がなさそうなので断念しています。
+[Turso](https://github.com/tursodatabase/turso) で SQLite 拡張が動くようになれば（GeoPackage は rtree 拡張が必要）やってみたいなと思っています。
+
 ### 5. 出力ファイルをユーザーにダウンロードさせる
 
 書き出したら、web worker からは OPFS ファイルのハンドルと、そのファイル名をメインスレッドに返します。
@@ -191,23 +196,164 @@ postTypedMessage({ output: { handle: outputFileHandle, filename } });
 
 ```ts
 worker.onmessage = async (event: MessageEvent<WorkerResponse>) => {
-	const data = event.data;
+  const data = event.data;
 
   ...
 
-	const file = await data.output.handle.getFile();
-	const url = URL.createObjectURL(file);
+  const file = await data.output.handle.getFile();
+  const url = URL.createObjectURL(file);
 
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = data.output.filename;
-	document.body.appendChild(a);
-	a.click();
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = data.output.filename;
+  document.body.appendChild(a);
+  a.click();
 
-	setTimeout(() => {
-		URL.revokeObjectURL(url);
-		a.remove();
-		finish();
-	}, 600);
+  setTimeout(() => {
+  	URL.revokeObjectURL(url);
+  	a.remove();
+  	finish();
+  }, 600);
 };
 ```
+
+## 文字コード
+
+`.dbf` ファイルの文字コードの推定方法はいくつかあります。
+まず、以下が ESRI Japan による説明です。
+
+https://github.com/EsriJapan/shapefile_info
+
+ksj2gp では、これに従ってまずは以下で文字コードを決められるか試します。
+
+- `.dbf` ファイルの 29 バイト目が `13` の場合は Shift_JIS
+- `.cpg` ファイルが存在する場合
+  - 中身が `CP932` なら Shift_JIS
+  - 中身が `UTF-8` なら UTF-8
+
+これでも決まらない場合、以下を試します。最近のデータだと UTF-8 と Shift_JIS が両方提供されていて、
+それぞれ `UTF-8`、`Shift_JIS` というフォルダに入っていたりするので、そこから推測を試みています。
+
+- Shapefile のパスに `UTF-8` が含まれていれば UTF-8
+
+以上の3つのどれにも当てはまらない場合は、`Shift_JIS` と推測します。
+
+## CRS、座標変換
+
+国土数値情報のデータは、`.prj` ファイルがあったりなかったりします。
+ksj2gp では、
+
+- `.prj` ファイルがある場合、そこから CRS を推測する
+- ない場合、`KS-META-*.xml` ファイルから CRS を推測する
+
+という作戦でやっています。
+
+### 座標変換
+
+話の順序で座標変換をどうやっているか（あるいはやっていないのか）について先に話します。
+
+まず、これがブラウザ上でなければ、信頼と安心の proj を使って座標変換をすればいいところですが、proj-sys crate は WebAssembly では使えません。
+
+https://github.com/georust/proj/issues/115
+
+proj に頼れないとなると、私の知識では正しい座標変換を実装できるか自信がないので、なるべく座標変換を避けるようにしています。
+具体的にはこうです。
+
+- サポートするのは JGD2011、JGD2000、Tokyo の地理座標系（EPSG 6668, 4326、4301）のみ
+- GeoParquet では座標変換はせず、CRS を設定するだけ
+- GeoJSON の場合のみ、WGS84 への変換を行う
+
+1点目は、他の CRS のデータもサポートできればうれしい（国土数値情報以外のデータにも簡易的に使えるかも）、という気持ちはあるのですが、ひとまず国土数値情報でよくあるデータだけを念頭に考えることにしました。
+
+WGS84 への変換は、以下の方針で行います。
+
+- JGD2011、JGD2000 は変換せずそのままの座標を使う
+- Tokyo は [proj4rs crate](https://github.com/3liz/proj4rs) を使って変換する
+
+JGD2000・JGD2011 から　WGS84 への変換が無変換でいいのかについては、ちゃんと理解できていないのですが、いろいろな考え方があるようで悩みました。
+が、まあ、そういうのをちゃんとやりたい人はこんなブラウザ上で動く謎のツールは使わないだろう、ということで深く悩まない事にしました！
+
+proj4rs crate は、[proj4js](https://github.com/proj4js/proj4js) と同等の機能を pure Rust で提供することを目指して開発されているライブラリです。
+pure Rust なので WebAssembly で動作します。
+
+コードはこんな感じです。proj4rs は、地理座標系の場合は単位が度ではなくラジアンなので、`to_radians()` で変換してから渡して、また `to_degrees()` で戻す必要がある点に注意してください。
+
+```rs
+impl CoordTransformer {
+    fn transform_single_point(
+        &self,
+        point: &shapefile::Point,
+    ) -> Result<geojson::Position, Ksj2GpError> {
+        match self.src {
+            JapanCrs::Tokyo => {
+                let mut pt = (point.x.to_radians(), point.y.to_radians());
+                proj4rs::transform::transform(&PROJ4STRING_TOKYO, &PROJ4STRING_WGS84, &mut pt)?;
+                Ok(vec![pt.0.to_degrees(), pt.1.to_degrees()])
+            }
+            // JGD2000, JGD2011 から WGS84 は無変換とする
+            JapanCrs::JGD2000 | JapanCrs::JGD2011 => Ok(vec![point.x, point.y]),
+        }
+    }
+}
+```
+
+さて、このコードに出てくる変数名を見れば気付くかと思いますが、CRS は proj4 string の形で渡す必要があります。
+最近のは WKT や projjson 形式になっているので、ここをどうするか、というのが次の話になります。
+
+### CRS の推測
+
+#### `.prj` ファイルがある場合
+
+`.prj` ファイルがある場合はこれを使えばいいんですが、中に入っているのは proj4 string ではなく WKT です。
+ひとことに「WKT」と言っても色々あり（well-known とはいったい...）、ESRI WKT という形式になっています。
+
+proj4js は WKT を proj4 string に変換する [proj4wkt crate](https://github.com/3liz/proj4wkt-rs) を提供しているんですが、これが対応しているのは OGR WKT1　と OGR WKT2 です。
+互換性についてよくわからないのですが、ESRI 版の WKT が読めるか不安だったので、これは使わないことにしました。
+
+というのは、対応する　CRS は3つだけに絞ったので、まあ使わなくてもなんとかなるだろう、という読みもあります。具体的にはこうです。
+`JapanCrs` は自分で定義している `enum` で、これを使って、上に挙げたコードの中で適切な proj4 string を選ぶようにしています。
+
+```rs
+pub fn guess_crs_from_esri_wkt(wkt: &str) -> Result<JapanCrs, Ksj2GpError> {
+    if wkt.contains("GCS_JGD_2011") {
+        return Ok(JapanCrs::JGD2011);
+    }
+
+    if wkt.contains("GCS_JGD_2000") {
+        return Ok(JapanCrs::JGD2000);
+    }
+
+    if wkt.contains("GCS_Tokyo") {
+        return Ok(JapanCrs::Tokyo);
+    }
+
+    Err(format!("Failed to identify CRS from ESRI WKT in the .prj file: {wkt}").into())
+}
+```
+
+#### `.prj` ファイルがない場合
+
+`.prj` ファイルがない場合は `KS-META-*.xml` を使います。
+これを読むためだけに XML パーサーを入れるのが嫌だったので、正規表現でがんばります。
+
+JMP 2.0 の解説書（<https://www.gsi.go.jp/common/000259951.pdf>）の 5.1.2 によると、CRS は `referenceSystemIdentifier` に指定されていて、
+以下のフォーマットになっているらしいです。
+
+```
+[原子]＋[半角スペース]＋[半角スラッシュ（"/"）]＋[半角スペース]＋[座標]
+```
+
+「原子」には測地原子（Geodetic Datum）か鉛直原子（Vertical Datum）が入り、国土数値情報の場合はここに「JGD2011」「JGD2000」「TD」が入っています。
+具体的にはこうです。
+
+```xml
+<referenceSystemInfo>
+    <MD_ReferenceSystem>
+        <referenceSystemIdentifier>
+            <code>JGD2011 / (B, L)</code>
+        </referenceSystemIdentifier>
+    </MD_ReferenceSystem>
+</referenceSystemInfo>
+```
+
+ちなみに、CRS が複数ある場合はカンマ区切りで指定できるみたいですが、ksj2gp はそこまでは対応していません。
