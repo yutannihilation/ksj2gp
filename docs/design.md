@@ -329,7 +329,7 @@ const filename = getOutputFilename(targetShp, outputFormat);
 postTypedMessage({ output: { handle: outputFileHandle, filename } });
 ```
 
-メインスレッドでは、ファイルハンドルを受け取ったら、`URL.createObjectURL()`(https://developer.mozilla.org/ja/docs/Web/API/URL/createObjectURL_static) でファイルをダウンロードできるリンクを作成します。
+メインスレッドでは、ファイルハンドルを受け取ったら、[`URL.createObjectURL()`](https://developer.mozilla.org/ja/docs/Web/API/URL/createObjectURL_static) でファイルをダウンロードできるリンクを作成します。
 
 これを仮の `a` タグに設定してそれをクリックし、ダウンロードを発生させる、というかたちでファイルダウンロードを実現しています。
 このあたりは AI 頼みで書いたコードなので、正直ちゃんと理解できていません。。
