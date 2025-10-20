@@ -587,7 +587,23 @@ dependencies = [
  "arrow-buffer",
  "arrow-schema",
  "geo-traits",
- "geoarrow-schema",
+ "geoarrow-schema 0.5.0",
+ "num-traits",
+ "wkb",
+ "wkt",
+]
+
+[[package]]
+name = "geoarrow-array"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "36490f9fbab061752290ac5ebce2bc9bab82ea6fdfcfc9ac3d030d44a98a1a7d"
+dependencies = [
+ "arrow-array",
+ "arrow-buffer",
+ "arrow-schema",
+ "geo-traits",
+ "geoarrow-schema 0.6.1",
  "num-traits",
  "wkb",
  "wkt",
@@ -598,6 +614,19 @@ name = "geoarrow-schema"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f5ebd2cbf841a1062d3521c2b2de7e819bb201b30f23381f872e62b9430b82af"
+dependencies = [
+ "arrow-schema",
+ "geo-traits",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "geoarrow-schema"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "278e963401cfb23b4f81b212605b33b342ab73741d39b80de51cc7028d6d3af4"
 dependencies = [
  "arrow-schema",
  "geo-traits",
@@ -621,9 +650,9 @@ dependencies = [
 
 [[package]]
 name = "geoparquet"
-version = "0.5.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c7961c07ee7df26f00eea1762531331f045ff95d59350a0a07171fdabed8fe5"
+checksum = "180ca505a7be5de3f0e6a4004d260f1964159d7d9a8a5dda8bbd85a00e531947"
 dependencies = [
  "arrow-arith",
  "arrow-array",
@@ -632,8 +661,8 @@ dependencies = [
  "arrow-schema",
  "geo-traits",
  "geo-types",
- "geoarrow-array",
- "geoarrow-schema",
+ "geoarrow-array 0.6.1",
+ "geoarrow-schema 0.6.1",
  "indexmap 2.11.0",
  "parquet",
  "serde",
@@ -805,8 +834,8 @@ dependencies = [
  "encoding_rs",
  "geo-traits",
  "geo-types",
- "geoarrow-array",
- "geoarrow-schema",
+ "geoarrow-array 0.5.0",
+ "geoarrow-schema 0.5.0",
  "geojson",
  "geoparquet",
  "itertools",
