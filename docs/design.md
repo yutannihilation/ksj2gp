@@ -251,7 +251,7 @@ a. は、国土数値情報のデータは、重くても数百MB程度なので
 ただ、他の処理でどれくらいメモリを使うかわからないので、今回は b. の一時ファイルに書き出す手にしようと思いました。
 
 ブラウザ上で一時ファイルを作るにはどうするかというと、[OPFS (Origin Private File System)](https://developer.mozilla.org/ja/docs/Web/API/File_System_API/Origin_private_file_system) を使います。
-これはブラウザが提供するファイルシステム API で、以下のようなコードでしてした名前のファイルのハンドルを得ることができます。
+これはブラウザが提供するファイルシステム API です。以下のようなコードで、指定した名前のファイルのハンドルを得ることができます。
 
 ```ts
 async function newSyncAccessHandle(
@@ -266,9 +266,9 @@ async function newSyncAccessHandle(
 }
 ```
 
-ただ、`FileReaderSync` を使う関係上、ウェブワーカーで動かすコードは同期実行なので、そこからこの非同期の関数を呼び出すことはできません
-（WebAssembly では同期実行と非同期実行を混ぜる方法がない、というのが私の理解なのですが、あまりよくわかっていないので間違ってたらご指摘ください！）。
-そこで、WebAssembly のコードの外側で必要なファイルハンドルをつくって、それを WebAssembly に渡す、ということをしています。
+ちなみにこの非同期の API は `wasm-bindgen-futures` を使うと Rust コードからも呼ぶことができます。
+ただ、非同期の API から得られる値は `JsValue` になっていて、型の情報が落ちてしまっているのでちょっと書きづらいです。
+迷ったんですが、ここは TypeScript 側で書いた方がきれいかなあ、ということで TypeScript 側でやることにしました。正解はまだよくわかりません。
 
 ```ts
 // 出力用のファイル（ファイルハンドルをあとで使うので newSyncAccessHandle() ではなくて直接やっている）
