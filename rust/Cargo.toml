@@ -12,13 +12,13 @@ geo-types = "0.7.17"
 
 # GeoParquet
 parquet = { version = "56.0.0", default-features = false }
-geoparquet = "0.5.0"
+geoparquet = "0.6.0"
 
 # GeoArrow-related
 arrow-array = "56.1.0"
 arrow-schema = "56.0.0"
-geoarrow-schema = "0.5.0"
-geoarrow-array = "0.5.0"
+geoarrow-schema = "0.6.0"
+geoarrow-array = "0.6.0"
 
 # GeoArrow
 geojson = "0.24.2"
