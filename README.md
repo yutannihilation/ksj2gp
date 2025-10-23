@@ -1,14 +1,24 @@
 # ksj2gp
 
-> [!WARNING]
-> めっちゃ開発中です。
-
 ＞＞＞ [ウェブサイト](https://yutannihilation.github.io/ksj2gp/) ＜＜＜
 
-## これは何？
+## 概要
 
-ブラウザ上で動く、国土数値情報からダウンロードした ZIP ファイルをいい感じに GeoParquet / GeoJSON に変換するやつです。
-実用性よりも、主に pure Rust & WebAssembly でどこまでやれるかの実験のために開発しています。
+ブラウザ上で動く、国土数値情報の Shapefile を GeoParquet / GeoJSON に変換するツールです。
+フォーマットの変換だけでなく、国土数値情報のデータは属性名やデータの中身が`L001_123`のようなコードになっていますが、これを人間が読めるラベルに変換します。
+
+まだ開発中ですが、ある程度は動く状態のはずです。もし使ってみてエラーやおかしな挙動を発見されましたら、お気軽に [issues](https://github.com/yutannihilation/ksj2gp/issues) からご連絡ください（日本語で大丈夫です）。
+
+## 仕組み
+
+技術的な話は [`docs/design.md`](./docs/design.md) にまとめています。
+
+## 使用上の注意
+
+- 一時データを作成するために [OPFS](https://developer.mozilla.org/ja/docs/Web/API/File_System_API/Origin_private_file_system) というブラウザのストレージ領域を利用します。
+- GeoJSON の座標系は、以下のように扱います。
+  - Tokyo Datum は WGS84 に座標変換
+  - JGD2011・JGD2000 は無変換
 
 ## やりたいこと
 
