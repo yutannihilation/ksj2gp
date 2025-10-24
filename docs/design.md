@@ -1,5 +1,4 @@
-ksj2gp を支える技術
-=================
+# ksj2gp を支える技術
 
 ## 背景
 
@@ -22,7 +21,7 @@ ksj2gp は GDAL を使っていません。入力も出力も Rust crate でや�
   - [shapefile crate](https://crates.io/crates/shapefile)
   - [dbase crate](https://crates.io/crates/dbase)
 - 出力
-  - [geojson crate](https://crates.io/crates/geojson)
+  - [geoarrow-geojson crate](https://crates.io/crates/geoarrow-geojson)
   - [geoparquet crate](https://crates.io/crates/geoparquet)
 
 GeoPackage の出力もサポートしたいんですが、今のところ使える crate がなさそうなので断念しています。
