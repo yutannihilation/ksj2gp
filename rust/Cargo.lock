@@ -836,7 +836,6 @@ dependencies = [
  "parquet",
  "proj4rs",
  "regex",
- "serde_json",
  "shapefile",
  "zip",
 ]
