@@ -12,16 +12,14 @@ geo-types = "0.7.17"
 
 # GeoParquet
 parquet = { version = "56.0.0", default-features = false }
-geoparquet = "0.6.0"
+geoparquet = "0.6.1"
 
 # GeoArrow-related
 arrow-array = "56.1.0"
 arrow-schema = "56.0.0"
-geoarrow-schema = "0.6.0"
-geoarrow-array = "0.6.0"
-
-# GeoArrow
-geojson = "0.24.2"
+geoarrow-schema = "0.6.1"
+geoarrow-array = "0.6.1"
+geoarrow-geojson = "0.6.1"
 
 # Shapefile
 # Note: for compatibility with geo-traits 0.3, the Git version is required at the moment
@@ -37,7 +35,6 @@ zip = { workspace = true }
 
 # for .chunk()
 itertools = "0.14.0"
-serde_json = "1.0.145"
 
 encoding_rs = "0.8.35"
 regex = { version = "1.11.3", default-features = false, features = ["std"] }
