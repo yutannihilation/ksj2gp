@@ -202,6 +202,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "arrow-json"
+version = "56.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "88cf36502b64a127dc659e3b305f1d993a544eab0d48cce704424e62074dc04b"
+dependencies = [
+ "arrow-array",
+ "arrow-buffer",
+ "arrow-cast",
+ "arrow-data",
+ "arrow-schema",
+ "chrono",
+ "half",
+ "indexmap 2.11.0",
+ "lexical-core",
+ "memchr",
+ "num",
+ "serde",
+ "serde_json",
+ "simdutf8",
+]
+
+[[package]]
 name = "arrow-ord"
 version = "56.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -594,6 +616,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "geoarrow-geojson"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72c7b48093bffe588a65d65ebec5295d9ab0e34dbe04ee0bece5ab1e22825782"
+dependencies = [
+ "arrow-array",
+ "arrow-json",
+ "arrow-schema",
+ "geo-traits",
+ "geoarrow-array",
+ "geoarrow-schema",
+]
+
+[[package]]
 name = "geoarrow-schema"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -806,6 +842,7 @@ dependencies = [
  "geo-traits",
  "geo-types",
  "geoarrow-array",
+ "geoarrow-geojson",
  "geoarrow-schema",
  "geojson",
  "geoparquet",
@@ -1373,6 +1410,12 @@ name = "simd-adler32"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
+
+[[package]]
+name = "simdutf8"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3a9fe34e3e7a50316060351f37187a3f546bce95496156754b601a5fa71b76e"
 
 [[package]]
 name = "static_assertions"

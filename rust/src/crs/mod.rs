@@ -19,6 +19,7 @@ pub static PROJ4STRING_TOKYO: LazyLock<Proj> = LazyLock::new(|| {
     .unwrap()
 });
 
+#[derive(Debug, Clone)]
 pub enum JapanCrs {
     Tokyo,
     JGD2000,
