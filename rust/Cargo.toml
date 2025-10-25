@@ -7,8 +7,7 @@ edition = "2024"
 crate-type = ["lib"]
 
 [dependencies]
-geo-traits = "0.3.0"
-geo-types = "0.7.17"
+geo-traits = { git = "https://github.com/yutannihilation/geo", branch = "feat/geo-traits-structs", version = "0.3.0", default-features = false, features = ["structs"] }
 
 # GeoParquet
 parquet = { version = "56.0.0", default-features = false }
@@ -22,8 +21,10 @@ geoarrow-array = "0.6.1"
 geoarrow-geojson = "0.6.1"
 
 # Shapefile
-# Note: for compatibility with geo-traits 0.3, the Git version is required at the moment
-shapefile = { git = "https://github.com/tmontaigu/shapefile-rs", version = "0.7.0", features = [
+# Note: this is needed for
+#   - compatibility with geo-traits 0.3
+#   - geo-traits for polygon (cf. https://github.com/tmontaigu/shapefile-rs/pull/38#issuecomment-2560436702)
+shapefile = { git = "https://github.com/yutannihilation/shapefile-rs", branch = "feat/expose-multipolygon", version = "0.7.0", features = [
     "encoding_rs",
     "geo-traits",
     "geo-types",
@@ -51,3 +52,4 @@ zip = { version = "6.0.0", default-features = false, features = ["deflate"] }
 
 [patch.crates-io]
 dbase = { git = "https://github.com/yutannihilation/dbase-rs", branch = "feat/encoding-fields" }
+geo-traits = { git = "https://github.com/yutannihilation/geo", branch = "feat/geo-traits-structs", version = "0.3.0" }

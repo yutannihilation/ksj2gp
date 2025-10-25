@@ -51,8 +51,37 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
                 builders.builders[i].push(value);
             }
 
-            let geometry = geo_types::Geometry::<f64>::try_from(shape)?;
-            builders.geo_builder.push_geometry(Some(&geometry))?;
+            match shape {
+                shapefile::Shape::Point(point) => {
+                    builders.geo_builder.push_geometry(Some(&point))?;
+                }
+                shapefile::Shape::PointZ(point_z) => {
+                    builders.geo_builder.push_geometry(Some(&point_z))?;
+                }
+                shapefile::Shape::Polyline(polyline) => {
+                    builders.geo_builder.push_geometry(Some(&polyline))?;
+                }
+                shapefile::Shape::PolylineZ(polyline_z) => {
+                    builders.geo_builder.push_geometry(Some(&polyline_z))?;
+                }
+                shapefile::Shape::Polygon(polygon) => {
+                    builders
+                        .geo_builder
+                        .push_geometry(Some(&polygon.into_geo_trait()?))?;
+                }
+                shapefile::Shape::PolygonZ(polygon_z) => {
+                    builders
+                        .geo_builder
+                        .push_geometry(Some(&polygon_z.into_geo_trait()?))?;
+                }
+                shapefile::Shape::Multipoint(multipoint) => {
+                    builders.geo_builder.push_geometry(Some(&multipoint))?;
+                }
+                shapefile::Shape::MultipointZ(multipoint) => {
+                    builders.geo_builder.push_geometry(Some(&multipoint))?;
+                }
+                _ => return Err(format!("Unsupported shape type: {}", shape.shapetype()).into()),
+            }
         }
 
         let batch = arrow_array::RecordBatch::try_new(schema_ref.clone(), builders.finish())?;
