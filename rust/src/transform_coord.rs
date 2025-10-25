@@ -20,15 +20,11 @@ impl CoordTransformer {
         match shape {
             Shape::Point(point) => {
                 let coord = self.transform_single_point(point)?;
-                Ok(geo_traits::structs::Geometry::Point(
-                    geo_traits::structs::Point::from_coord(coord),
-                ))
+                Ok(geo_traits::structs::Point::from_coord(coord).into())
             }
             Shape::PointZ(point) => {
                 let coord = self.transform_single_point_z(point)?;
-                Ok(geo_traits::structs::Geometry::Point(
-                    geo_traits::structs::Point::from_coord(coord),
-                ))
+                Ok(geo_traits::structs::Point::from_coord(coord).into())
             }
             Shape::Polyline(polyline) => {
                 let linestrings = polyline
@@ -40,9 +36,11 @@ impl CoordTransformer {
                         })
                     })
                     .collect::<Result<Vec<geo_traits::structs::LineString>, _>>()?;
-                Ok(geo_traits::structs::Geometry::MultiLineString(
-                    geo_traits::structs::MultiLineString::from_line_strings(linestrings).unwrap(),
-                ))
+                Ok(
+                    geo_traits::structs::MultiLineString::from_line_strings(linestrings)
+                        .unwrap()
+                        .into(),
+                )
             }
             Shape::PolylineZ(polyline) => {
                 let linestrings = polyline
@@ -54,65 +52,57 @@ impl CoordTransformer {
                         })
                     })
                     .collect::<Result<Vec<geo_traits::structs::LineString>, _>>()?;
-                Ok(geo_traits::structs::Geometry::MultiLineString(
-                    geo_traits::structs::MultiLineString::from_line_strings(linestrings).unwrap(),
-                ))
+                Ok(
+                    geo_traits::structs::MultiLineString::from_line_strings(linestrings)
+                        .unwrap()
+                        .into(),
+                )
             }
             Shape::Polygon(polygon) => {
                 let rings = polygon
                     .rings()
                     .iter()
                     .map(|ring| {
-                        let points = ring.points();
-                        match self.transform_points(points) {
-                            Ok(coords) => {
-                                Ok(geo_traits::structs::LineString::from_coords(coords).unwrap())
-                            }
-                            Err(e) => Err(e),
-                        }
+                        let coords = self.transform_points(ring.points())?;
+                        Ok(geo_traits::structs::LineString::from_coords(coords).unwrap())
                     })
-                    .collect::<Result<Vec<geo_traits::structs::LineString>, _>>()?;
+                    .collect::<Result<Vec<geo_traits::structs::LineString>, Ksj2GpError>>()?;
 
-                Ok(geo_traits::structs::Geometry::Polygon(
-                    geo_traits::structs::Polygon::from_rings(rings).unwrap(),
-                ))
+                Ok(geo_traits::structs::Polygon::from_rings(rings)
+                    .unwrap()
+                    .into())
             }
             Shape::PolygonZ(polygon) => {
                 let rings = polygon
                     .rings()
                     .iter()
                     .map(|ring| {
-                        let points = ring.points();
-                        match self.transform_points_z(points) {
-                            Ok(coords) => {
-                                Ok(geo_traits::structs::LineString::from_coords(coords).unwrap())
-                            }
-                            Err(e) => Err(e),
-                        }
+                        let coords = self.transform_points_z(ring.points())?;
+                        Ok(geo_traits::structs::LineString::from_coords(coords).unwrap())
                     })
-                    .collect::<Result<Vec<geo_traits::structs::LineString>, _>>()?;
+                    .collect::<Result<Vec<geo_traits::structs::LineString>, Ksj2GpError>>()?;
 
-                Ok(geo_traits::structs::Geometry::Polygon(
-                    geo_traits::structs::Polygon::from_rings(rings).unwrap(),
-                ))
+                Ok(geo_traits::structs::Polygon::from_rings(rings)
+                    .unwrap()
+                    .into())
             }
             Shape::Multipoint(multipoint) => {
                 let points = self
                     .transform_points(multipoint.points())?
                     .into_iter()
                     .map(|coord| geo_traits::structs::Point::from_coord(coord));
-                Ok(geo_traits::structs::Geometry::MultiPoint(
-                    geo_traits::structs::MultiPoint::from_points(points).unwrap(),
-                ))
+                Ok(geo_traits::structs::MultiPoint::from_points(points)
+                    .unwrap()
+                    .into())
             }
             Shape::MultipointZ(multipoint) => {
                 let points = self
                     .transform_points_z(multipoint.points())?
                     .into_iter()
                     .map(|coord| geo_traits::structs::Point::from_coord(coord));
-                Ok(geo_traits::structs::Geometry::MultiPoint(
-                    geo_traits::structs::MultiPoint::from_points(points).unwrap(),
-                ))
+                Ok(geo_traits::structs::MultiPoint::from_points(points)
+                    .unwrap()
+                    .into())
             }
             _ => Err(format!("Unsupported shape type: {}", shape.shapetype()).into()),
         }
