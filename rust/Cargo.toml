@@ -7,8 +7,7 @@ edition = "2024"
 crate-type = ["lib"]
 
 [dependencies]
-geo-traits = { version = "0.3.0", default-features = false }
-geo-types = "0.7.17"
+geo-traits = { git = "https://github.com/yutannihilation/geo", branch = "feat/geo-traits-structs", version = "0.3.0", default-features = false, features = ["structs"] }
 
 # GeoParquet
 parquet = { version = "56.0.0", default-features = false }
@@ -53,3 +52,4 @@ zip = { version = "6.0.0", default-features = false, features = ["deflate"] }
 
 [patch.crates-io]
 dbase = { git = "https://github.com/yutannihilation/dbase-rs", branch = "feat/encoding-fields" }
+geo-traits = { git = "https://github.com/yutannihilation/geo", branch = "feat/geo-traits-structs", version = "0.3.0" }
