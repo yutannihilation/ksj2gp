@@ -1376,7 +1376,7 @@ dependencies = [
 [[package]]
 name = "shapefile"
 version = "0.7.0"
-source = "git+https://github.com/tmontaigu/shapefile-rs#40847e6190de45b771acc30c2e921ffb58c71367"
+source = "git+https://github.com/yutannihilation/shapefile-rs?branch=feat%2Fexpose-multipolygon#46cadb259fd00a250df796aacd94ef2683ee199d"
 dependencies = [
  "byteorder",
  "dbase",
