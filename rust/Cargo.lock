@@ -479,7 +479,7 @@ dependencies = [
 [[package]]
 name = "dbase"
 version = "0.6.1"
-source = "git+https://github.com/yutannihilation/dbase-rs?branch=feat%2Fencoding-fields#7d99cac3cad086da91bba0a824610edb05b50790"
+source = "git+https://github.com/tmontaigu/dbase-rs#198b4ddf265d41d8f30706ce450bd97efe54e112"
 dependencies = [
  "bufrw",
  "byteorder",
@@ -582,7 +582,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 [[package]]
 name = "geo-traits"
 version = "0.3.0"
-source = "git+https://github.com/yutannihilation/geo?branch=feat%2Fgeo-traits-structs#02c3c9b670983acdbcd30c1e89d0aa944904e05b"
+source = "git+https://github.com/yutannihilation/geo?branch=feat%2Fgeo-traits-structs#ca8872cfa5957f509981acc3d29f553dee888d1d"
 dependencies = [
  "geo-types",
 ]
@@ -1374,7 +1374,7 @@ dependencies = [
 [[package]]
 name = "shapefile"
 version = "0.7.0"
-source = "git+https://github.com/yutannihilation/shapefile-rs?branch=feat%2Fexpose-multipolygon#46cadb259fd00a250df796aacd94ef2683ee199d"
+source = "git+https://github.com/yutannihilation/shapefile-rs?branch=feat%2Fexpose-multipolygon#c2682b8db4b57f5245a2ab4831c81de96526f15c"
 dependencies = [
  "byteorder",
  "dbase",
