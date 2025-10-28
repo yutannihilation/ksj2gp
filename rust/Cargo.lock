@@ -616,9 +616,9 @@ dependencies = [
 
 [[package]]
 name = "geoarrow-geojson"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72c7b48093bffe588a65d65ebec5295d9ab0e34dbe04ee0bece5ab1e22825782"
+checksum = "b4230f6cb465eccc01c032bf693eeaa1d881ddf0d2b44b7d0c6e3c96fbe1e058"
 dependencies = [
  "arrow-array",
  "arrow-json",
