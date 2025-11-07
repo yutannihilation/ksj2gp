@@ -582,7 +582,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 [[package]]
 name = "geo-traits"
 version = "0.3.0"
-source = "git+https://github.com/yutannihilation/geo?branch=feat%2Fgeo-traits-structs#ca8872cfa5957f509981acc3d29f553dee888d1d"
+source = "git+https://github.com/yutannihilation/geo?branch=feat%2Fgeo-traits-structs#57a6fd8393d585aa29d538fdc0597cbb6a6db4fb"
 dependencies = [
  "geo-types",
 ]
@@ -657,7 +657,7 @@ dependencies = [
  "geoarrow-array",
  "geoarrow-schema",
  "indexmap 2.11.0",
- "parquet",
+ "parquet 56.2.0",
  "serde",
  "serde_json",
  "serde_with",
@@ -831,7 +831,7 @@ dependencies = [
  "geoarrow-schema",
  "geoparquet",
  "itertools",
- "parquet",
+ "parquet 57.0.0",
  "proj4rs",
  "regex",
  "shapefile",
@@ -1113,6 +1113,26 @@ dependencies = [
  "hashbrown 0.16.0",
  "num",
  "num-bigint",
+ "paste",
+ "seq-macro",
+ "thrift",
+ "twox-hash",
+]
+
+[[package]]
+name = "parquet"
+version = "57.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a0f31027ef1af7549f7cec603a9a21dce706d3f8d7c2060a68f43c1773be95a"
+dependencies = [
+ "ahash",
+ "bytes",
+ "chrono",
+ "half",
+ "hashbrown 0.16.0",
+ "num-bigint",
+ "num-integer",
+ "num-traits",
  "paste",
  "seq-macro",
  "thrift",
