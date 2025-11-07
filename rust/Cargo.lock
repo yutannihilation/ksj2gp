@@ -643,9 +643,9 @@ dependencies = [
 
 [[package]]
 name = "geoparquet"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "180ca505a7be5de3f0e6a4004d260f1964159d7d9a8a5dda8bbd85a00e531947"
+checksum = "5bd91ef3510cd6e8968927436ff5406ac6e5f610a200f0774de943bb7679e3ad"
 dependencies = [
  "arrow-arith",
  "arrow-array",
