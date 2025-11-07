@@ -582,7 +582,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 [[package]]
 name = "geo-traits"
 version = "0.3.0"
-source = "git+https://github.com/yutannihilation/geo?branch=feat%2Fgeo-traits-structs#ca8872cfa5957f509981acc3d29f553dee888d1d"
+source = "git+https://github.com/yutannihilation/geo?branch=feat%2Fgeo-traits-structs#57a6fd8393d585aa29d538fdc0597cbb6a6db4fb"
 dependencies = [
  "geo-types",
 ]
@@ -616,9 +616,9 @@ dependencies = [
 
 [[package]]
 name = "geoarrow-geojson"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72c7b48093bffe588a65d65ebec5295d9ab0e34dbe04ee0bece5ab1e22825782"
+checksum = "b4230f6cb465eccc01c032bf693eeaa1d881ddf0d2b44b7d0c6e3c96fbe1e058"
 dependencies = [
  "arrow-array",
  "arrow-json",
