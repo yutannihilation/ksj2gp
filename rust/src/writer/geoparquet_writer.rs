@@ -67,12 +67,12 @@ pub(crate) fn write_geoparquet<T: Read + Seek, D: Read + Seek, W: Write + Send>(
                 shapefile::Shape::Polygon(polygon) => {
                     builders
                         .geo_builder
-                        .push_geometry(Some(&polygon.into_geo_trait()?))?;
+                        .push_geometry(Some(&polygon.try_into_geo_traits()?))?;
                 }
                 shapefile::Shape::PolygonZ(polygon_z) => {
                     builders
                         .geo_builder
-                        .push_geometry(Some(&polygon_z.into_geo_trait()?))?;
+                        .push_geometry(Some(&polygon_z.try_into_geo_traits()?))?;
                 }
                 shapefile::Shape::Multipoint(multipoint) => {
                     builders.geo_builder.push_geometry(Some(&multipoint))?;
