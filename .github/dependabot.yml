@@ -10,6 +10,11 @@ updates:
         patterns:
           - 'arrow*'
           - 'parquet'
+      wasm-bindgen:
+        applies-to: version-updates
+        patterns:
+          - 'web-sys'
+          - 'wasm-bindgen*'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
