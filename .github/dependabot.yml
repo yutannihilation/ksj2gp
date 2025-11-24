@@ -4,6 +4,12 @@ updates:
     directory: '/rust'
     schedule:
       interval: 'weekly'
+    groups:
+      arrow-parquet:
+        applies-to: version-updates
+        patterns:
+          - 'arrow*'
+          - 'parquet'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
