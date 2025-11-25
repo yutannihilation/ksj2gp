@@ -15,8 +15,8 @@ importers:
         specifier: ^9.39.1
         version: 9.39.1
       '@iconify/svelte':
-        specifier: ^5.0.2
-        version: 5.0.2(svelte@5.43.14)
+        specifier: ^5.1.0
+        version: 5.1.0(svelte@5.43.14)
       '@sveltejs/adapter-static':
         specifier: ^3.0.10
         version: 3.0.10(@sveltejs/kit@2.49.0(@sveltejs/vite-plugin-svelte@6.2.1(svelte@5.43.14)(vite@7.1.11(jiti@2.6.0)(lightningcss@1.30.1)))(svelte@5.43.14)(vite@7.1.11(jiti@2.6.0)(lightningcss@1.30.1)))
@@ -313,8 +313,8 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@iconify/svelte@5.0.2':
-    resolution: {integrity: sha512-1iWUT+1veS/QOAzKDG0NPgBtJYGoJqEPwF97voTm8jw6PQ6yU0hL73lEwFoTGMrZmatLvh9cjRBmeSHHaltmrg==}
+  '@iconify/svelte@5.1.0':
+    resolution: {integrity: sha512-I14nSqo0pNXO5OKsT61ZO3XIPF4yRHA2ErgPsaZ1sPJdKXn80o7o8jOe1xpWphbb9FihdX6by9zlKKBss61mFw==}
     peerDependencies:
       svelte: '>4.0.0'
 
@@ -1629,7 +1629,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@iconify/svelte@5.0.2(svelte@5.43.14)':
+  '@iconify/svelte@5.1.0(svelte@5.43.14)':
     dependencies:
       '@iconify/types': 2.0.0
       svelte: 5.43.14
