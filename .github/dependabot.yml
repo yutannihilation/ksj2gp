@@ -23,3 +23,8 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    ignore:
+      - dependency-name: 'dtolnay/rust-toolchain'
+      - dependency-name: '*'
+        files:
+          - '.github/workflows/release.yaml'
