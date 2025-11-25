@@ -25,7 +25,7 @@
 		"eslint": "^9.39.1",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.12.5",
-		"globals": "^16.4.0",
+		"globals": "^16.5.0",
 		"ksj2gp": "file:./npm/",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
