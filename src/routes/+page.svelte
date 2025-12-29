@@ -9,25 +9,32 @@
 	import ToggleRow from '$lib/components/ToggleRow.svelte';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
-	let inputEl: HTMLInputElement;
-	let dragover = false;
-	let busy = false;
-	let worker: Worker | null = null;
-	let ready = false;
-	let outputFormat: OutputFormat = 'GeoParquet';
-	let translateColumns = true;
-	let translateContents = true;
-	let ignoreTranslationErrors = true;
+	let dragover = $state(false);
+	let busy = $state(false);
+	let ready = $state(false);
+
+	// Conversion options
+	let outputFormat = $state<OutputFormat>('GeoParquet');
+	let translateColumns = $state(true);
+	let translateContents = $state(true);
+	let ignoreTranslationErrors = $state(true);
 
 	// Multi-shp selection dialog state
-	let shpDialogOpen = false;
-	let shpOptions: string[] = [];
-	let pendingZip: File | null = null;
+	let shpDialogOpen = $state(false);
+	let shpFiles = $state<string[]>([]);
+	let pendingZip = $state<File | null>(null);
 
 	// Error dialog state
-	let errorOpen = false;
-	let errorMessage = '';
-	$: bigLoading = !ready || busy;
+	let errorOpen = $state(false);
+	let errorMessage = $state('');
+	const bigLoading = $derived(!ready || busy);
+
+	// This holds the input element so that we can click() programmatically.
+	// This is only assigned via bind:this and never gets updated, so we doe't need to track the state.
+	let inputEl: HTMLInputElement | null = null;
+
+	// worker is initialized only once, so we doe't need to track the state.
+	let worker: Worker | null = null;
 
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker.ts', import.meta.url), { type: 'module' });
@@ -61,7 +68,7 @@
 			}
 
 			if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
-				shpOptions = data.shpFileCandidates;
+				shpFiles = data.shpFileCandidates;
 				shpDialogOpen = true;
 				busy = false; // let user choose
 				return;
@@ -180,10 +187,10 @@
 		role="button"
 		tabindex="0"
 		aria-label="ファイルのドラッグ＆ドロップ領域"
-		on:dragover={onDragOver}
-		on:dragleave={onDragLeave}
-		on:drop={onDrop}
-		on:keydown={(e) => {
+		ondragover={onDragOver}
+		ondragleave={onDragLeave}
+		ondrop={onDrop}
+		onkeydown={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {
 				pick();
 			}
@@ -207,19 +214,18 @@
 					<button
 						class="text-blue-600 hover:underline"
 						type="button"
-						on:click|stopPropagation={pick}
+						onclick={pick}
 						disabled={!ready || busy}
 					>
 						ZIP ファイルを選択
 					</button>
 				{/if}
-				<input bind:this={inputEl} type="file" accept=".zip" hidden on:change={onInputChange} />
+				<input bind:this={inputEl} type="file" accept=".zip" hidden onchange={onInputChange} />
 			</div>
 
 			{#if busy && !bigLoading}
 				<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
-					<span class="w-[18px] h-[18px] border-2 border-white/25 animate-spin" aria-hidden="true"
-					></span>
+					<span class="w-4.5 h-4.5 border-2 border-white/25 animate-spin" aria-hidden="true"></span>
 					<span class="sr-only">処理中</span>
 				</div>
 			{/if}
@@ -227,7 +233,7 @@
 			{#if !busy && !ready && !bigLoading}
 				<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 					<span
-						class="w-[18px] h-[18px] border-2 border-white/25 border-t-sky-400 animate-spin"
+						class="w-4.5 h-4.5 border-2 border-white/25 border-t-sky-400 animate-spin"
 						aria-hidden="true"
 					></span>
 					<span aria-hidden="true">初期化中…</span>
@@ -236,29 +242,18 @@
 		</div>
 	</div>
 
-	<ToggleRow
-		id="translate_colnames"
-		name="translate_colnames"
-		bind:checked={translateColumns}
-		label="属性名を変換する"
-		switchClass="disabled:opacity-20"
-	/>
+	<ToggleRow id="translate_colnames" bind:checked={translateColumns} label="属性名を変換する" />
 
 	<ToggleRow
 		id="translate_contents"
-		name="translate_contents"
 		bind:checked={translateContents}
 		label="データの中身を変換する"
-		switchClass="disabled:opacity-10"
-		thumbClass="disabled:opacity-0"
 	/>
 
 	<ToggleRow
 		id="ignore_translation_errors"
-		name="ignore_translation_errors"
 		bind:checked={ignoreTranslationErrors}
 		label="変換エラーを無視する"
-		switchClass="disabled:opacity-20"
 	/>
 
 	<ErrorDialog bind:open={errorOpen} message={errorMessage} />
@@ -274,13 +269,13 @@
 					ZIP には複数の .shp が含まれています。変換するファイルを選択してください。
 				</div>
 				<div class="max-h-72 overflow-auto grid gap-2 mb-4">
-					{#each shpOptions as opt (opt)}
+					{#each shpFiles as shp (shp)}
 						<button
 							type="button"
 							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
-							on:click={() => chooseShp(opt, outputFormat)}
+							onclick={() => chooseShp(shp, outputFormat)}
 						>
-							{opt}
+							{shp}
 						</button>
 					{/each}
 				</div>
@@ -289,7 +284,7 @@
 						<button
 							type="button"
 							class="rounded-lg bg-slate-700 text-white px-4 py-2 font-bold tracking-tight"
-							on:click={cancelShpDialog}
+							onclick={cancelShpDialog}
 						>
 							キャンセル
 						</button>
