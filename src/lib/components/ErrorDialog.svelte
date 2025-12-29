@@ -7,7 +7,9 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="fixed inset-0 grid place-items-center p-4 z-50">
-		<div class="bg-slate-900 text-indigo-50 border border-slate-700 rounded-xl p-4 w-full max-w-lg shadow-2xl">
+		<div
+			class="bg-slate-900 text-indigo-50 border border-slate-700 rounded-xl p-4 w-full max-w-lg shadow-2xl"
+		>
 			<Dialog.Title class="font-bold mb-1">エラーが発生しました</Dialog.Title>
 			<div class="text-indigo-200/80 mb-3">{message}</div>
 			<div class="flex justify-end">

@@ -2,6 +2,6 @@
 @import 'tailwindcss';
 
 @theme {
-    --font-display: "Noto Sans JP", sans-serif;
-    --font-title: "Montserrat";
+	--font-display: 'Noto Sans JP', sans-serif;
+	--font-title: 'Montserrat';
 }
