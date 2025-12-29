@@ -180,10 +180,10 @@
 		role="button"
 		tabindex="0"
 		aria-label="ファイルのドラッグ＆ドロップ領域"
-		on:dragover={onDragOver}
-		on:dragleave={onDragLeave}
-		on:drop={onDrop}
-		on:keydown={(e) => {
+		ondragover={onDragOver}
+		ondragleave={onDragLeave}
+		ondrop={onDrop}
+		onkeydown={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {
 				pick();
 			}
@@ -207,13 +207,16 @@
 					<button
 						class="text-blue-600 hover:underline"
 						type="button"
-						on:click|stopPropagation={pick}
+						onclick={(e) => {
+							e.stopPropagation();
+							pick();
+						}}
 						disabled={!ready || busy}
 					>
 						ZIP ファイルを選択
 					</button>
 				{/if}
-				<input bind:this={inputEl} type="file" accept=".zip" hidden on:change={onInputChange} />
+				<input bind:this={inputEl} type="file" accept=".zip" hidden onchange={onInputChange} />
 			</div>
 
 			{#if busy && !bigLoading}
@@ -278,7 +281,7 @@
 						<button
 							type="button"
 							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
-							on:click={() => chooseShp(opt, outputFormat)}
+							onclick={() => chooseShp(opt, outputFormat)}
 						>
 							{opt}
 						</button>
@@ -289,7 +292,7 @@
 						<button
 							type="button"
 							class="rounded-lg bg-slate-700 text-white px-4 py-2 font-bold tracking-tight"
-							on:click={cancelShpDialog}
+							onclick={cancelShpDialog}
 						>
 							キャンセル
 						</button>
