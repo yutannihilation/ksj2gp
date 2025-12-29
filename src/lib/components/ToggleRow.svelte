@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import { Label, Switch } from 'bits-ui';
 
 	let {
