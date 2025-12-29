@@ -20,10 +20,10 @@
 		{disabled}
 		{id}
 		{name}
-		class={`peer inline-flex h-[36px] min-h-[36px] w-[64px] shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-[4px] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed ${switchClass}`}
+		class={`peer inline-flex h-9 min-h-9 w-16 shrink-0 cursor-pointer items-center justify-self-end rounded-full bg-slate-300 px-1 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-slate-700 disabled:cursor-not-allowed ${switchClass}`}
 	>
 		<Switch.Thumb
-			class={`pointer-events-none block size-[28px] shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-[28px] data-[state=unchecked]:translate-x-0 ${thumbClass}`}
+			class={`pointer-events-none block size-7 shrink-0 rounded-full bg-white shadow transition-transform data-[state=checked]:translate-x-7 data-[state=unchecked]:translate-x-0 ${thumbClass}`}
 		/>
 	</Switch.Root>
 	<Label.Root for={id} class={`font-bold text-2xl text-slate-700 ${labelClass}`}>

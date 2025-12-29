@@ -285,7 +285,7 @@
 					{/each}
 				</div>
 				<div class="flex justify-end">
-					<Dialog.Close asChild>
+					<Dialog.Close>
 						<button
 							type="button"
 							class="rounded-lg bg-slate-700 text-white px-4 py-2 font-bold tracking-tight"

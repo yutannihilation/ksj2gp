@@ -13,9 +13,9 @@
 			<Dialog.Title class="font-bold mb-1">エラーが発生しました</Dialog.Title>
 			<div class="text-indigo-200/80 mb-3">{message}</div>
 			<div class="flex justify-end">
-				<Dialog.Close asChild>
+				<Dialog.Close>
 					<button
-						class="rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-bold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]"
+						class="rounded-lg bg-linear-to-b from-sky-400 to-blue-700 text-white px-4 py-2 font-bold tracking-tight shadow-[0_6px_16px_rgba(64,149,255,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]"
 					>
 						閉じる
 					</button>
