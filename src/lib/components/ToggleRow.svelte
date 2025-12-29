@@ -12,7 +12,9 @@
 	export let labelClass = '';
 </script>
 
-<div class={`mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3 ${containerClass}`}>
+<div
+	class={`mx-auto grid w-full max-w-3xl grid-cols-[1fr_2fr] items-center gap-3 ${containerClass}`}
+>
 	<Switch.Root
 		bind:checked
 		{disabled}

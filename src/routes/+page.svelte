@@ -274,7 +274,7 @@
 					ZIP には複数の .shp が含まれています。変換するファイルを選択してください。
 				</div>
 				<div class="max-h-72 overflow-auto grid gap-2 mb-4">
-					{#each shpOptions as opt}
+					{#each shpOptions as opt (opt)}
 						<button
 							type="button"
 							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
