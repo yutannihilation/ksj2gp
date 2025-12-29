@@ -9,25 +9,26 @@
 	import ToggleRow from '$lib/components/ToggleRow.svelte';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
-	let inputEl: HTMLInputElement;
-	let dragover = false;
-	let busy = false;
-	let worker: Worker | null = null;
-	let ready = false;
-	let outputFormat: OutputFormat = 'GeoParquet';
-	let translateColumns = true;
-	let translateContents = true;
-	let ignoreTranslationErrors = true;
+	let inputEl = $state<HTMLInputElement | null>(null);
+	let dragover = $state(false);
+	let busy = $state(false);
+	let ready = $state(false);
+	let outputFormat = $state<OutputFormat>('GeoParquet');
+	let translateColumns = $state(true);
+	let translateContents = $state(true);
+	let ignoreTranslationErrors = $state(true);
 
 	// Multi-shp selection dialog state
-	let shpDialogOpen = false;
-	let shpOptions: string[] = [];
-	let pendingZip: File | null = null;
+	let shpDialogOpen = $state(false);
+	let shpOptions = $state<string[]>([]);
+	let pendingZip = $state<File | null>(null);
 
 	// Error dialog state
-	let errorOpen = false;
-	let errorMessage = '';
-	$: bigLoading = !ready || busy;
+	let errorOpen = $state(false);
+	let errorMessage = $state('');
+	const bigLoading = $derived(!ready || busy);
+
+	let worker: Worker | null = null;
 
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker.ts', import.meta.url), { type: 'module' });
@@ -235,29 +236,18 @@
 		</div>
 	</div>
 
-	<ToggleRow
-		id="translate_colnames"
-		name="translate_colnames"
-		bind:checked={translateColumns}
-		label="属性名を変換する"
-		switchClass="disabled:opacity-20"
-	/>
+	<ToggleRow id="translate_colnames" bind:checked={translateColumns} label="属性名を変換する" />
 
 	<ToggleRow
 		id="translate_contents"
-		name="translate_contents"
 		bind:checked={translateContents}
 		label="データの中身を変換する"
-		switchClass="disabled:opacity-10"
-		thumbClass="disabled:opacity-0"
 	/>
 
 	<ToggleRow
 		id="ignore_translation_errors"
-		name="ignore_translation_errors"
 		bind:checked={ignoreTranslationErrors}
 		label="変換エラーを無視する"
-		switchClass="disabled:opacity-20"
 	/>
 
 	<ErrorDialog bind:open={errorOpen} message={errorMessage} />

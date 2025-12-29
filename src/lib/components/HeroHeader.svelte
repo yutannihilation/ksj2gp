@@ -3,7 +3,9 @@
 	import { Select } from 'bits-ui';
 	import type { OutputFormat } from '$lib/types';
 
-	export let value: OutputFormat;
+	let { value = $bindable<OutputFormat>('GeoParquet') } = $props<{
+		value?: OutputFormat;
+	}>();
 
 	const formats: OutputFormat[] = ['GeoParquet', 'GeoJson'];
 
