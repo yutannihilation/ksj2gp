@@ -207,10 +207,7 @@
 					<button
 						class="text-blue-600 hover:underline"
 						type="button"
-						onclick={(e) => {
-							e.stopPropagation();
-							pick();
-						}}
+						onclick={pick}
 						disabled={!ready || busy}
 					>
 						ZIP ファイルを選択
@@ -221,8 +218,7 @@
 
 			{#if busy && !bigLoading}
 				<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
-					<span class="w-[18px] h-[18px] border-2 border-white/25 animate-spin" aria-hidden="true"
-					></span>
+					<span class="w-4.5 h-4.5 border-2 border-white/25 animate-spin" aria-hidden="true"></span>
 					<span class="sr-only">処理中</span>
 				</div>
 			{/if}
@@ -230,7 +226,7 @@
 			{#if !busy && !ready && !bigLoading}
 				<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 					<span
-						class="w-[18px] h-[18px] border-2 border-white/25 border-t-sky-400 animate-spin"
+						class="w-4.5 h-4.5 border-2 border-white/25 border-t-sky-400 animate-spin"
 						aria-hidden="true"
 					></span>
 					<span aria-hidden="true">初期化中…</span>
