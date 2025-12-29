@@ -12,6 +12,8 @@
 	let dragover = $state(false);
 	let busy = $state(false);
 	let ready = $state(false);
+
+	// Conversion options
 	let outputFormat = $state<OutputFormat>('GeoParquet');
 	let translateColumns = $state(true);
 	let translateContents = $state(true);

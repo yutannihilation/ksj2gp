@@ -8,17 +8,13 @@
 	}>();
 
 	const formats: OutputFormat[] = ['GeoParquet', 'GeoJson'];
-
-	function handleValueChange(next: string) {
-		value = next as OutputFormat;
-	}
 </script>
 
 <header class="text-center max-w-4xl mx-auto">
 	<h1 class="text-7xl font-extrabold tracking-wider font-title mb-4">
 		KSJ
 		<Icon icon="mdi:arrow-right" class="inline" height="0.7em" />
-		<Select.Root {value} onValueChange={handleValueChange} type="single">
+		<Select.Root bind:value type="single">
 			<Select.Trigger
 				class="inline-block tracking-tight align-baseline min-w-[7.2em] border border-slate-700 py-3 relative"
 				aria-label="出力形式を選択"

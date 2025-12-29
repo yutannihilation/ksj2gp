@@ -5,13 +5,11 @@
 	let {
 		id,
 		label = null,
-		checked = $bindable(false),
-		children
+		checked = $bindable(false)
 	} = $props<{
 		id: string;
 		label?: string | null;
 		checked?: boolean;
-		children?: Snippet;
 	}>();
 </script>
 
@@ -26,10 +24,6 @@
 		/>
 	</Switch.Root>
 	<Label.Root for={id} class="font-bold text-2xl text-slate-700">
-		{#if children}
-			{@render children()}
-		{:else}
-			{label}
-		{/if}
+		{label}
 	</Label.Root>
 </div>
