@@ -9,7 +9,6 @@
 	import ToggleRow from '$lib/components/ToggleRow.svelte';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
-	let inputEl = $state<HTMLInputElement | null>(null);
 	let dragover = $state(false);
 	let busy = $state(false);
 	let ready = $state(false);
@@ -20,7 +19,7 @@
 
 	// Multi-shp selection dialog state
 	let shpDialogOpen = $state(false);
-	let shpOptions = $state<string[]>([]);
+	let shpFiles = $state<string[]>([]);
 	let pendingZip = $state<File | null>(null);
 
 	// Error dialog state
@@ -28,6 +27,11 @@
 	let errorMessage = $state('');
 	const bigLoading = $derived(!ready || busy);
 
+	// This holds the input element so that we can click() programmatically.
+	// This is only assigned via bind:this and never gets updated, so we doe't need to track the state.
+	let inputEl: HTMLInputElement | null = null;
+
+	// worker is initialized only once, so we doe't need to track the state.
 	let worker: Worker | null = null;
 
 	onMount(() => {
@@ -62,7 +66,7 @@
 			}
 
 			if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
-				shpOptions = data.shpFileCandidates;
+				shpFiles = data.shpFileCandidates;
 				shpDialogOpen = true;
 				busy = false; // let user choose
 				return;
@@ -263,13 +267,13 @@
 					ZIP には複数の .shp が含まれています。変換するファイルを選択してください。
 				</div>
 				<div class="max-h-72 overflow-auto grid gap-2 mb-4">
-					{#each shpOptions as opt (opt)}
+					{#each shpFiles as shp (shp)}
 						<button
 							type="button"
 							class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
-							onclick={() => chooseShp(opt, outputFormat)}
+							onclick={() => chooseShp(shp, outputFormat)}
 						>
-							{opt}
+							{shp}
 						</button>
 					{/each}
 				</div>
