@@ -6,4 +6,4 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.5.53", features = ["derive"] }
 ksj2gp = { path = ".." }
-tempfile = "3.23.0"
+tempfile = "3.24.0"
