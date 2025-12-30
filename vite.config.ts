@@ -1,5 +1,5 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import wasm from 'vite-plugin-wasm';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -13,5 +13,8 @@ export default defineConfig({
 	optimizeDeps: {
 		exclude: ['ksj2gp']
 	},
-	base: '/ksj2gp'
+	base: '/ksj2gp',
+	test: {
+		include: ['src/**/*.{test,spec}.{js,ts}']
+	}
 });

@@ -1,4 +1,4 @@
-name: Lint
+name: Browser Tests
 
 on:
   push:
@@ -6,22 +6,26 @@ on:
       - main
     paths:
       - 'src/**'
+      - 'vitest-example/**'
+      - 'vitest.browser.config.ts'
       - 'package.json'
       - 'pnpm-lock.yaml'
-      - '.github/workflows/lint.yaml'
+      - '.github/workflows/browser-tests.yaml'
   pull_request:
     paths:
       - 'src/**'
+      - 'vitest-example/**'
+      - 'vitest.browser.config.ts'
       - 'package.json'
       - 'pnpm-lock.yaml'
-      - '.github/workflows/lint.yaml'
+      - '.github/workflows/browser-tests.yaml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  lint:
+  browser-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -41,5 +45,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run lint
-        run: pnpm run lint
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium-headless-shell
+
+      - name: Run browser tests
+        run: pnpm run test:browser
