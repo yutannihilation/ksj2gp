@@ -123,9 +123,9 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
 }
 
 fn parse_idx(code: &str) -> Result<usize, Ksj2GpError> {
-    Ok(code[4..7]
+    code[4..7]
         .parse()
-        .map_err(|e| -> Ksj2GpError { format!("Failed to parse {code} as int: {e}").into() })?)
+        .map_err(|e| -> Ksj2GpError { format!("Failed to parse {code} as int: {e}").into() })
 }
 
 fn translate_colnames_l02(code: &str) -> String {
