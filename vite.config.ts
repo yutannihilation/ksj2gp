@@ -15,6 +15,6 @@ export default defineConfig({
 	},
 	base: '/ksj2gp',
 	test: {
-		// ...
+		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
 });
