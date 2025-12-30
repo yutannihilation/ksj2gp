@@ -50,6 +50,9 @@ importers:
       ksj2gp:
         specifier: file:npm
         version: file:npm
+      playwright:
+        specifier: ^1.57.0
+        version: 1.57.0
       prettier:
         specifier: ^3.7.4
         version: 3.7.4
