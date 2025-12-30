@@ -27,8 +27,8 @@ test('calls onFile for a zip upload', async () => {
 	const file = new File(['test'], 'sample.zip', { type: 'application/zip' });
 	setInputFile(input as HTMLInputElement, file);
 
-	expect(onFile).toHaveBeenCalledTimes(1);
-	expect(onError).not.toHaveBeenCalled();
+	await expect.poll(() => onFile.mock.calls.length).toBe(1);
+	await expect.poll(() => onError.mock.calls.length).toBe(0);
 });
 
 test('calls onError for a non-zip upload', async () => {
@@ -46,6 +46,6 @@ test('calls onError for a non-zip upload', async () => {
 	const file = new File(['test'], 'notes.txt', { type: 'text/plain' });
 	setInputFile(input as HTMLInputElement, file);
 
-	expect(onError).toHaveBeenCalledTimes(1);
-	expect(onFile).not.toHaveBeenCalled();
+	await expect.poll(() => onError.mock.calls.length).toBe(1);
+	await expect.poll(() => onFile.mock.calls.length).toBe(0);
 });
