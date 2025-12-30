@@ -90,7 +90,7 @@ impl CoordTransformer {
                 let points = self
                     .transform_points(multipoint.points())?
                     .into_iter()
-                    .map(|coord| geo_traits::structs::Point::from_coord(coord));
+                    .map(geo_traits::structs::Point::from_coord);
                 Ok(geo_traits::structs::MultiPoint::from_points(points)
                     .unwrap()
                     .into())
@@ -99,7 +99,7 @@ impl CoordTransformer {
                 let points = self
                     .transform_points_z(multipoint.points())?
                     .into_iter()
-                    .map(|coord| geo_traits::structs::Point::from_coord(coord));
+                    .map(geo_traits::structs::Point::from_coord);
                 Ok(geo_traits::structs::MultiPoint::from_points(points)
                     .unwrap()
                     .into())
