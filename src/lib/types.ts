@@ -27,5 +27,5 @@ export type WorkerResponse = {
 	// the list so the main thread can prompt the user to choose one.
 	shpFileCandidates?: string[];
 	// Result file (e.g. GeoParquet)
-	output: ResultFile;
+	output?: ResultFile;
 };
