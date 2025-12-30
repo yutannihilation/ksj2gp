@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BINARYEN_VERSION: 124
+  BINARYEN_VERSION: 125
 
 jobs:
   # Single deploy job since we're just deploying
