@@ -102,7 +102,7 @@ impl NonGeoArrayBuilder {
                 FieldValue::Character(Some(v)) | FieldValue::Memo(v),
             ) => match codelist_map.get(v.as_str()) {
                 Some(label) => {
-                    primitive_builder.append_value(label.to_string());
+                    primitive_builder.append_value(label);
                 }
                 None => primitive_builder.append_value(v),
             },
@@ -113,7 +113,7 @@ impl NonGeoArrayBuilder {
                 let code = format!("{v:.0}");
                 match codelist_map.get(code.as_str()) {
                     Some(label) => {
-                        primitive_builder.append_value(label.to_string());
+                        primitive_builder.append_value(label);
                     }
                     None => primitive_builder.append_value(code),
                 }
@@ -125,7 +125,7 @@ impl NonGeoArrayBuilder {
                 let code = format!("{v:.0}");
                 match codelist_map.get(code.as_str()) {
                     Some(label) => {
-                        primitive_builder.append_value(label.to_string());
+                        primitive_builder.append_value(label);
                     }
                     None => primitive_builder.append_value(code),
                 }
@@ -137,7 +137,7 @@ impl NonGeoArrayBuilder {
                 let code = format!("{v:.0}");
                 match codelist_map.get(code.as_str()) {
                     Some(label) => {
-                        primitive_builder.append_value(label.to_string());
+                        primitive_builder.append_value(label);
                     }
                     None => primitive_builder.append_value(code),
                 }
@@ -151,7 +151,7 @@ impl NonGeoArrayBuilder {
 
             (NonGeoArrayBuilder::TranslatedCode(primitive_builder, _), _) => {
                 // TODO: handle errors
-                primitive_builder.append_value("Unexpected value".to_string());
+                primitive_builder.append_value("Unexpected value");
             }
             // type mismatch means something is wrong...
             (_, _) => unreachable!(),
