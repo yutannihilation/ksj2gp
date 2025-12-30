@@ -26,7 +26,6 @@
 	// Error dialog state
 	let errorOpen = $state(false);
 	let errorMessage = $state('');
-	const bigLoading = $derived(!ready || busy);
 
 	// worker is initialized only once, so we doe't need to track the state.
 	let worker: Worker | null = null;
@@ -128,23 +127,12 @@
 			targetShp: path
 		});
 	}
-
-	function cancelShpDialog() {
-		shpDialogOpen = false;
-		busy = false;
-	}
 </script>
 
 <div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 px-5 py-16 lg:py-24">
 	<HeroHeader bind:value={outputFormat} />
 
-	<Dropzone
-		{busy}
-		{ready}
-		{bigLoading}
-		onError={(message) => showError(message)}
-		onFile={(file) => processFile(file)}
-	/>
+	<Dropzone {busy} {ready} onError={showError} onFile={processFile} />
 
 	<ToggleRow id="translate_colnames" bind:checked={translateColumns} label="属性名を変換する" />
 
@@ -162,10 +150,5 @@
 
 	<ErrorDialog bind:open={errorOpen} message={errorMessage} />
 
-	<ShpDialog
-		bind:open={shpDialogOpen}
-		{shpFiles}
-		onSelect={(path) => chooseShp(path)}
-		onCancel={cancelShpDialog}
-	/>
+	<ShpDialog bind:open={shpDialogOpen} bind:busy {shpFiles} onSelect={chooseShp} />
 </div>

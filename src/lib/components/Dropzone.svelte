@@ -5,16 +5,16 @@
 	let {
 		ready = false,
 		busy = false,
-		bigLoading = false,
 		onFile,
 		onError
 	}: {
 		ready?: boolean;
 		busy?: boolean;
-		bigLoading?: boolean;
-		onFile?: (file: File) => void;
-		onError?: (message: string) => void;
+		onFile: (file: File) => void;
+		onError: (message: string) => void;
 	} = $props();
+
+	const showLoading = $derived(!ready || busy);
 
 	let dragover = $state(false);
 	let inputEl: HTMLInputElement | null = null;
@@ -34,10 +34,10 @@
 	function emitFile(file: File | undefined | null) {
 		if (!file) return;
 		if (!file.name.toLowerCase().endsWith('.zip')) {
-			onError?.('ZIP ファイルを選択してください');
+			onError('ZIP ファイルを選択してください');
 			return;
 		}
-		onFile?.(file);
+		onFile(file);
 	}
 
 	function onInputChange(e: Event) {
@@ -83,7 +83,7 @@
 	}}
 >
 	<div class="grid place-items-center text-center">
-		{#if bigLoading}
+		{#if showLoading}
 			<div class="animate-spin" aria-label="読み込み中"></div>
 		{:else}
 			<div class="" aria-label="読み込み中">
@@ -109,14 +109,14 @@
 			<input {@attach attachInput} type="file" accept=".zip" hidden onchange={onInputChange} />
 		</div>
 
-		{#if busy && !bigLoading}
+		{#if busy && !showLoading}
 			<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 				<span class="w-4.5 h-4.5 border-2 border-white/25 animate-spin" aria-hidden="true"></span>
 				<span class="sr-only">処理中</span>
 			</div>
 		{/if}
 
-		{#if !busy && !ready && !bigLoading}
+		{#if !busy && !ready && !showLoading}
 			<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 				<span
 					class="w-4.5 h-4.5 border-2 border-white/25 border-t-sky-400 animate-spin"

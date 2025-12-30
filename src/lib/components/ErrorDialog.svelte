@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Dialog } from 'bits-ui';
 
-	type ErrorDialogProps = {
+	let {
+		open = $bindable(false),
+		message = ''
+	}: {
 		open?: boolean;
 		message?: string;
-	};
-
-	let { open = $bindable(false), message = '' }: ErrorDialogProps = $props();
+	} = $props();
 </script>
 
 <Dialog.Root bind:open>

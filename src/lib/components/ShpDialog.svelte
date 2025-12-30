@@ -3,22 +3,19 @@
 
 	let {
 		open = $bindable(false),
+		busy = $bindable(false),
 		shpFiles = [],
-		onSelect,
-		onCancel
+		onSelect
 	}: {
 		open?: boolean;
-		shpFiles?: string[];
-		onSelect?: (path: string) => void;
-		onCancel?: () => void;
+		busy?: boolean;
+		shpFiles: string[];
+		onSelect: (path: string) => void;
 	} = $props();
 
-	function choose(path: string) {
-		onSelect?.(path);
-	}
-
-	function cancel() {
-		onCancel?.();
+	function cancelShpDialog() {
+		open = false;
+		busy = false;
 	}
 </script>
 
@@ -37,7 +34,7 @@
 					<button
 						type="button"
 						class="text-left rounded-lg w-full px-3 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70"
-						onclick={() => choose(shp)}
+						onclick={() => onSelect(shp)}
 					>
 						{shp}
 					</button>
@@ -48,7 +45,7 @@
 					<button
 						type="button"
 						class="rounded-lg bg-slate-700 text-white px-4 py-2 font-bold tracking-tight"
-						onclick={cancel}
+						onclick={cancelShpDialog}
 					>
 						キャンセル
 					</button>
