@@ -2795,6 +2795,45 @@ pub(crate) const COLNAMES: &[(&str, &str)] = &[
   ("A45_032", "保護林"),
   ("A45_033", "緑の回廊"),
 
+  ///// A55 /////
+  // 共通
+  ("FAR", "容積率"),
+  ("BCR", "建蔽率"),
+  ("Pref", "都道府県名"),
+  ("Citycode", "行政コード"),
+  ("Cityname", "市町村名"),
+  ("INDate", "効力を生じる日"),
+  ("FNDate", "公示日"),
+  ("ValidType", "効力を生じる日の種類"),
+  ("Custodian", "都市計画を定める者の名称"),
+  ("INNumber", "公示番号（当初）"),
+  ("FNNumber", "公示番号（最終）"),
+
+  ("YoutoName", "用途名"),
+  ("YoutoCode", "用途コード"),
+
+  ("TokeiName", "区域名"),
+  ("TokeiType", "種類"),
+  ("TokeiCode", "種類コード"),
+
+  ("AreaType", "種類"),
+  ("AreaCode", "種類コード"),
+
+  ("DouroType", "種類"),
+  ("DouroCode", "種類コード"),
+
+  ("DistName", "地区名"),
+  ("DistType", "種類"),
+  ("DistCode", "種類コード"),
+
+  ("ParkName", "公園名"),
+  ("ParkType", "種類"),
+  ("ParkCode", "種類コード"),
+
+  ("FaciName", "施設名"),
+  ("FaciType", "種類"),
+  ("FaciCode", "種類コード"),
+
   ///// C02 /////
 
   ("C02_001", "種別（１）"),

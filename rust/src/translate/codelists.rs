@@ -27,6 +27,14 @@ pub(crate) fn get_codelist_map(
                 return CODELISTS_MAP.get("A42HistoricalDistrictType").copied();
             }
         }
+        ("YoutoCode", _) => {
+            if target_shp.contains("youto") {
+                return Some(&A55_NORMAL_YOUTO_CODE);
+            }
+            if target_shp.contains("tkbt") {
+                return Some(&A55_SPECIAL_YOUTO_CODE);
+            }
+        }
         // L01: 用途区分
         ("L01_001" | "L01_003", ..=2023) | ("L01_002" | "L01_005", 2024..) => {
             return CODELISTS_MAP.get("IndexNumL01").copied();
@@ -137,6 +145,12 @@ static CODELISTS_MAP: LazyLock<HashMap<&'static str, &'static Codelist>> = LazyL
     map.entry("A45_031").or_insert(&HOANRIN_CD);
     map.entry("A45_032").or_insert(&HOGORIN_CD);
     map.entry("A45_033").or_insert(&MIDORINOKAIRO_CD);
+
+    // A55
+    map.entry("AreaCode").or_insert(&A55_AREA_CODE);
+    map.entry("DistCode").or_insert(&A55_AREA_CODE); // DistCode も AreaCode と同じ
+    map.entry("DouroCode").or_insert(&A55_ROAD_AND_PARK_CODE);
+    map.entry("ParkCode").or_insert(&A55_ROAD_AND_PARK_CODE);
 
     map.entry("C02_001").or_insert(&CLASS_HARBOR1_CD);
     map.entry("C02_002").or_insert(&CLASS_HARBOR2_CD);
