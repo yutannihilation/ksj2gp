@@ -1,20 +1,17 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { Attachment } from 'svelte/attachments';
+	import { status } from '$lib/stores/status';
 
 	let {
-		ready = false,
-		busy = false,
 		onFile,
 		onError
 	}: {
-		ready?: boolean;
-		busy?: boolean;
 		onFile: (file: File) => void;
 		onError: (message: string) => void;
 	} = $props();
 
-	const showLoading = $derived(!ready || busy);
+	const showLoading = $derived(!$status.ready || $status.busy);
 
 	let dragover = $state(false);
 	let inputEl: HTMLInputElement | null = null;
@@ -27,7 +24,7 @@
 	};
 
 	function pick() {
-		if (!ready || busy) return;
+		if (!$status.ready || $status.busy) return;
 		inputEl?.click();
 	}
 
@@ -91,9 +88,9 @@
 			</div>
 		{/if}
 		<div class="text-gray-400 text-center font-bold leading-relaxed text-2xl py-8">
-			{#if busy}
+			{#if $status.busy}
 				変換中...
-			{:else if !ready}
+			{:else if !$status.ready}
 				読み込み中…
 			{:else}
 				ここに ZIP ファイルを<br />ドラッグ＆ドロップ<br />または
@@ -101,7 +98,7 @@
 					class="text-blue-600 hover:underline"
 					type="button"
 					onclick={pick}
-					disabled={!ready || busy}
+					disabled={!$status.ready || $status.busy}
 				>
 					ZIP ファイルを選択
 				</button>
@@ -109,14 +106,14 @@
 			<input {@attach attachInput} type="file" accept=".zip" hidden onchange={onInputChange} />
 		</div>
 
-		{#if busy && !showLoading}
+		{#if $status.busy && !showLoading}
 			<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 				<span class="w-4.5 h-4.5 border-2 border-white/25 animate-spin" aria-hidden="true"></span>
 				<span class="sr-only">処理中</span>
 			</div>
 		{/if}
 
-		{#if !busy && !ready && !showLoading}
+		{#if !$status.busy && !$status.ready && !showLoading}
 			<div class="absolute right-3 bottom-3 flex items-center gap-2 text-indigo-300/80 text-sm">
 				<span
 					class="w-4.5 h-4.5 border-2 border-white/25 border-t-sky-400 animate-spin"
