@@ -1,6 +1,11 @@
-import { expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import Dropzone from './Dropzone.svelte';
+import { status } from '../stores/status';
+
+afterEach(() => {
+	status.set({ ready: false, busy: false });
+});
 
 function setInputFile(input: HTMLInputElement, file: File) {
 	const dataTransfer = new DataTransfer();
@@ -15,9 +20,8 @@ function setInputFile(input: HTMLInputElement, file: File) {
 test('calls onFile for a zip upload', async () => {
 	const onFile = vi.fn();
 	const onError = vi.fn();
+	status.set({ ready: true, busy: false });
 	const screen = render(Dropzone, {
-		ready: true,
-		busy: false,
 		onFile,
 		onError
 	});
@@ -34,9 +38,8 @@ test('calls onFile for a zip upload', async () => {
 test('calls onError for a non-zip upload', async () => {
 	const onFile = vi.fn();
 	const onError = vi.fn();
+	status.set({ ready: true, busy: false });
 	const screen = render(Dropzone, {
-		ready: true,
-		busy: false,
 		onFile,
 		onError
 	});
