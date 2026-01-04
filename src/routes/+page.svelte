@@ -7,8 +7,10 @@
 	import ErrorDialog from '$lib/components/ErrorDialog.svelte';
 	import ShpDialog from '$lib/components/ShpDialog.svelte';
 	import ToggleRow from '$lib/components/ToggleRow.svelte';
-	import { status } from '$lib/stores/status';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
+
+	let busy = $state(false);
+	let ready = $state(false);
 
 	// Conversion options
 	let outputFormat = $state<OutputFormat>('GeoParquet');
@@ -34,7 +36,7 @@
 		// Surface worker bootstrap errors in dev
 		worker.onerror = (e: ErrorEvent) => {
 			console.error('Worker error:', e.message, '@', e.filename, e.lineno + ':' + e.colno);
-			if (!$status.ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
+			if (!ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
 		};
 		worker.onmessageerror = (e: MessageEvent) => {
 			console.error('Worker message error:', e);
@@ -44,12 +46,12 @@
 			const data = event.data;
 
 			const finish = () => {
-				status.update((current) => ({ ...current, busy: false }));
+				busy = false;
 				pendingZip = null;
 			};
 
 			if (data.ready) {
-				status.update((current) => ({ ...current, ready: true }));
+				ready = true;
 				return;
 			}
 
@@ -62,7 +64,7 @@
 			if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
 				shpFiles = data.shpFileCandidates;
 				shpDialogOpen = true;
-				status.update((current) => ({ ...current, busy: false })); // let user choose
+				busy = false; // let user choose
 				return;
 			}
 
@@ -92,11 +94,11 @@
 
 	function processFile(file: File | undefined | null) {
 		if (!file || !worker) return;
-		if (!$status.ready) {
+		if (!ready) {
 			showError('初期化中です。数秒後にもう一度お試しください。');
 			return;
 		}
-		status.update((current) => ({ ...current, busy: true }));
+		busy = true;
 		pendingZip = file;
 		worker.postMessage({
 			file,
@@ -115,7 +117,7 @@
 	function chooseShp(path: string) {
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
-		status.update((current) => ({ ...current, busy: true }));
+		busy = true;
 		worker.postMessage({
 			file: pendingZip,
 			outputFormat,
@@ -130,7 +132,7 @@
 <div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 px-5 py-16 lg:py-24">
 	<HeroHeader bind:value={outputFormat} />
 
-	<Dropzone onError={showError} onFile={processFile} />
+	<Dropzone {busy} {ready} onError={showError} onFile={processFile} />
 
 	<ToggleRow id="translate_colnames" bind:checked={translateColumns} label="属性名を変換する" />
 
@@ -148,5 +150,5 @@
 
 	<ErrorDialog bind:open={errorOpen} message={errorMessage} />
 
-	<ShpDialog bind:open={shpDialogOpen} {shpFiles} onSelect={chooseShp} />
+	<ShpDialog bind:open={shpDialogOpen} bind:busy {shpFiles} onSelect={chooseShp} />
 </div>
