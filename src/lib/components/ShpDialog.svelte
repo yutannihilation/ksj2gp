@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { Dialog } from 'bits-ui';
+	import { status } from '$lib/stores/status';
 
 	let {
 		open = $bindable(false),
-		busy = $bindable(false),
 		shpFiles = [],
 		onSelect
 	}: {
 		open?: boolean;
-		busy?: boolean;
 		shpFiles: string[];
 		onSelect: (path: string) => void;
 	} = $props();
 
 	function cancelShpDialog() {
 		open = false;
-		busy = false;
+		status.update((current) => ({ ...current, busy: false }));
 	}
 </script>
 
