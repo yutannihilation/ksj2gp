@@ -23,7 +23,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/vite": "^4.1.18",
 		"@vitest/browser-playwright": "^4.0.16",
-		"bits-ui": "^2.14.4",
+		"bits-ui": "^2.15.4",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.13.1",
