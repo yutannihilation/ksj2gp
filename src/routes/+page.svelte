@@ -7,7 +7,7 @@
 	import ErrorDialog from '$lib/components/ErrorDialog.svelte';
 	import ShpDialog from '$lib/components/ShpDialog.svelte';
 	import ToggleRow from '$lib/components/ToggleRow.svelte';
-	import { status } from '$lib/stores/status';
+	import { status } from '$lib/stores/status.svelte';
 	import type { OutputFormat, WorkerResponse } from '$lib/types';
 
 	// Conversion options
@@ -34,7 +34,7 @@
 		// Surface worker bootstrap errors in dev
 		worker.onerror = (e: ErrorEvent) => {
 			console.error('Worker error:', e.message, '@', e.filename, e.lineno + ':' + e.colno);
-			if (!$status.ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
+			if (!status.ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
 		};
 		worker.onmessageerror = (e: MessageEvent) => {
 			console.error('Worker message error:', e);
@@ -44,12 +44,12 @@
 			const data = event.data;
 
 			const finish = () => {
-				status.update((current) => ({ ...current, busy: false }));
+				status.busy = false;
 				pendingZip = null;
 			};
 
 			if (data.ready) {
-				status.update((current) => ({ ...current, ready: true }));
+				status.ready = true;
 				return;
 			}
 
@@ -62,7 +62,7 @@
 			if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
 				shpFiles = data.shpFileCandidates;
 				shpDialogOpen = true;
-				status.update((current) => ({ ...current, busy: false })); // let user choose
+				status.busy = false; // let user choose
 				return;
 			}
 
@@ -92,11 +92,11 @@
 
 	function processFile(file: File | undefined | null) {
 		if (!file || !worker) return;
-		if (!$status.ready) {
+		if (!status.ready) {
 			showError('初期化中です。数秒後にもう一度お試しください。');
 			return;
 		}
-		status.update((current) => ({ ...current, busy: true }));
+		status.busy = true;
 		pendingZip = file;
 		worker.postMessage({
 			file,
@@ -115,7 +115,7 @@
 	function chooseShp(path: string) {
 		if (!worker || !pendingZip) return;
 		shpDialogOpen = false;
-		status.update((current) => ({ ...current, busy: true }));
+		status.busy = true;
 		worker.postMessage({
 			file: pendingZip,
 			outputFormat,

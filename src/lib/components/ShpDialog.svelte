@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Dialog } from 'bits-ui';
-	import { status } from '$lib/stores/status';
+	import { status } from '$lib/stores/status.svelte';
 
 	let {
 		open = $bindable(false),
@@ -14,7 +14,7 @@
 
 	function cancelShpDialog() {
 		open = false;
-		status.update((current) => ({ ...current, busy: false }));
+		status.busy = false;
 	}
 </script>
 
