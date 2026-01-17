@@ -7,7 +7,7 @@
 		value?: OutputFormat;
 	}>();
 
-	const formats: OutputFormat[] = ['GeoParquet', 'GeoJson'];
+	const formats: OutputFormat[] = ['GeoParquet', 'Gpkg', 'GeoJson'];
 </script>
 
 <header class="text-center max-w-4xl mx-auto">

@@ -39,6 +39,7 @@ pub fn convert_shp_fs(
         Some(ext) => match ext.to_string_lossy().as_ref() {
             "geojson" => "GeoJson",
             "parquet" => "GeoParquet",
+            "gpkg" => "Gpkg",
             e => return Err(format!("Unsupported extension: {e}").into()),
         },
         None => return Err(format!("Unsupported format: {}", output_file.display()).into()),

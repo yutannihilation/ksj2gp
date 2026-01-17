@@ -13,7 +13,7 @@ export type WorkerRequest = {
 	targetShp?: string;
 };
 
-export type OutputFormat = 'GeoParquet' | 'GeoJson';
+export type OutputFormat = 'GeoParquet' | 'GeoJson' | 'Gpkg';
 
 export type ResultFile = {
 	handle: FileSystemFileHandle;
