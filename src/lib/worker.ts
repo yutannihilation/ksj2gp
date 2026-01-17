@@ -26,6 +26,8 @@ function getOutputFilename(x: string, outputFormat: OutputFormat): string {
 		ext = 'parquet';
 	} else if (outputFormat === 'GeoJson') {
 		ext = 'geojson';
+	} else if (outputFormat === 'Gpkg') {
+		ext = 'gpkg';
 	}
 
 	const start = x.lastIndexOf('/') + 1;

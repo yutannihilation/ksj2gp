@@ -3,7 +3,7 @@ use std::io::{Read, Seek, Write};
 use shapefile::{Reader, ShapeReader};
 
 use crate::{
-    writer::{write_geojson, write_geoparquet},
+    writer::{write_geojson, write_geoparquet, write_gpkg},
     zip_reader::ZippedShapefileReader,
 };
 
@@ -86,6 +86,7 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Sen
             write_geoparquet(&mut reader, &mut out, &dbf_fields, crs, &translate_options)
         }
         "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields, crs, &translate_options),
+        "Gpkg" => write_gpkg(&mut reader, &mut out, &dbf_fields, crs, &translate_options),
         _ => Err(format!("Unsupported format: {output_format}").into()),
     }
 }
