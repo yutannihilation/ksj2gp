@@ -30,7 +30,7 @@
 		"globals": "^17.0.0",
 		"ksj2gp": "file:npm",
 		"playwright": "^1.57.0",
-		"prettier": "^3.7.4",
+		"prettier": "^3.8.0",
 		"prettier-plugin-svelte": "^3.4.1",
 		"svelte": "^5.47.1",
 		"svelte-check": "^4.3.5",
