@@ -25,7 +25,7 @@
 ### 出力
 
 - [x] GeoParquet
-- [ ] GeoPackage
+- [x] GeoPackage
 - [x] GeoJSON
 
 ## 入力
