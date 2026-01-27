@@ -50,7 +50,7 @@ members = [
 ]
 
 [workspace.dependencies]
-zip = { version = "7.1.0", default-features = false, features = ["deflate"] }
+zip = { version = "7.2.0", default-features = false, features = ["deflate"] }
 
 [patch.crates-io]
 dbase = { git = "https://github.com/tmontaigu/dbase-rs" }
