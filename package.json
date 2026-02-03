@@ -29,7 +29,7 @@
 		"eslint-plugin-svelte": "^3.14.0",
 		"globals": "^17.0.0",
 		"ksj2gp": "file:npm",
-		"playwright": "^1.57.0",
+		"playwright": "^1.58.1",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.4.1",
 		"svelte": "^5.47.1",
