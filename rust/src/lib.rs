@@ -48,7 +48,7 @@ pub fn find_meta_xml<R: Read + Seek>(reader: R) -> Result<Option<String>, Ksj2Gp
 }
 
 #[allow(clippy::too_many_arguments)]
-pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Send>(
+pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Send + 'static>(
     zip: R,
     target_shp: &str,
     meta_xml_filename: Option<String>,
@@ -86,7 +86,7 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + Sen
             write_geoparquet(&mut reader, &mut out, &dbf_fields, crs, &translate_options)
         }
         "GeoJson" => write_geojson(&mut reader, &mut out, &dbf_fields, crs, &translate_options),
-        "Gpkg" => write_gpkg(&mut reader, &mut out, &dbf_fields, crs, &translate_options),
+        "Gpkg" => write_gpkg(&mut reader, out, &dbf_fields, crs, &translate_options),
         _ => Err(format!("Unsupported format: {output_format}").into()),
     }
 }

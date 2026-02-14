@@ -11,15 +11,17 @@ use crate::{
     writer::get_fields_except_geometry,
 };
 
-pub(crate) fn write_gpkg<T: Read + Seek, D: Read + Seek, W: Write + Send>(
+pub(crate) fn write_gpkg<T: Read + Seek, D: Read + Seek, W: Write + Send + 'static>(
     reader: &mut shapefile::Reader<T, D>,
-    writer: &mut W,
+    writer: W,
     dbf_fields: &[dbase::FieldInfo],
     crs: JapanCrs,
     translate_options: &TranslateOptions,
 ) -> Result<(), Ksj2GpError> {
-    // TODO: sqlite-wasm-rs supports opfs-sahpool, but I couldn't find out how to use it;
-    // sqlite_wasm_vfs::sahpool::install() is async, so it cannot be called in this sync function...
+    #[cfg(target_family = "wasm")]
+    let gpkg = Gpkg::open_with_writer("output.gpkg", writer)
+        .map_err(|e| Ksj2GpError::from(format!("{e:?}")))?;
+    #[cfg(not(target_family = "wasm"))]
     let gpkg = Gpkg::open_in_memory().map_err(|e| Ksj2GpError::from(format!("{e:?}")))?;
     // TODO: write_gpkg doesn't know the filename
     let layer_name = "layer";
@@ -75,9 +77,15 @@ pub(crate) fn write_gpkg<T: Read + Seek, D: Read + Seek, W: Write + Send>(
         )?;
     }
 
-    let bytes = gpkg.to_bytes().map_err(|e| format!("{e:?}"))?;
-    let mut cursor = std::io::Cursor::new(bytes);
-    std::io::copy(&mut cursor, writer).map_err(|e| format!("{e:?}"))?;
+    #[cfg(target_family = "wasm")]
+    drop(gpkg);
+    #[cfg(not(target_family = "wasm"))]
+    {
+        let bytes = gpkg.to_bytes().map_err(|e| format!("{e:?}"))?;
+        let mut cursor = std::io::Cursor::new(bytes);
+        let mut writer = writer;
+        std::io::copy(&mut cursor, &mut writer).map_err(|e| format!("{e:?}"))?;
+    }
 
     Ok(())
 }
@@ -171,7 +179,7 @@ fn build_column_specs(
 }
 
 fn insert_shape_record(
-    layer: &rusqlite_gpkg::GpkgLayer<'_>,
+    layer: &rusqlite_gpkg::GpkgLayer,
     shape: shapefile::Shape,
     mut record: dbase::Record,
     field_names: &[&str],
