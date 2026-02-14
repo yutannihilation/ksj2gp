@@ -40,7 +40,7 @@ itertools = "0.14.0"
 encoding_rs = "0.8.35"
 regex = { version = "1.11.3", default-features = false, features = ["std"] }
 proj4rs = { version = "0.1.9", default-features = false }
-rusqlite-gpkg = { git = "https://github.com/yutannihilation/rusqlite-gpkg.git", version = "0.0.1" }
+rusqlite-gpkg = "0.0.4"
 geo-types = "0.7.18"
 
 [workspace]
