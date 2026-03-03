@@ -59,7 +59,7 @@ wasm-bindgen --out-dir npm --typescript --target bundler ./rust/target/wasm32-un
 Note: needs `vite --force` to reflect the new binary
 
 ```sh
-pnpm run dev --force
+bun run dev --force
 ```
 
 To optimize:
