@@ -34,16 +34,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
           node-version: latest
-          cache: 'pnpm'
 
       - uses: rui314/setup-mold@v1
 
@@ -89,10 +86,10 @@ jobs:
           mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Build
-        run: pnpm run build
+        run: bun run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

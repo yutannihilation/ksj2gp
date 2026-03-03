@@ -8,14 +8,14 @@ ksj2gp is a browser-based tool that converts Japan's National Land Numerical Inf
 
 ## Commands
 
-### Frontend (repo root, uses pnpm)
+### Frontend (repo root, uses bun)
 
-- `pnpm run dev` — Dev server (use `--force` after rebuilding WASM)
-- `pnpm run build` — Build static site to `build/`
-- `pnpm run check` — Svelte type checking
-- `pnpm run lint` — Prettier + ESLint
-- `pnpm run format` — Auto-format with Prettier
-- `pnpm run test:browser` — Vitest browser tests (Playwright, headless Chromium)
+- `bun run dev` — Dev server (use `--force` after rebuilding WASM)
+- `bun run build` — Build static site to `build/`
+- `bun run check` — Svelte type checking
+- `bun run lint` — Prettier + ESLint
+- `bun run format` — Auto-format with Prettier
+- `bun run test:browser` — Vitest browser tests (Playwright, headless Chromium)
 
 ### Rust (from `rust/` directory)
 

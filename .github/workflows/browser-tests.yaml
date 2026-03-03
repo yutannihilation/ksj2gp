@@ -9,7 +9,7 @@ on:
       - 'vitest-example/**'
       - 'vitest.browser.config.ts'
       - 'package.json'
-      - 'pnpm-lock.yaml'
+      - 'bun.lock'
       - '.github/workflows/browser-tests.yaml'
   pull_request:
     paths:
@@ -17,7 +17,7 @@ on:
       - 'vitest-example/**'
       - 'vitest.browser.config.ts'
       - 'package.json'
-      - 'pnpm-lock.yaml'
+      - 'bun.lock'
       - '.github/workflows/browser-tests.yaml'
   workflow_dispatch:
 
@@ -31,22 +31,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
           node-version: latest
-          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium-headless-shell
+        run: bunx playwright install --with-deps chromium-headless-shell
 
       - name: Run browser tests
-        run: pnpm run test:browser
+        run: bun run test:browser
