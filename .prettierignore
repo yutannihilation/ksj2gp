@@ -10,3 +10,5 @@ bun.lockb
 
 # Rust files
 /rust/
+
+CLAUDE.md
