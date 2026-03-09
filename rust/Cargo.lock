@@ -487,6 +487,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "dbase"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "15526d487321e5121f43efab7f9929f0f0581859b8d710fec545938b2d2d4489"
+dependencies = [
+ "bufrw",
+ "byteorder",
+ "codepage",
+ "encoding_rs",
+ "time",
+]
+
+[[package]]
 name = "deranged"
 version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -840,7 +853,7 @@ version = "0.1.0"
 dependencies = [
  "arrow-array",
  "arrow-schema",
- "dbase",
+ "dbase 0.6.1",
  "encoding_rs",
  "geo-traits",
  "geo-types",
@@ -1412,10 +1425,10 @@ dependencies = [
 [[package]]
 name = "shapefile"
 version = "0.7.0"
-source = "git+https://github.com/tmontaigu/shapefile-rs#4ac633d553848f77b9d95bba3136d965f023bb2a"
+source = "git+https://github.com/tmontaigu/shapefile-rs#037552727f3097cc99ceb730b43a7bbbca5b4267"
 dependencies = [
  "byteorder",
- "dbase",
+ "dbase 0.7.0",
  "geo-traits",
  "geo-types",
 ]
