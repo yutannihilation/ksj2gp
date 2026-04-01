@@ -22,6 +22,7 @@
 		"@sveltejs/kit": "^2.53.4",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@tailwindcss/vite": "^4.2.1",
+		"@types/node": "^25.5.0",
 		"bits-ui": "^2.16.2",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.15.0",
@@ -35,9 +36,9 @@
 		"typescript-eslint": "^8.56.0",
 		"vite": "npm:@voidzero-dev/vite-plus-core@latest",
 		"vite-plugin-wasm": "^3.5.0",
+		"vite-plus": "latest",
 		"vitest": "npm:@voidzero-dev/vite-plus-test@latest",
-		"vitest-browser-svelte": "^2.0.2",
-		"vite-plus": "latest"
+		"vitest-browser-svelte": "^2.0.2"
 	},
 	"trustedDependencies": [
 		"esbuild"

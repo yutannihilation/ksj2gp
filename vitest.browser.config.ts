@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { defineConfig } from 'vite-plus';
 import { playwright } from 'vite-plus/test/browser-playwright';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
@@ -6,7 +7,7 @@ export default defineConfig({
 	plugins: [svelte()],
 	resolve: {
 		alias: {
-			$lib: import.meta.dirname + '/src/lib'
+			$lib: path.resolve('./src/lib')
 		}
 	},
 	test: {
