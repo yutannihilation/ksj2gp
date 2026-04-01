@@ -1432,6 +1432,77 @@ pub(crate) static NATURALSCENE_CD: LazyLock<HashMap<&'static str, &'static str>>
     });
 
 #[rustfmt::skip]
+pub(crate) static N13_ROAD_TYPE: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "通常部"),
+            ("2", "庭園路"),
+            ("3", "徒歩道"),
+            ("4", "石段"),
+            ("5", "不明"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
+pub(crate) static N13_ROAD_CATEGORY: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "国道"),
+            ("2", "都道府県道"),
+            ("3", "市区町村道等"),
+            ("4", "高速自動車国道等"),
+            ("5", "その他"),
+            ("6", "不明"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
+pub(crate) static N13_ROAD_STATE: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "通常部"),
+            ("2", "橋・高架"),
+            ("3", "トンネル"),
+            ("4", "雪囲い"),
+            ("5", "建設中"),
+            ("6", "その他"),
+            ("7", "不明"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
+pub(crate) static N13_ROAD_WIDTH: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "3m未満"),
+            ("2", "3m-5.5m未満"),
+            ("3", "5.5m-13m未満"),
+            ("4", "13m-19.5m未満"),
+            ("5", "19.5m以上"),
+            ("6", "不明"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
+pub(crate) static N13_TOIL_ROAD_SECTION: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "有料"),
+            ("2", "無料"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
 pub(crate) static NatureConservationAreaCd: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [
