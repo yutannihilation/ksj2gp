@@ -24,13 +24,13 @@ export class Projection {
 	free(): void;
 	[Symbol.dispose](): void;
 	constructor(defn: string);
+	readonly axis: string;
 	readonly isGeocentric: boolean;
 	readonly isLatlon: boolean;
 	readonly isNormalizedAxis: boolean;
-	readonly axis: string;
-	readonly units: string;
 	readonly projName: string;
 	readonly to_meter: number;
+	readonly units: string;
 }
 
 /**
