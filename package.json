@@ -20,7 +20,7 @@
 		"@iconify/svelte": "^5.2.1",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.53.4",
-		"@sveltejs/vite-plugin-svelte": "^6.2.4",
+		"@sveltejs/vite-plugin-svelte": "^7.0.0",
 		"@tailwindcss/vite": "^4.2.1",
 		"@types/node": "^25.5.0",
 		"bits-ui": "^2.16.2",
