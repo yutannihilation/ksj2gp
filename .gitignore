@@ -25,4 +25,5 @@ vite.config.ts.timestamp-*
 
 /npm/*
 !/npm/package.json
+!/npm/ksj2gp_web.d.ts
 .claude/settings.local.json

@@ -52,7 +52,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 			postTypedMessage({ error: 'No .shp files found in the archive' });
 			return;
 		} else if (shpFileCandidates.length == 1) {
-			targetShp = shpFileCandidates[0];
+			targetShp = shpFileCandidates[0]!;
 		} else {
 			// Return available .shp files to the main thread so UI can prompt user
 			postTypedMessage({ shpFileCandidates });
