@@ -21,8 +21,9 @@ pub(crate) fn write_geojson<T: Read + Seek, D: Read + Seek, W: Write + Send>(
     // TODO: include this in FieldsWithGeo
     let transformer = CoordTransformer::new(crs.clone());
 
-    let projjson = crs.to_projjson();
-    let crs = geoarrow_schema::Crs::from_projjson(projjson.into());
+    let projjson: serde_json::Value = serde_json::from_str(crs.to_projjson())
+        .expect("embedded PROJJSON should be valid JSON");
+    let crs = geoarrow_schema::Crs::from_projjson(projjson);
 
     let fields_info = construct_schema(dbf_fields, crs, translate_options)?;
     let schema_ref = fields_info.schema_ref.clone();
