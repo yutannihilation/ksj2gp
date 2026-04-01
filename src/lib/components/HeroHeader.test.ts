@@ -7,7 +7,9 @@ import HeroHeaderTestHost from './HeroHeaderTestHost.svelte';
 test('renders the title and default format', async () => {
 	const screen = render(HeroHeader);
 
+	// @ts-expect-error expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('KSJ')).toBeVisible();
+	// @ts-expect-error expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('GeoParquet')).toBeVisible();
 });
 
@@ -15,14 +17,17 @@ test('opens the format select', async () => {
 	const screen = render(HeroHeader);
 
 	await screen.getByRole('button', { name: '出力形式を選択' }).click();
+	// @ts-expect-error expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('GeoJson')).toBeVisible();
 });
 
 test('updates bound value when selecting a format', async () => {
 	const screen = render(HeroHeaderTestHost);
 
+	// @ts-expect-error expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('Selected: GeoParquet')).toBeVisible();
 	await screen.getByRole('button', { name: '出力形式を選択' }).click();
 	await screen.getByText('GeoJson').click();
+	// @ts-expect-error expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('Selected: GeoJson')).toBeVisible();
 });
