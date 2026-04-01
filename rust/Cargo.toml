@@ -10,15 +10,15 @@ crate-type = ["lib"]
 geo-traits = { git = "https://github.com/yutannihilation/geo", branch = "feat/geo-traits-structs", version = "0.3.0", default-features = false, features = ["structs"] }
 
 # GeoParquet
-parquet = { version = "57.0.0", default-features = false }
-geoparquet = "0.7.0"
+parquet = { version = "58.1.0", default-features = false }
+geoparquet = "0.8.0"
 
 # GeoArrow-related
-arrow-array = "57.0.0"
-arrow-schema = "57.0.0"
-geoarrow-schema = "0.7.0"
-geoarrow-array = "0.7.0"
-geoarrow-geojson = "0.7.0"
+arrow-array = "58.1.0"
+arrow-schema = "58.1.0"
+geoarrow-schema = "0.8.0"
+geoarrow-array = "0.8.0"
+geoarrow-geojson = "0.8.0"
 
 # Shapefile
 shapefile = { version = "0.8.0", features = [
