@@ -10,13 +10,16 @@ test('renders the title and message when open', async () => {
 		message: 'Something went wrong.'
 	});
 
+	// @ts-ignore expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('Something went wrong.')).toBeVisible();
 });
 
 test('closes via the button and updates bound state', async () => {
 	const screen = render(ErrorDialogTestHost);
 
+	// @ts-ignore expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('Open: true')).toBeVisible();
 	await screen.getByText('閉じる').click();
+	// @ts-ignore expect.element types not resolved under vite-plus alias
 	await expect.element(screen.getByText('Open: false')).toBeVisible();
 });

@@ -192,6 +192,14 @@ export default defineConfig({
 					'no-self-assign': 'off'
 				},
 				jsPlugins: ['eslint-plugin-svelte']
+			},
+			{
+				// expect.element() types from @vitest/browser are not resolved by
+				// oxlint-tsgolint when vitest is npm-aliased to vite-plus-test.
+				files: ['**/*.test.ts'],
+				rules: {
+					'typescript/ban-ts-comment': 'off'
+				}
 			}
 		],
 		options: {
