@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [svelte()],
 	resolve: {
 		alias: {
-			$lib: './src/lib'
+			$lib: import.meta.dirname + '/src/lib'
 		}
 	},
 	test: {

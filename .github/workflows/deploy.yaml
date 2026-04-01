@@ -34,8 +34,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          cache: true
 
       - uses: rui314/setup-mold@v1
 
@@ -81,10 +83,10 @@ jobs:
           mv tmp.wasm ./npm/ksj2gp_web_bg.wasm
 
       - name: Install dependencies
-        run: bun install
+        run: vp install
 
       - name: Build
-        run: bun run build
+        run: vp build
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
