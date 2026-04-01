@@ -31,14 +31,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install dependencies
-        run: bun install
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          cache: true
 
       - name: Install Playwright browsers
-        run: bunx playwright install --with-deps chromium-headless-shell
+        run: vp dlx playwright install --with-deps chromium-headless-shell
 
       - name: Run browser tests
-        run: bun run test:browser
+        run: vp test --config=vitest.browser.config.ts

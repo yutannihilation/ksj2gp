@@ -6,16 +6,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ksj2gp is a browser-based tool that converts Japan's National Land Numerical Information (国土数値情報 / KSJ) Shapefiles into GeoParquet, GeoPackage, and GeoJSON formats. It translates cryptic KSJ attribute names and coded values (e.g., `L001_123`) into human-readable Japanese labels. Runs entirely in-browser via WebAssembly compiled from Rust, with a SvelteKit frontend. The UI is in Japanese.
 
+## Toolchain
+
+This project uses **Vite+** (`vp`), a unified toolchain wrapping Vite, Vitest, Oxlint, and Oxfmt. Package management is handled by **bun** (detected automatically by `vp`).
+
+- Import from `vite-plus` (not `vite` or `vitest`): `import { defineConfig } from 'vite-plus'`, `import { expect, test, vi } from 'vite-plus/test'`
+- Do not install Vitest, Oxlint, or Oxfmt directly — they are bundled in Vite+
+- Use `vp dlx` instead of `bunx`/`npx`
+- Configuration (lint, fmt, staged hooks) lives in `vite.config.ts` via `defineConfig`
+
 ## Commands
 
-### Frontend (repo root, uses bun)
+### Frontend (repo root)
 
-- `bun run dev` — Dev server (use `--force` after rebuilding WASM)
-- `bun run build` — Build static site to `build/`
-- `bun run check` — Svelte type checking
-- `bun run lint` — Prettier + ESLint
-- `bun run format` — Auto-format with Prettier
-- `bun run test:browser` — Vitest browser tests (Playwright, headless Chromium)
+- `vp dev` — Dev server (use `--force` after rebuilding WASM)
+- `vp build` — Build static site to `build/`
+- `vp check` — Format, lint, and TypeScript type checks
+- `vp lint .` — Lint (Oxlint + eslint-plugin-svelte)
+- `vp fmt .` — Auto-format with Oxfmt
+- `vp test --config=vitest.browser.config.ts` — Vitest browser tests (Playwright, headless Chromium)
+- `vp install` — Install dependencies (wraps bun)
 
 ### Rust (from `rust/` directory)
 
@@ -67,6 +77,6 @@ Tests use `vitest-browser-svelte` with Playwright (Chromium, headless). Some com
 
 ## Code Style
 
-- Prettier: tabs, single quotes, no trailing commas, 100-char width
-- ESLint: typescript-eslint + eslint-plugin-svelte + prettier
+- Oxfmt: tabs, single quotes, no trailing commas, 100-char width (configured in `vite.config.ts` `fmt` section)
+- Oxlint + eslint-plugin-svelte (configured in `vite.config.ts` `lint` section)
 - Rust: standard rustfmt
