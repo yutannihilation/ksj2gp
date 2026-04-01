@@ -3,7 +3,9 @@
 // The upstream matchers augmentation (`declare module 'vitest'`) is fragile
 // under the vite-plus alias (`vitest` → `@voidzero-dev/vite-plus-test`),
 // so we declare `expect.element` directly here.
-import type { Locator } from '@vitest/browser/context';
+// Import Locator from the aliased `vitest/browser` (not `@vitest/browser/context`)
+// because the latter is a transitive dependency that may not resolve on CI.
+import type { Locator } from 'vitest/browser';
 
 declare module 'vitest' {
 	type PromisifyAssertion<T> = {
