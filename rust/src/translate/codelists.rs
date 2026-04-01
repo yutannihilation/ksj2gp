@@ -210,6 +210,12 @@ static CODELISTS_MAP: LazyLock<HashMap<&'static str, &'static Codelist>> = LazyL
 
     map.entry("N11_002").or_insert(&AVIATION_ACT_CD);
 
+    map.entry("N13_002").or_insert(&N13_ROAD_TYPE);
+    map.entry("N13_003").or_insert(&N13_ROAD_CATEGORY);
+    map.entry("N13_004").or_insert(&N13_ROAD_STATE);
+    map.entry("N13_006").or_insert(&N13_ROAD_WIDTH);
+    map.entry("N13_007").or_insert(&N13_TOIL_ROAD_SECTION);
+
     map.entry("P03_0004").or_insert(&UNDER_CONSTRUCTION);
     map.entry("P03_0102").or_insert(&HYDROELECTRIC_POWER_PLANT_TYPE);
     map.entry("P03_0209").or_insert(&PUMPINGUP_TYPE);
