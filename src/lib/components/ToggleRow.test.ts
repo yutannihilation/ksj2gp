@@ -1,4 +1,5 @@
-import { expect, test } from 'vitest';
+/// <reference types="vitest/browser/context" />
+import { expect, test } from 'vite-plus/test';
 import { render } from 'vitest-browser-svelte';
 import ToggleRow from './ToggleRow.svelte';
 import ToggleRowTestHost from './ToggleRowTestHost.svelte';

@@ -1,4 +1,5 @@
-import { expect, test } from 'vitest';
+/// <reference types="vitest/browser/context" />
+import { expect, test } from 'vite-plus/test';
 import { render } from 'vitest-browser-svelte';
 import ErrorDialog from './ErrorDialog.svelte';
 import ErrorDialogTestHost from './ErrorDialogTestHost.svelte';

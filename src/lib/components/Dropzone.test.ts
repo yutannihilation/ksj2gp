@@ -1,4 +1,4 @@
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { render } from 'vitest-browser-svelte';
 import Dropzone from './Dropzone.svelte';
 import { status } from '../stores/status.svelte';
