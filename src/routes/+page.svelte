@@ -1,152 +1,189 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	// Use Bits UI for a nicer error dialog
-	// Note: ensure `bits-ui` is installed locally
-	import HeroHeader from '$lib/components/HeroHeader.svelte';
-	import Dropzone from '$lib/components/Dropzone.svelte';
-	import ErrorDialog from '$lib/components/ErrorDialog.svelte';
-	import ShpDialog from '$lib/components/ShpDialog.svelte';
-	import ToggleRow from '$lib/components/ToggleRow.svelte';
-	import { status } from '$lib/stores/status.svelte';
-	import type { OutputFormat, WorkerResponse } from '$lib/types';
+  import { onMount } from "svelte";
+  // Use Bits UI for a nicer error dialog
+  // Note: ensure `bits-ui` is installed locally
+  import Icon from "@iconify/svelte";
+  import HeroHeader from "$lib/components/HeroHeader.svelte";
+  import Dropzone from "$lib/components/Dropzone.svelte";
+  import ErrorDialog from "$lib/components/ErrorDialog.svelte";
+  import ShpDialog from "$lib/components/ShpDialog.svelte";
+  import ToggleRow from "$lib/components/ToggleRow.svelte";
+  import { status } from "$lib/stores/status.svelte";
+  import type { OutputFormat, WorkerResponse } from "$lib/types";
 
-	// Conversion options
-	let outputFormat = $state<OutputFormat>('GeoParquet');
-	let translateColumns = $state(true);
-	let translateContents = $state(true);
-	let ignoreTranslationErrors = $state(true);
+  // Conversion options
+  let outputFormat = $state<OutputFormat>("GeoParquet");
+  let translateColumns = $state(true);
+  let translateContents = $state(true);
+  let ignoreTranslationErrors = $state(true);
 
-	// Multi-shp selection dialog state
-	let shpDialogOpen = $state(false);
-	let shpFiles = $state<string[]>([]);
-	let pendingZip = $state<File | null>(null);
+  // Multi-shp selection dialog state
+  let shpDialogOpen = $state(false);
+  let shpFiles = $state<string[]>([]);
+  let pendingZip = $state<File | null>(null);
 
-	// Error dialog state
-	let errorOpen = $state(false);
-	let errorMessage = $state('');
+  // Error dialog state
+  let errorOpen = $state(false);
+  let errorMessage = $state("");
 
-	// worker is initialized only once, so we doe't need to track the state.
-	let worker: Worker | null = null;
+  // worker is initialized only once, so we doe't need to track the state.
+  let worker: Worker | null = null;
 
-	onMount(() => {
-		worker = new Worker(new URL('$lib/worker.ts', import.meta.url), { type: 'module' });
+  onMount(() => {
+    worker = new Worker(new URL("$lib/worker.ts", import.meta.url), {
+      type: "module",
+    });
 
-		// Surface worker bootstrap errors in dev
-		worker.onerror = (e: ErrorEvent) => {
-			console.error('Worker error:', e.message, '@', e.filename, e.lineno + ':' + e.colno);
-			if (!status.ready) showError(`ワーカーの初期化に失敗しました: ${e.message}`);
-		};
-		worker.onmessageerror = (e: MessageEvent) => {
-			console.error('Worker message error:', e);
-		};
+    // Surface worker bootstrap errors in dev
+    worker.onerror = (e: ErrorEvent) => {
+      console.error(
+        "Worker error:",
+        e.message,
+        "@",
+        e.filename,
+        e.lineno + ":" + e.colno,
+      );
+      if (!status.ready)
+        showError(`ワーカーの初期化に失敗しました: ${e.message}`);
+    };
+    worker.onmessageerror = (e: MessageEvent) => {
+      console.error("Worker message error:", e);
+    };
 
-		worker.onmessage = async (event: MessageEvent<WorkerResponse>) => {
-			const data = event.data;
+    worker.onmessage = async (event: MessageEvent<WorkerResponse>) => {
+      const data = event.data;
 
-			const finish = () => {
-				status.busy = false;
-				pendingZip = null;
-			};
+      const finish = () => {
+        status.busy = false;
+        pendingZip = null;
+      };
 
-			if (data.ready) {
-				status.ready = true;
-				return;
-			}
+      if (data.ready) {
+        status.ready = true;
+        return;
+      }
 
-			if (data.error) {
-				showError(data.error);
-				finish();
-				return;
-			}
+      if (data.error) {
+        showError(data.error);
+        finish();
+        return;
+      }
 
-			if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
-				shpFiles = data.shpFileCandidates;
-				shpDialogOpen = true;
-				status.busy = false; // let user choose
-				return;
-			}
+      if (data.shpFileCandidates && data.shpFileCandidates.length > 1) {
+        shpFiles = data.shpFileCandidates;
+        shpDialogOpen = true;
+        status.busy = false; // let user choose
+        return;
+      }
 
-			if (!data.output) return;
+      if (!data.output) return;
 
-			const file = await data.output.handle.getFile();
-			const url = URL.createObjectURL(file);
+      const file = await data.output.handle.getFile();
+      const url = URL.createObjectURL(file);
 
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = data.output.filename;
-			document.body.appendChild(a);
-			a.click();
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = data.output.filename;
+      document.body.appendChild(a);
+      a.click();
 
-			setTimeout(() => {
-				URL.revokeObjectURL(url);
-				a.remove();
-				finish();
-			}, 600);
-		};
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        a.remove();
+        finish();
+      }, 600);
+    };
 
-		return () => {
-			worker?.terminate();
-			worker = null;
-		};
-	});
+    return () => {
+      worker?.terminate();
+      worker = null;
+    };
+  });
 
-	function processFile(file: File | undefined | null) {
-		if (!file || !worker) return;
-		if (!status.ready) {
-			showError('初期化中です。数秒後にもう一度お試しください。');
-			return;
-		}
-		status.busy = true;
-		pendingZip = file;
-		worker.postMessage({
-			file,
-			translateColumns,
-			translateContents,
-			ignoreTranslationErrors,
-			outputFormat: outputFormat
-		});
-	}
+  function processFile(file: File | undefined | null) {
+    if (!file || !worker) return;
+    if (!status.ready) {
+      showError("初期化中です。数秒後にもう一度お試しください。");
+      return;
+    }
+    status.busy = true;
+    pendingZip = file;
+    worker.postMessage({
+      file,
+      translateColumns,
+      translateContents,
+      ignoreTranslationErrors,
+      outputFormat: outputFormat,
+    });
+  }
 
-	function showError(message: string) {
-		errorMessage = message;
-		errorOpen = true;
-	}
+  function showError(message: string) {
+    errorMessage = message;
+    errorOpen = true;
+  }
 
-	function chooseShp(path: string) {
-		if (!worker || !pendingZip) return;
-		shpDialogOpen = false;
-		status.busy = true;
-		worker.postMessage({
-			file: pendingZip,
-			outputFormat,
-			translateColumns,
-			translateContents,
-			ignoreTranslationErrors,
-			targetShp: path
-		});
-	}
+  function chooseShp(path: string) {
+    if (!worker || !pendingZip) return;
+    shpDialogOpen = false;
+    status.busy = true;
+    worker.postMessage({
+      file: pendingZip,
+      outputFormat,
+      translateColumns,
+      translateContents,
+      ignoreTranslationErrors,
+      targetShp: path,
+    });
+  }
 </script>
 
-<div class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 px-5 py-16 lg:py-24">
-	<HeroHeader bind:value={outputFormat} />
+<div
+  class="min-h-dvh text-slate-900 font-display flex flex-col gap-4 px-5 py-16 lg:py-24 relative"
+>
+  <nav class="absolute top-4 right-4 flex gap-2">
+    <a
+      href="https://github.com/yutannihilation/ksj2gp"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-slate-500 hover:text-slate-900 transition-colors"
+      aria-label="GitHub"
+    >
+      <Icon icon="mdi:github" height="2em" />
+    </a>
+    <a
+      href="https://zenn.dev/mierune/articles/adcfed5a11b70d"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-slate-500 hover:text-slate-900 transition-colors"
+      aria-label="技術解説記事"
+    >
+      <Icon icon="mdi:help-circle-outline" height="2em" />
+    </a>
+  </nav>
 
-	<Dropzone onError={showError} onFile={processFile} />
+  <HeroHeader bind:value={outputFormat} />
 
-	<ToggleRow id="translate_colnames" bind:checked={translateColumns} label="属性名を変換する" />
+  <Dropzone onError={showError} onFile={processFile} />
 
-	<ToggleRow
-		id="translate_contents"
-		bind:checked={translateContents}
-		label="データの中身を変換する"
-	/>
+  <ToggleRow
+    id="translate_colnames"
+    bind:checked={translateColumns}
+    label="属性名を変換する"
+  />
 
-	<ToggleRow
-		id="ignore_translation_errors"
-		bind:checked={ignoreTranslationErrors}
-		label="変換エラーを無視する"
-	/>
+  <ToggleRow
+    id="translate_contents"
+    bind:checked={translateContents}
+    label="データの中身を変換する"
+  />
 
-	<ErrorDialog bind:open={errorOpen} message={errorMessage} />
+  <ToggleRow
+    id="ignore_translation_errors"
+    bind:checked={ignoreTranslationErrors}
+    label="変換エラーを無視する"
+  />
 
-	<ShpDialog bind:open={shpDialogOpen} {shpFiles} onSelect={chooseShp} />
+  <ErrorDialog bind:open={errorOpen} message={errorMessage} />
+
+  <ShpDialog bind:open={shpDialogOpen} {shpFiles} onSelect={chooseShp} />
 </div>
