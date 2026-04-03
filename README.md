@@ -1,9 +1,10 @@
-# ksj2gp
+# ksj2gp - 国土数値情報 Shapefile 変換ツール
 
 <a href="https://yutannihilation.github.io/ksj2gp/">
 <p align="center">
-  <img width="40%" height="40%" src="screenshot.png">
+  <img width="50%" src="screenshot.png">
 </p>
+<p align="center">https://yutannihilation.github.io/ksj2gp/</p>
 </a>
 
 ## 概要
