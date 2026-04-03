@@ -1,6 +1,10 @@
 # ksj2gp
 
-＞＞＞ [ウェブサイト](https://yutannihilation.github.io/ksj2gp/) ＜＜＜
+<a href="https://yutannihilation.github.io/ksj2gp/">
+<p align="center">
+  <img width="40%" height="40%" src="screenshot.png">
+</p>
+</a>
 
 ## 概要
 
