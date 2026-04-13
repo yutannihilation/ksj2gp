@@ -48,7 +48,7 @@ members = [
 ]
 
 [workspace.dependencies]
-zip = { version = "8.5.0", default-features = false, features = ["deflate"] }
+zip = { version = "8.5.1", default-features = false, features = ["deflate"] }
 
 [patch.crates-io]
 geo-traits = { git = "https://github.com/yutannihilation/geo", branch = "feat/geo-traits-structs", version = "0.3.0" }
