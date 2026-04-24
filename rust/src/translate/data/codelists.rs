@@ -2209,6 +2209,30 @@ pub(crate) static ROAD_CATEGORY_CD: LazyLock<HashMap<&'static str, &'static str>
     });
 
 #[rustfmt::skip]
+pub(crate) static REGULATORY_AREA_CLASSIFICATION: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("1", "宅地造成等工事規制区域"),
+            ("2", "特定盛土等規制区域"),
+            ("9", "記載なし"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
+pub(crate) static MANAGEMENT_ORGANIZATION_CLASSIFICATION: LazyLock<HashMap<&'static str, &'static str>> =
+    LazyLock::new(|| {
+        [
+            ("A", "都道府県（B、Cを除く）"),
+            ("B", "政令指定都市"),
+            ("C", "中核市"),
+        ]
+        .into_iter()
+        .collect()
+    });
+
+#[rustfmt::skip]
 pub(crate) static SCHOOL_CLASS_CD: LazyLock<HashMap<&'static str, &'static str>> =
     LazyLock::new(|| {
         [

@@ -138,6 +138,9 @@ static CODELISTS_MAP: LazyLock<HashMap<&'static str, &'static Codelist>> = LazyL
     map.entry("A45_032").or_insert(&HOGORIN_CD);
     map.entry("A45_033").or_insert(&MIDORINOKAIRO_CD);
 
+    map.entry("A56_004").or_insert(&REGULATORY_AREA_CLASSIFICATION);
+    map.entry("A56_005").or_insert(&MANAGEMENT_ORGANIZATION_CLASSIFICATION);
+
     map.entry("C02_001").or_insert(&CLASS_HARBOR1_CD);
     map.entry("C02_002").or_insert(&CLASS_HARBOR2_CD);
     map.entry("C02_006").or_insert(&ADMIN_HARBOR_CD);
