@@ -32,6 +32,7 @@ pub(crate) fn translate_colnames(
         "A42" => return translate_colnames_a42(col_id, &translate_options.target_shp),
         "L01" => return translate_colnames_l01(col_id, translate_options.year),
         "L02" => unimplemented!(),
+        "S12" => return translate_colnames_s12(col_id),
         _ => {}
     }
 
@@ -122,15 +123,38 @@ fn translate_colnames_l01(code: &str, year: u16) -> Result<String, Ksj2GpError> 
     }
 }
 
+fn translate_colnames_l02(code: &str) -> String {
+    // TODO
+    code.to_string()
+}
+
+fn translate_colnames_s12(code: &str) -> Result<String, Ksj2GpError> {
+    // S12_001c が parse_idx() でパースできないので、年が入っていない列名は先に変換する
+    let idx: usize = match code {
+        "S12_001" => return Ok("駅名".to_string()),
+        "S12_001c" => return Ok("駅コード".to_string()),
+        "S12_001g" => return Ok("グループコード".to_string()),
+        "S12_002" => return Ok("運営会社".to_string()),
+        "S12_003" => return Ok("路線名".to_string()),
+        "S12_004" => return Ok("鉄道区分".to_string()),
+        "S12_005" => return Ok("事業者種別".to_string()),
+        _ => parse_idx(code)? - 6, // S12_006 が基準なので6を引く
+    };
+
+    match (idx % 4, idx / 4) {
+        (0, year_delta) => Ok(format!("重複コード{}", 2011 + year_delta)),
+        (1, year_delta) => Ok(format!("データ有無コード{}", 2011 + year_delta)),
+        (2, year_delta) => Ok(format!("備考{}", 2011 + year_delta)),
+        (3, year_delta) => Ok(format!("乗降客数{}", 2011 + year_delta)),
+        (_, _) => unreachable!(),
+    }
+}
+
+// e.g. "S12_053" -> 53
 fn parse_idx(code: &str) -> Result<usize, Ksj2GpError> {
     code[4..7]
         .parse()
         .map_err(|e| -> Ksj2GpError { format!("Failed to parse {code} as int: {e}").into() })
-}
-
-fn translate_colnames_l02(code: &str) -> String {
-    // TODO
-    code.to_string()
 }
 
 #[cfg(test)]
@@ -237,5 +261,31 @@ mod tests {
         assert_eq!(translate_l01("L01_061", 2024), L01_COLNAMES_2024[60]);
         assert_eq!(translate_l01("L01_065", 2024), "調査価格_1986年");
         assert_eq!(translate_l01("L01_120", 2024), "属性移動_2000年");
+    }
+
+    #[test]
+    fn test_translate_colnames_s12() {
+        assert_eq!(translate_colnames_s12("S12_001").unwrap(), "駅名");
+        assert_eq!(translate_colnames_s12("S12_001c").unwrap(), "駅コード");
+        assert_eq!(
+            translate_colnames_s12("S12_001g").unwrap(),
+            "グループコード"
+        );
+
+        assert_eq!(translate_colnames_s12("S12_006").unwrap(), "重複コード2011");
+        assert_eq!(
+            translate_colnames_s12("S12_007").unwrap(),
+            "データ有無コード2011"
+        );
+        assert_eq!(translate_colnames_s12("S12_008").unwrap(), "備考2011");
+        assert_eq!(translate_colnames_s12("S12_009").unwrap(), "乗降客数2011");
+
+        assert_eq!(translate_colnames_s12("S12_058").unwrap(), "重複コード2024");
+        assert_eq!(
+            translate_colnames_s12("S12_059").unwrap(),
+            "データ有無コード2024"
+        );
+        assert_eq!(translate_colnames_s12("S12_060").unwrap(), "備考2024");
+        assert_eq!(translate_colnames_s12("S12_061").unwrap(), "乗降客数2024");
     }
 }
