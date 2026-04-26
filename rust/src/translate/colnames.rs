@@ -165,20 +165,20 @@ mod tests {
         L01_COLNAMES_2018, L01_COLNAMES_2022, L01_COLNAMES_2024,
     };
 
-    fn a03_options() -> TranslateOptions {
+    fn options(ksj_id: &str, target_shp: &str) -> TranslateOptions {
         TranslateOptions {
             translate_colnames: true,
             translate_contents: false,
             ignore_translation_errors: false,
-            ksj_id: "A03".to_string(),
+            ksj_id: ksj_id.to_string(),
             year: 2024,
-            target_shp: String::new(),
+            target_shp: target_shp.to_string(),
         }
     }
 
     #[test]
     fn translate_a03_columns() {
-        let options = a03_options();
+        let opts = options("A03", "");
         let cases = [
             ("A03_001", "行政区域コード"),
             ("A03_002", "都道府県名"),
@@ -191,25 +191,14 @@ mod tests {
         ];
 
         for (code, expected) in cases {
-            let actual = translate_colnames(code, &options).unwrap();
-            assert_eq!(actual, expected);
-        }
-    }
-
-    fn a42_options(target_shp: &str) -> TranslateOptions {
-        TranslateOptions {
-            translate_colnames: true,
-            translate_contents: false,
-            ignore_translation_errors: false,
-            ksj_id: "A42".to_string(),
-            year: 2024,
-            target_shp: target_shp.to_string(),
+            let actual = translate_colnames(code, &opts).unwrap();
+            assert_eq!(actual, expected, "code={code}");
         }
     }
 
     #[test]
     fn translate_a42_normal_columns() {
-        let options = a42_options("Preservation_Area_of_Historic_Landscape.shp");
+        let opts = options("A42", "Preservation_Area_of_Historic_Landscape.shp");
         let cases = [
             ("A42_000", A42_COLNAMES_NORMAL[0]),
             ("A42_003", A42_COLNAMES_NORMAL[3]),
@@ -217,14 +206,14 @@ mod tests {
         ];
 
         for (code, expected) in cases {
-            let actual = translate_colnames(code, &options).unwrap();
-            assert_eq!(actual, expected);
+            let actual = translate_colnames(code, &opts).unwrap();
+            assert_eq!(actual, expected, "code={code}");
         }
     }
 
     #[test]
     fn translate_a42_special_columns() {
-        let options = a42_options("Spacial_Preservation_Area_of_Historic_Landscape.shp");
+        let opts = options("A42", "Spacial_Preservation_Area_of_Historic_Landscape.shp");
         let cases = [
             ("A42_000", A42_COLNAMES_SPECIAL[0]),
             ("A42_003", A42_COLNAMES_SPECIAL[3]),
@@ -232,60 +221,78 @@ mod tests {
         ];
 
         for (code, expected) in cases {
-            let actual = translate_colnames(code, &options).unwrap();
-            assert_eq!(actual, expected);
+            let actual = translate_colnames(code, &opts).unwrap();
+            assert_eq!(actual, expected, "code={code}");
         }
     }
 
-    fn translate_l01(code: &str, year: u16) -> String {
-        translate_colnames_l01(code, year).unwrap()
+    #[test]
+    fn translate_l01_columns() {
+        // Boundaries for each year band: last fixed idx → first dynamic (調査価格 y=1983)
+        // → dynamic where y == year → first 属性移動 (y=1984).
+        let cases: &[(&str, u16, &str)] = &[
+            // year ≤ 2013
+            ("L01_001", 2013, L01_COLNAMES_1983[0]),
+            ("L01_031", 2010, L01_COLNAMES_1983[30]),
+            // 2014..=2017: fixed[1..=47], dynamic from idx 48
+            ("L01_047", 2014, L01_COLNAMES_2014[46]),
+            ("L01_048", 2014, "調査価格_1983年"),
+            ("L01_079", 2014, "調査価格_2014年"),
+            ("L01_080", 2014, "属性移動_1984年"),
+            ("L01_050", 2015, "調査価格_1985年"),
+            ("L01_090", 2015, "属性移動_1993年"),
+            // 2018..=2021: fixed[1..=55], dynamic from idx 56
+            ("L01_055", 2019, L01_COLNAMES_2018[54]),
+            ("L01_056", 2018, "調査価格_1983年"),
+            ("L01_091", 2018, "調査価格_2018年"),
+            ("L01_092", 2018, "属性移動_1984年"),
+            ("L01_058", 2020, "調査価格_1985年"),
+            ("L01_100", 2018, "属性移動_1992年"),
+            // 2022..=2023: fixed[1..=60], dynamic from idx 61
+            ("L01_060", 2022, L01_COLNAMES_2022[59]),
+            ("L01_061", 2022, "調査価格_1983年"),
+            ("L01_100", 2022, "調査価格_2022年"),
+            ("L01_101", 2022, "属性移動_1984年"),
+            ("L01_063", 2023, "調査価格_1985年"),
+            ("L01_120", 2022, "属性移動_2003年"),
+            // 2024..: fixed[1..=61], dynamic from idx 62
+            ("L01_061", 2024, L01_COLNAMES_2024[60]),
+            ("L01_062", 2024, "調査価格_1983年"),
+            ("L01_103", 2024, "調査価格_2024年"),
+            ("L01_104", 2024, "属性移動_1984年"),
+            ("L01_065", 2024, "調査価格_1986年"),
+            ("L01_120", 2024, "属性移動_2000年"),
+        ];
+
+        for &(code, year, expected) in cases {
+            let actual = translate_colnames_l01(code, year).unwrap();
+            assert_eq!(actual, expected, "code={code}, year={year}");
+        }
     }
 
     #[test]
-    fn translate_l01_columns_multiple_years() {
-        assert_eq!(translate_l01("L01_001", 2013), L01_COLNAMES_1983[0]);
-        assert_eq!(translate_l01("L01_031", 2010), L01_COLNAMES_1983[30]);
+    fn translate_s12_columns() {
+        let cases = [
+            ("S12_001", "駅名"),
+            ("S12_001c", "駅コード"),
+            ("S12_001g", "グループコード"),
+            ("S12_002", "運営会社"),
+            ("S12_003", "路線名"),
+            ("S12_004", "鉄道区分"),
+            ("S12_005", "事業者種別"),
+            ("S12_006", "重複コード2011"),
+            ("S12_007", "データ有無コード2011"),
+            ("S12_008", "備考2011"),
+            ("S12_009", "乗降客数2011"),
+            ("S12_058", "重複コード2024"),
+            ("S12_059", "データ有無コード2024"),
+            ("S12_060", "備考2024"),
+            ("S12_061", "乗降客数2024"),
+        ];
 
-        assert_eq!(translate_l01("L01_047", 2014), L01_COLNAMES_2014[46]);
-        assert_eq!(translate_l01("L01_050", 2015), "調査価格_1985年");
-        assert_eq!(translate_l01("L01_090", 2015), "属性移動_1993年");
-
-        assert_eq!(translate_l01("L01_055", 2019), L01_COLNAMES_2018[54]);
-        assert_eq!(translate_l01("L01_058", 2020), "調査価格_1985年");
-        assert_eq!(translate_l01("L01_100", 2018), "属性移動_1992年");
-
-        assert_eq!(translate_l01("L01_060", 2022), L01_COLNAMES_2022[59]);
-        assert_eq!(translate_l01("L01_063", 2023), "調査価格_1985年");
-        assert_eq!(translate_l01("L01_120", 2022), "属性移動_2003年");
-
-        assert_eq!(translate_l01("L01_061", 2024), L01_COLNAMES_2024[60]);
-        assert_eq!(translate_l01("L01_065", 2024), "調査価格_1986年");
-        assert_eq!(translate_l01("L01_120", 2024), "属性移動_2000年");
-    }
-
-    #[test]
-    fn test_translate_colnames_s12() {
-        assert_eq!(translate_colnames_s12("S12_001").unwrap(), "駅名");
-        assert_eq!(translate_colnames_s12("S12_001c").unwrap(), "駅コード");
-        assert_eq!(
-            translate_colnames_s12("S12_001g").unwrap(),
-            "グループコード"
-        );
-
-        assert_eq!(translate_colnames_s12("S12_006").unwrap(), "重複コード2011");
-        assert_eq!(
-            translate_colnames_s12("S12_007").unwrap(),
-            "データ有無コード2011"
-        );
-        assert_eq!(translate_colnames_s12("S12_008").unwrap(), "備考2011");
-        assert_eq!(translate_colnames_s12("S12_009").unwrap(), "乗降客数2011");
-
-        assert_eq!(translate_colnames_s12("S12_058").unwrap(), "重複コード2024");
-        assert_eq!(
-            translate_colnames_s12("S12_059").unwrap(),
-            "データ有無コード2024"
-        );
-        assert_eq!(translate_colnames_s12("S12_060").unwrap(), "備考2024");
-        assert_eq!(translate_colnames_s12("S12_061").unwrap(), "乗降客数2024");
+        for (code, expected) in cases {
+            let actual = translate_colnames_s12(code).unwrap();
+            assert_eq!(actual, expected, "code={code}");
+        }
     }
 }
