@@ -11,7 +11,7 @@ use crate::{
     writer::get_fields_except_geometry,
 };
 
-pub(crate) fn write_gpkg<T: Read + Seek, D: Read + Seek, W: Write + Send + 'static>(
+pub(crate) fn write_gpkg<T: Read + Seek, D: Read + Seek, W: Write + Seek + Send + 'static>(
     reader: &mut shapefile::Reader<T, D>,
     writer: W,
     dbf_fields: &[dbase::FieldInfo],
