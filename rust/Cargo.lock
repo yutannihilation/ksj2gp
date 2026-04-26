@@ -1255,9 +1255,9 @@ dependencies = [
 
 [[package]]
 name = "rusqlite-gpkg"
-version = "0.0.7"
+version = "0.0.8-beta.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2f554a5e27525523ea2cdb574641e0fec1672d6f8a03559ba1577a744673f01"
+checksum = "d80f07815fe5b377035eed00b99e18789761980546209b468512f0f7f17f5e8c"
 dependencies = [
  "geo-traits",
  "rusqlite",
