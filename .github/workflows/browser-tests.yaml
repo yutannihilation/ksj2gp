@@ -37,7 +37,7 @@ jobs:
           cache: true
 
       - name: Install Playwright browsers
-        run: vp dlx playwright install --with-deps chromium-headless-shell
+        run: vp exec playwright install --with-deps chromium-headless-shell
 
       - name: Run browser tests
         run: vp test --config=vitest.browser.config.ts

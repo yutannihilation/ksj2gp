@@ -1,4 +1,4 @@
-/// <reference types="vitest/browser/context" />
+/// <reference types="vite-plus/test/browser/context" />
 import { expect, test } from 'vite-plus/test';
 import { render } from 'vitest-browser-svelte';
 import ToggleRow from './ToggleRow.svelte';
