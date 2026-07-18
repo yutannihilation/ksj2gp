@@ -1,6 +1,6 @@
 use std::io::{Read, Seek, Write};
 
-use dbase::encoding::EncodingRs;
+use dbase::encoding::{DynEncoding, EncodingRs};
 use zip::ZipArchive;
 
 use crate::{
@@ -140,45 +140,46 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
     }
 
     // cf. https://github.com/EsriJapan/shapefile_info
-    pub fn guess_encoding(&mut self) -> Result<EncodingRs, Ksj2GpError> {
-        // First, try to guess from LDID (29th byte of dBASE file)
-        let mut dbf_reader = self.zip.by_name(&self.dbf_filename).unwrap();
-        let mut buf = vec![0u8; 29];
-        dbf_reader.read_exact(&mut buf)?;
-        if buf[28] == 13 {
-            return Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS));
-        }
-        drop(dbf_reader);
-
-        // Next, check .cpg file
+    //
+    // Returns `None` when there's no hint about the encoding; in that case,
+    // the encoding detection is left to dbase, which uses the LDID (e.g. 0x13
+    // means CP932).
+    pub fn guess_encoding(&mut self) -> Result<Option<DynEncoding>, Ksj2GpError> {
+        // First, check .cpg file
         match self.zip.by_name(&self.cpg_filename) {
             Ok(mut reader) => {
                 let mut cpg = String::new();
                 reader.read_to_string(&mut cpg)?;
 
-                match cpg.as_str() {
-                    "UTF-8" => return Ok(EncodingRs::from(dbase::encoding_rs::UTF_8)),
-                    "CP932" => return Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS)),
-                    _ => {
-                        return Err(format!("Unknown encoding is found in .cpg file: {cpg}").into());
-                    }
-                }
+                return DynEncoding::from_name(&cpg)
+                    .map(Some)
+                    .ok_or_else(|| format!("Unknown encoding is found in .cpg file: {cpg}").into());
             }
             Err(zip::result::ZipError::FileNotFound) => {} // If ZIP file doesn't contain .cpg file, use other heuristics...
             Err(e) => return Err(e.into()),
         }
 
-        // In case of no LDID and no .cpg file, try to wild guess from the path...
-        // If file path contains some characters like "utf-8", it's probably UTF-8
+        // Next, try to wild guess from the path... If file path contains some
+        // characters like "utf-8", it's probably UTF-8
         if self
             .shp_filename
             .to_lowercase()
             .replace(['-', '_'], "")
             .contains("utf8")
         {
-            return Ok(EncodingRs::from(dbase::encoding_rs::UTF_8));
+            return Ok(Some(EncodingRs::from(dbase::encoding_rs::UTF_8).into()));
         }
 
-        Ok(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS))
+        // If LDID (29th byte of dBASE file) is not set (i.e. 0), dbase would
+        // treat the file as UTF-8, but such files are most likely Shift_JIS
+        // in Japanese data. If LDID is set, leave the detection to dbase.
+        let mut dbf_reader = self.zip.by_name(&self.dbf_filename).unwrap();
+        let mut buf = vec![0u8; 29];
+        dbf_reader.read_exact(&mut buf)?;
+        if buf[28] == 0 {
+            return Ok(Some(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS).into()));
+        }
+
+        Ok(None)
     }
 }

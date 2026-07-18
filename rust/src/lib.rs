@@ -74,8 +74,12 @@ pub fn convert_shp_inner<RW: Read + Seek + Write, R: Read + Seek, W: Write + See
 
     let crs = zip.guess_crs()?;
 
-    let dbase_reader =
-        shapefile::dbase::Reader::new_with_encoding(dbf_reader, zip.guess_encoding()?)?;
+    // If there's no hint about the encoding, rely on dbase's LDID handling.
+    let builder = dbase::ReaderBuilder::new();
+    let dbase_reader = match zip.guess_encoding()? {
+        Some(encoding) => builder.with_encoding(encoding).build(dbf_reader)?,
+        None => builder.build(dbf_reader)?,
+    };
 
     let dbf_fields = dbase_reader.fields().to_vec();
 
