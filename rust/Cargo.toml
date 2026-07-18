@@ -32,7 +32,7 @@ dbase = { version = "0.7.0", features = ["encoding_rs"] }
 zip = { workspace = true }
 
 # for .chunk()
-itertools = "0.14.0"
+itertools = "0.15.0"
 
 encoding_rs = "0.8.35"
 regex = { version = "1.11.3", default-features = false, features = ["std"] }
