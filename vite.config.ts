@@ -8,15 +8,10 @@ export default defineConfig({
 		'*': 'vp check --fix'
 	},
 	lint: {
-		plugins: ['oxc', 'typescript', 'unicorn', 'react'],
 		jsPlugins: ['eslint-plugin-svelte'],
+		// oxlint's correctness category covers ESLint's recommended rules.
 		categories: {
-			correctness: 'warn'
-		},
-		env: {
-			builtin: true,
-			browser: true,
-			node: true
+			correctness: 'error'
 		},
 		ignorePatterns: [
 			'**/node_modules',
@@ -40,69 +35,29 @@ export default defineConfig({
 			'.claude/settings.local.json'
 		],
 		rules: {
-			'constructor-super': 'error',
-			'for-direction': 'error',
-			'getter-return': 'error',
-			'no-async-promise-executor': 'error',
-			'no-case-declarations': 'error',
-			'no-class-assign': 'error',
-			'no-compare-neg-zero': 'error',
-			'no-cond-assign': 'error',
-			'no-const-assign': 'error',
-			'no-constant-binary-expression': 'error',
-			'no-constant-condition': 'error',
-			'no-control-regex': 'error',
-			'no-debugger': 'error',
-			'no-delete-var': 'error',
-			'no-dupe-class-members': 'error',
-			'no-dupe-else-if': 'error',
-			'no-dupe-keys': 'error',
-			'no-duplicate-case': 'error',
-			'no-empty': 'error',
-			'no-empty-character-class': 'error',
-			'no-empty-pattern': 'error',
-			'no-empty-static-block': 'error',
-			'no-ex-assign': 'error',
-			'no-extra-boolean-cast': 'error',
-			'no-fallthrough': 'error',
-			'no-func-assign': 'error',
-			'no-global-assign': 'error',
-			'no-import-assign': 'error',
-			'no-invalid-regexp': 'error',
-			'no-irregular-whitespace': 'error',
-			'no-loss-of-precision': 'error',
-			'no-misleading-character-class': 'error',
-			'no-new-native-nonconstructor': 'error',
-			'no-nonoctal-decimal-escape': 'error',
-			'no-obj-calls': 'error',
-			'no-prototype-builtins': 'error',
-			'no-redeclare': 'error',
-			'no-regex-spaces': 'error',
-			'no-self-assign': 'error',
-			'no-setter-return': 'error',
-			'no-shadow-restricted-names': 'error',
-			'no-sparse-arrays': 'error',
-			'no-this-before-super': 'error',
-			'no-unassigned-vars': 'error',
-			'no-undef': 'off',
-			'no-unexpected-multiline': 'error',
-			'no-unreachable': 'error',
-			'no-unsafe-finally': 'error',
-			'no-unsafe-negation': 'error',
-			'no-unsafe-optional-chaining': 'error',
-			'no-unused-labels': 'error',
-			'no-unused-private-class-members': 'error',
-			'no-unused-vars': 'error',
-			'no-useless-backreference': 'error',
-			'no-useless-catch': 'error',
-			'no-useless-escape': 'error',
-			'no-with': 'error',
-			'preserve-caught-error': 'error',
-			'require-yield': 'error',
-			'use-isnan': 'error',
-			'valid-typeof': 'error',
+			// typescript-eslint's recommended rules are not covered by oxlint's
+			// correctness category, so enable them explicitly.
+			'typescript/ban-ts-comment': 'error',
+			'typescript/no-duplicate-enum-values': 'error',
+			'typescript/no-empty-object-type': 'error',
+			'typescript/no-explicit-any': 'error',
+			'typescript/no-extra-non-null-assertion': 'error',
+			'typescript/no-misused-new': 'error',
+			'typescript/no-namespace': 'error',
+			'typescript/no-non-null-asserted-optional-chain': 'error',
+			'typescript/no-require-imports': 'error',
+			'typescript/no-this-alias': 'error',
+			'typescript/no-unnecessary-type-constraint': 'error',
+			'typescript/no-unsafe-declaration-merging': 'error',
+			'typescript/no-unsafe-function-type': 'error',
+			'typescript/no-wrapper-object-types': 'error',
+			'typescript/prefer-as-const': 'error',
+			'typescript/prefer-namespace-keyword': 'error',
+			'typescript/triple-slash-reference': 'error',
+			// Stylistic rules from typescript-eslint's recommended set.
 			'no-array-constructor': 'error',
-			'no-unused-expressions': 'error',
+			// eslint-plugin-svelte's recommended rules. jsPlugin rules are off
+			// by default, so they need to be listed explicitly.
 			'svelte/comment-directive': 'error',
 			'svelte/infinite-reactive-loop': 'error',
 			'svelte/no-at-debug-tags': 'warn',
@@ -139,27 +94,13 @@ export default defineConfig({
 			'svelte/require-store-reactive-access': 'error',
 			'svelte/system': 'error',
 			'svelte/valid-each-key': 'error',
-			'svelte/valid-prop-names-in-kit-pages': 'error',
-			'typescript/ban-ts-comment': 'error',
-			'typescript/no-duplicate-enum-values': 'error',
-			'typescript/no-empty-object-type': 'error',
-			'typescript/no-explicit-any': 'error',
-			'typescript/no-extra-non-null-assertion': 'error',
-			'typescript/no-misused-new': 'error',
-			'typescript/no-namespace': 'error',
-			'typescript/no-non-null-asserted-optional-chain': 'error',
-			'typescript/no-require-imports': 'error',
-			'typescript/no-this-alias': 'error',
-			'typescript/no-unnecessary-type-constraint': 'error',
-			'typescript/no-unsafe-declaration-merging': 'error',
-			'typescript/no-unsafe-function-type': 'error',
-			'typescript/no-wrapper-object-types': 'error',
-			'typescript/prefer-as-const': 'error',
-			'typescript/prefer-namespace-keyword': 'error',
-			'typescript/triple-slash-reference': 'error'
+			'svelte/valid-prop-names-in-kit-pages': 'error'
 		},
 		overrides: [
 			{
+				// Turn off core rules that the TypeScript compiler already checks
+				// (same as typescript-eslint's eslint-recommended) to avoid
+				// duplicate errors when typeCheck is enabled.
 				files: ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'],
 				rules: {
 					'constructor-super': 'off',
@@ -178,8 +119,8 @@ export default defineConfig({
 					'no-undef': 'off',
 					'no-unreachable': 'off',
 					'no-unsafe-negation': 'off',
-					'no-var': 'error',
 					'no-with': 'off',
+					'no-var': 'error',
 					'prefer-const': 'error',
 					'prefer-rest-params': 'error',
 					'prefer-spread': 'error'
@@ -192,14 +133,6 @@ export default defineConfig({
 					'no-self-assign': 'off'
 				},
 				jsPlugins: ['eslint-plugin-svelte']
-			},
-			{
-				// expect.element() types from @vitest/browser are not resolved by
-				// oxlint-tsgolint when vitest is npm-aliased to vite-plus-test.
-				files: ['**/*.test.ts'],
-				rules: {
-					'typescript/ban-ts-comment': 'off'
-				}
 			}
 		],
 		options: {
@@ -232,7 +165,6 @@ export default defineConfig({
 	optimizeDeps: {
 		exclude: ['ksj2gp']
 	},
-	base: '/ksj2gp',
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
