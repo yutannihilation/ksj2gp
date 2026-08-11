@@ -39,7 +39,7 @@ https://github.com/EsriJapan/shapefile_info
 
 ksj2gp では、これに従ってまずは以下で文字コードを決められるか試します。
 
-- `.dbf` ファイルの 29 バイト目が `13` の場合は Shift_JIS
+- `.dbf` ファイルの 30 バイト目が `13` の場合は Shift_JIS
 - `.cpg` ファイルが存在する場合
   - 中身が `CP932` なら Shift_JIS
   - 中身が `UTF-8` なら UTF-8

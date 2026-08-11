@@ -151,9 +151,9 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
                 let mut cpg = String::new();
                 reader.read_to_string(&mut cpg)?;
 
-                return DynEncoding::from_name(&cpg)
-                    .map(Some)
-                    .ok_or_else(|| format!("Unknown encoding is found in .cpg file: {cpg}").into());
+                return DynEncoding::from_name(&cpg).map(Some).ok_or_else(|| {
+                    format!("Unknown encoding is found in .cpg file: {cpg}").into()
+                });
             }
             Err(zip::result::ZipError::FileNotFound) => {} // If ZIP file doesn't contain .cpg file, use other heuristics...
             Err(e) => return Err(e.into()),
@@ -170,13 +170,13 @@ impl<R: Read + Seek> ZippedShapefileReader<R> {
             return Ok(Some(EncodingRs::from(dbase::encoding_rs::UTF_8).into()));
         }
 
-        // If LDID (29th byte of dBASE file) is not set (i.e. 0), dbase would
+        // If LDID (30th byte of dBASE file) is not set (i.e. 0), dbase would
         // treat the file as UTF-8, but such files are most likely Shift_JIS
         // in Japanese data. If LDID is set, leave the detection to dbase.
         let mut dbf_reader = self.zip.by_name(&self.dbf_filename).unwrap();
-        let mut buf = vec![0u8; 29];
+        let mut buf = vec![0u8; 30];
         dbf_reader.read_exact(&mut buf)?;
-        if buf[28] == 0 {
+        if buf[29] == 0 {
             return Ok(Some(EncodingRs::from(dbase::encoding_rs::SHIFT_JIS).into()));
         }
 
