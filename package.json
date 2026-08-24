@@ -16,7 +16,7 @@
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",
-		"@vitest/browser-playwright": "4.1.10",
+		"@vitest/browser-playwright": "4.1.11",
 		"@eslint/js": "^10.0.1",
 		"@iconify/svelte": "^5.2.1",
 		"@sveltejs/adapter-static": "^3.0.10",
